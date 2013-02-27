@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-02-26T21:15:14Z" product-name="store_locator">
+		<header/>
+		<body>
+
+			<trans-unit id="title.description">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="address.description">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="city.description">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="zipcode.description">
+				<source>Zipcode</source>
+			</trans-unit>
+			<trans-unit id="country.description">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="latitude.description">
+				<source>Latitude</source>
+			</trans-unit>
+			<trans-unit id="longitude.description">
+				<source>Longitude</source>
+			</trans-unit>
+			<trans-unit id="url.description">
+				<source>URL</source>
+			</trans-unit>
+			<trans-unit id="description.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="email.description">
+				<source>E-Mail</source>
+			</trans-unit>
+			<trans-unit id="phone.description">
+				<source>Telephone</source>
+			</trans-unit>
+			<trans-unit id="logo.description">
+				<source>Logo</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

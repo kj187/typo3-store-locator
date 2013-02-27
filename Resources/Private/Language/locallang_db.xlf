@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-02-26T21:15:14Z" product-name="store_locator">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_storelocator_domain_model_store">
+				<source>Store</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.address">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.city">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.zipcode">
+				<source>Zipcode</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.country">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.latitude">
+				<source>Latitude</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.longitude">
+				<source>Longitude</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.url">
+				<source>Url</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.email">
+				<source>Email</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.phone">
+				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.logo">
+				<source>Logo</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

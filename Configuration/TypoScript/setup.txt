@@ -1,0 +1,14 @@
+plugin.tx_storelocator {
+	view {
+		templateRootPath = {$plugin.tx_storelocator.view.templateRootPath}
+		partialRootPath = {$plugin.tx_storelocator.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_storelocator.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_storelocator.persistence.storagePid}
+	}
+	features {
+		# uncomment the following line to enable the new Property Mapper.
+		# rewrittenPropertyMapper = 1
+	}
+}
