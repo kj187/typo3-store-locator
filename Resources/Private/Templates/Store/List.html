@@ -133,44 +133,44 @@
 						dataType: 'json',
 						success: function(data) {
 
-							var xml = self._parseXml(data.xmlMarker);
-							var markerNodes = xml.documentElement.getElementsByTagName('marker');
+							var locations = data.locations;
+							var sidebarItems = data.sidebarItems;
 							var bounds = new google.maps.LatLngBounds();
 							var sidebar = $('#sidebar').get(0);
 
 							sidebar.innerHTML = '';
+							if (locations.length > 0) {
+								for (var i = 0; i < locations.length; i++) {
 
-							for (var i = 0; i < markerNodes.length; i++) {
-								var uid = markerNodes[i].getAttribute('uid');
-								var name = markerNodes[i].getAttribute('name');
-								var address = markerNodes[i].getAttribute('address');
-								var distance = parseFloat(markerNodes[i].getAttribute('distance'));
-								var latlng = new google.maps.LatLng(parseFloat(markerNodes[i].getAttribute('latitude')), parseFloat(markerNodes[i].getAttribute('longitude')));
+									//var distance = parseFloat(locations[i]['distance']);
+									var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
 
-								var sidebarEntry = self._createSidebarItem(uid, i, markerNodes[i]);
-								sidebar.appendChild(sidebarEntry);
+									var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);
+									sidebar.appendChild(sidebarEntry);
 
-								self._createLocationMarker(uid, latlng, name, address);
-								bounds.extend(latlng);
+									self._createLocationMarker(locations[i], latlng);
+									bounds.extend(latlng);
+								}
+
+								self.map.fitBounds(bounds);
+							} else {
+								sidebar.innerHTML = 'No dealers found';
 							}
-
-							self.map.fitBounds(bounds);
 						}
 					});
 				},
 
 				/**
 				 * @param uid
-				 * @param markerNum
-				 * @param node
+				 * @param location
 				 * @return {*}
 				 * @private
 				 */
-				_createSidebarItem: function(uid, markerNum, node) {
-					var self = this;
+				_createSidebarItem: function(sidebarItem, location) {
+
 					var list = document.createElement('li');
-					list.innerHTML = '<a href="#" id="storeLocatorMarker_' + uid + '">' + node.getAttribute('name') + '</a>';
-					list.style.cursor = 'pointer';
+					list.innerHTML = sidebarItem + ' <a href="#" id="storeLocatorMarker_' + location['uid'] + '">In der Karte anzeigen</a>';
+					//list.style.cursor = 'pointer';
 
 					return list;
 				},
@@ -182,7 +182,7 @@
 				 * @param address
 				 * @private
 				 */
-				_createLocationMarker: function(uid, latlng, name, address) {
+				_createLocationMarker: function(location, latlng) {
 					var self = this;
 
 					if (self.options.markerIcon != '') {
@@ -197,8 +197,8 @@
 					});
 
 					var html = '<div style="color:#000;" class="locationContainer">' +
-									'<div class="name">' + name + '</div>' +
-									'<div class="address">' + address + '</div>' +
+									'<div class="name">' + location['name'] + '</div>' +
+									'<div class="address">' + location['address'] + '</div>' +
 								'</div>';
 
 					google.maps.event.addListener(marker, 'click', function() {
@@ -207,27 +207,12 @@
 					});
 
 					// register click event to open layer from external
-					google.maps.event.addDomListener($('#storeLocatorMarker_' + uid).get(0), 'click', function() {
+					google.maps.event.addDomListener($('#storeLocatorMarker_' + location['uid']).get(0), 'click', function() {
 						self.infoWindow.setContent(html);
 						self.infoWindow.open(self.map, marker);
 					});
 
 					self.markers.push(marker);
-				},
-
-				/**
-				 * @param str
-				 * @return {*}
-				 * @private
-				 */
-				_parseXml: function(str) {
-					if (window.ActiveXObject) {
-						var doc = new ActiveXObject('Microsoft.XMLDOM');
-						doc.loadXML(str);
-						return doc;
-					} else if (window.DOMParser) {
-						return (new DOMParser).parseFromString(str, 'text/xml');
-					}
 				},
 
 				/**

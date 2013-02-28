@@ -78,11 +78,6 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 */
 	public function getStoresAction($latitude, $longitude, $radius = 50) {
 
-		// Start XML file, create parent node
-		$dom = new \DOMDocument("1.0");
-		$node = $dom->createElement("markers");
-		$parnode = $dom->appendChild($node);
-
 
 		//TODO exlude in repo
 
@@ -98,26 +93,28 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			die("Invalid query: " . mysql_error());
 		}
 
-		#header("Content-type: text/xml");
-
 		// Iterate through the rows, adding XML nodes for each
+		$locations = array();
+		$sidebarItems = array();
 		while ($row = @mysql_fetch_assoc($result)){
-			$node = $dom->createElement("marker");
-			$newnode = $parnode->appendChild($node);
-			$newnode->setAttribute("uid", $row['uid']);
-			$newnode->setAttribute("name", $row['name']);
-			$newnode->setAttribute("address", $row['address']);
-			$newnode->setAttribute("latitude", $row['latitude']);
-			$newnode->setAttribute("longitude", $row['longitude']);
-			$newnode->setAttribute("distance", $row['distance']);
+
+			$locations[] = $row;
+			$sidebarItems[] = '
+				<address class="address">
+					<strong>RONAL Vertrieb Schweiz</strong><br>
+					Lerchenbühl 3<br>
+					CH-4624 Härkingen<br>
+					Telefon +41 62 389 06 06<br>
+					Telefax +41 62 389 05 11
+				</address>
+				<div class="address-footer"><a href="#">verkauf@ronal.ch<br></a><a href="#">www.ronal.ch</a></div>
+				';
+
 		}
 
-		#echo $dom->saveXML();
-
-
 		$data = json_encode(array(
-			'xmlMarker' => $dom->saveXML(),
-			'test' => 'OK'
+			'sidebarItems' => $sidebarItems,
+			'locations' => $locations
 		));
 		echo $data;
 
