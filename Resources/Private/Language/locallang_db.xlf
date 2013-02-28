@@ -7,14 +7,17 @@
 			<trans-unit id="tx_storelocator_domain_model_store">
 				<source>Store</source>
 			</trans-unit>
-			<trans-unit id="tx_storelocator_domain_model_store.title">
-				<source>Title</source>
+			<trans-unit id="tx_storelocator_domain_model_store.name">
+				<source>Name</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address">
 				<source>Address</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.city">
 				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.state">
+				<source>State</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.zipcode">
 				<source>Zipcode</source>
@@ -39,6 +42,9 @@
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.phone">
 				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.fax">
+				<source>Fax</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.logo">
 				<source>Logo</source>

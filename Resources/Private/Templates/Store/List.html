@@ -3,179 +3,284 @@
 <f:section name="main">
 
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
 
 
-    <script type="text/javascript">
-        <![CDATA[
-        var map;
-        var markers = [];
-        var infoWindow;
-        var locationSelect;
+	<script type="text/javascript">
+		<![CDATA[
 
-        function load() {
+		(function ($) {
+			StoreLocator = {
 
-            map = new google.maps.Map(document.getElementById('map'), {
+				defaultOptions: {
+					'getStoresUri': '',
+					'markerIcon': ''
+				},
 
-                <!-- Need lat and lng from default store -->
-                center: new google.maps.LatLng(51, 6),
-                zoom: 8,
-                panControl: true,
-                zoomControl: true,
-                scaleControl: false,
-                disableDefaultUI: false,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                mapTypeControl: true,
-                //mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR}
-                mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
-            });
+				init: function(options) {
+					this._initializeOptions(options);
+					this._initializeMap();
+					this._initializeMarkers();
+					this._attachEvents();
+					this._initializeInfoWindow();
+
+					// default view
+					this.searchLocations();
+				},
+
+				/**
+				 * @private
+				 */
+				_initializeOptions: function(options) {
+					this.options = $.extend({}, this.defaultOptions, options);
+				},
+
+				/**
+				 * @private
+				 */
+				_initializeMap: function() {
+					var mapOptions = {
+						center: new google.maps.LatLng(51, 6),
+						zoom: 8,
+						panControl: true,
+						zoomControl: true,
+						scaleControl: false,
+						disableDefaultUI: false,
+						mapTypeId: google.maps.MapTypeId.ROADMAP,
+						mapTypeControl: true,
+						mapTypeControlOptions: {
+							style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+						}
+					}
+
+					this.map = new google.maps.Map($('#map').get(0), mapOptions);
+				},
+
+				/**
+				 * @private
+				 */
+				_initializeMarkers: function() {
+					this.markers = [];
+				},
+
+				/**
+				 * @private
+				 */
+				_initializeInfoWindow: function() {
+					this.infoWindow = new google.maps.InfoWindow();
+				},
+
+				/**
+				 * @private
+				 */
+				_attachEvents: function() {
+					var $body = $(document.body);
+					$body.on('click', '#searchButton', $.proxy(this, '_startSearch'));
+				},
+
+				/**
+				 * @private
+				 * @return {Boolean}
+				 */
+				_startSearch: function(e) {
+					this.searchLocations();
+					e.preventDefault();
+					return false;
+				},
+
+				/**
+				 * StoreLocator
+				 */
+				searchLocations: function() {
+					var address = $('#location').val();
+					var radius = $('#location_radius').val();
+
+					var self = this;
+					if (address != '') {
+						var geocoder = new google.maps.Geocoder();
+						geocoder.geocode({address: address}, function(results, status) {
+							if (status == google.maps.GeocoderStatus.OK) {
+								var center = results[0].geometry.location;
+								self._initializeLocations(center.lat(), center.lng(), radius);
+							} else {
+								alert(address + ' not found');
+							}
+						});
+					} else {
+						// TODO default view
+						console.log('TODO, default view');
+						//self._initializeLocations('', '', radius);
+					}
+				},
+
+				/**
+				 * @private
+				 */
+				_initializeLocations: function(lat, lng, radius) {
+					this._clearAllLocations();
+
+					var self = this;
+					var getStoresUri = this.options.getStoresUri;
+
+					getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
+					getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
+					getStoresUri = getStoresUri.replace('_RADIUS_', radius);
+
+					$.ajax({
+						type: 'GET',
+						url: getStoresUri,
+						dataType: 'json',
+						success: function(data) {
+
+							var xml = self._parseXml(data.xmlMarker);
+							var markerNodes = xml.documentElement.getElementsByTagName('marker');
+							var bounds = new google.maps.LatLngBounds();
+							var sidebar = $('#sidebar').get(0);
+
+							sidebar.innerHTML = '';
+
+							for (var i = 0; i < markerNodes.length; i++) {
+								var uid = markerNodes[i].getAttribute('uid');
+								var name = markerNodes[i].getAttribute('name');
+								var address = markerNodes[i].getAttribute('address');
+								var distance = parseFloat(markerNodes[i].getAttribute('distance'));
+								var latlng = new google.maps.LatLng(parseFloat(markerNodes[i].getAttribute('latitude')), parseFloat(markerNodes[i].getAttribute('longitude')));
+
+								var sidebarEntry = self._createSidebarItem(uid, i, markerNodes[i]);
+								sidebar.appendChild(sidebarEntry);
+
+								self._createLocationMarker(uid, latlng, name, address);
+								bounds.extend(latlng);
+							}
+
+							self.map.fitBounds(bounds);
+						}
+					});
+				},
+
+				/**
+				 * @param uid
+				 * @param markerNum
+				 * @param node
+				 * @return {*}
+				 * @private
+				 */
+				_createSidebarItem: function(uid, markerNum, node) {
+					var self = this;
+					var list = document.createElement('li');
+					list.innerHTML = '<a href="#" id="storeLocatorMarker_' + uid + '">' + node.getAttribute('name') + '</a>';
+					list.style.cursor = 'pointer';
+
+					return list;
+				},
+
+				/**
+				 * @param uniqueName
+				 * @param latlng
+				 * @param name
+				 * @param address
+				 * @private
+				 */
+				_createLocationMarker: function(uid, latlng, name, address) {
+					var self = this;
+
+					if (self.options.markerIcon != '') {
+						var icon = self.options.markerIcon;
+					}
+
+					var marker = new google.maps.Marker({
+						map: self.map,
+						position: latlng,
+						//icon: icon,
+						animation: google.maps.Animation.DROP
+					});
+
+					var html = '<div style="color:#000;" class="locationContainer">' +
+									'<div class="name">' + name + '</div>' +
+									'<div class="address">' + address + '</div>' +
+								'</div>';
+
+					google.maps.event.addListener(marker, 'click', function() {
+						self.infoWindow.setContent(html);
+						self.infoWindow.open(self.map, marker);
+					});
+
+					// register click event to open layer from external
+					google.maps.event.addDomListener($('#storeLocatorMarker_' + uid).get(0), 'click', function() {
+						self.infoWindow.setContent(html);
+						self.infoWindow.open(self.map, marker);
+					});
+
+					self.markers.push(marker);
+				},
+
+				/**
+				 * @param str
+				 * @return {*}
+				 * @private
+				 */
+				_parseXml: function(str) {
+					if (window.ActiveXObject) {
+						var doc = new ActiveXObject('Microsoft.XMLDOM');
+						doc.loadXML(str);
+						return doc;
+					} else if (window.DOMParser) {
+						return (new DOMParser).parseFromString(str, 'text/xml');
+					}
+				},
+
+				/**
+				 * @private
+				 */
+				_clearAllLocations: function() {
+					this.infoWindow.close();
+					for (var i = 0; i < this.markers.length; i++) {
+						this.markers[i].setMap(null);
+					}
+					this.markers.length = 0;
+				}
+			}
 
 
 
-            infoWindow = new google.maps.InfoWindow();
+			$(document).ready(function() {
+				StoreLocator.init({
+					getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[",
+					markerIcon: "]]>{settings.marker.icon}<![CDATA[",
+				});
+			});
 
-            locationSelect = document.getElementById("locationSelect");
-            locationSelect.onchange = function() {
-                var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
-                if (markerNum != "none"){
-                    google.maps.event.trigger(markers[markerNum], 'click');
-                }
-            };
-        }
+		})(jQuery);
 
-        function searchLocations() {
-            var address = document.getElementById("addressInput").value;
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({address: address}, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    searchLocationsNear(results[0].geometry.location);
-                } else {
-                    alert(address + ' not found');
-                }
-            });
-        }
-
-        function clearLocations() {
-            infoWindow.close();
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(null);
-            }
-            markers.length = 0;
-
-            locationSelect.innerHTML = "";
-            var option = document.createElement("option");
-            option.value = "none";
-            option.innerHTML = "See all results:";
-            locationSelect.appendChild(option);
-        }
-
-        function searchLocationsNear(center) {
-            clearLocations();
-
-            var radius = document.getElementById('radiusSelect').value;
-            var searchUrl ="]]>{f:uri.action(action:'getStores', noCache:1, additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[";
-
-            searchUrl = searchUrl.replace('_LATITUDE_', center.lat());
-            searchUrl = searchUrl.replace('_LONGITUD_', center.lng());
-            searchUrl = searchUrl.replace('_RADIUS_', radius);
-
-            downloadUrl(searchUrl, function(data) {
-                var xml = parseXml(data);
-                var markerNodes = xml.documentElement.getElementsByTagName("marker");
-                var bounds = new google.maps.LatLngBounds();
-                for (var i = 0; i < markerNodes.length; i++) {
-                    var name = markerNodes[i].getAttribute("title");
-                    var address = markerNodes[i].getAttribute("address");
-                    var distance = parseFloat(markerNodes[i].getAttribute("distance"));
-                    var latlng = new google.maps.LatLng(
-                            parseFloat(markerNodes[i].getAttribute("latitude")),
-                            parseFloat(markerNodes[i].getAttribute("longitude")));
-
-                    createOption(name, distance, i);
-                    createMarker(latlng, name, address);
-                    bounds.extend(latlng);
-                }
-                map.fitBounds(bounds);
-                locationSelect.style.visibility = "visible";
-                locationSelect.onchange = function() {
-                    var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
-                    google.maps.event.trigger(markers[markerNum], 'click');
-                };
-            });
-        }
-
-        function createMarker(latlng, name, address) {
-            var html = "<b>" + name + "</b> <br/>" + address;
-            var marker = new google.maps.Marker({
-                map: map,
-                position: latlng
-            });
-            google.maps.event.addListener(marker, 'click', function() {
-                infoWindow.setContent(html);
-                infoWindow.open(map, marker);
-            });
-            markers.push(marker);
-        }
-
-        function createOption(name, distance, num) {
-            var option = document.createElement("option");
-            option.value = num;
-            option.innerHTML = name + "(" + distance.toFixed(1) + ")";
-            locationSelect.appendChild(option);
-        }
-
-        function downloadUrl(url, callback) {
-            var request = window.ActiveXObject ?
-                    new ActiveXObject('Microsoft.XMLHTTP') :
-                    new XMLHttpRequest;
-
-            request.onreadystatechange = function() {
-                if (request.readyState == 4) {
-                    request.onreadystatechange = doNothing;
-                    callback(request.responseText, request.status);
-                }
-            };
-
-            request.open('GET', url, true);
-            request.send(null);
-        }
-
-        function parseXml(str) {
-            if (window.ActiveXObject) {
-                var doc = new ActiveXObject('Microsoft.XMLDOM');
-                doc.loadXML(str);
-                return doc;
-            } else if (window.DOMParser) {
-                return (new DOMParser).parseFromString(str, 'text/xml');
-            }
-        }
-
-        function doNothing() {}
+		//]]>
+	</script>
 
 
-
-
-        $(document).ready(function() {
-            load();
-        });
-
-        //]]>
-    </script>
-
-
-    <div>
-        <input type="text" id="addressInput" size="10"/>
-        <select id="radiusSelect">
-            <option value="25" selected>25mi</option>
-            <option value="100">100mi</option>
-            <option value="200">200mi</option>
-        </select>
-
-        <input type="button" onclick="searchLocations()" value="Search"/>
-    </div>
-    <div><select id="locationSelect" style="width:100%;visibility:hidden"></select></div>
-    <div id="map" style="background-color:#EEE; width: 800px; height: 300px"></div>
-
+	<div class="content-centered">
+		<h1 class="h-special">Händler -<span class="text-location">Schweiz</span></h1>
+	</div>
+	<div class="content-line skin-box-config">
+		<div class="content-centered">
+			<div class="clearfix">
+				<form class="unit form-distributor-search">
+					<label for="location">Ort/PLZ</label>
+					<input type="text" id="location" class="input-text">
+					<label for="location_radius">Umkreis</label>
+					<select id="location_radius" class="input-select">
+						<option value="10">10</option>
+						<option value="30">30</option>
+						<option value="50">50</option>
+						<option value="500">500</option>
+					</select><span>km</span>
+					<button type="submit" id="searchButton" class="button btn-skin-submit">Suchen</button>
+				</form><a data-text-open="Karte öffnen" class="inv-unit button ext-btn-toggle js-toggle-map"><span href="#" class="ctx-btn-icon">Karte schließen</span></a>
+			</div>
+		</div>
+	</div>
+	<div class="google-map" id="map"></div>
+	<div class="content-centered">
+		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
+	</div>
 
 </f:section>

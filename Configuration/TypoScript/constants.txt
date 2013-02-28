@@ -11,4 +11,12 @@ plugin.tx_storelocator {
 		# cat=plugin.tx_storelocator//a; type=string; label=Default storage PID
 		storagePid =
 	}
+
+	settings {
+
+		marker {
+			icon =
+		}
+
+	}
 }

@@ -16,7 +16,7 @@ if (!defined('TYPO3_MODE')) {
 $TCA['tx_storelocator_domain_model_store'] = array(
 	'ctrl' => array(
 		'title'	=> 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store',
-		'label' => 'title',
+		'label' => 'name',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
@@ -34,7 +34,7 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'title,address,city,zipcode,country,latitude,longitude,url,description,email,phone,logo,',
+		'searchFields' => 'name,address,city,state,zipcode,country,latitude,longitude,url,description,email,phone,fax,logo,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Store.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_storelocator_domain_model_store.gif'
 	),

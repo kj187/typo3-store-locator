@@ -35,12 +35,12 @@ namespace Aijko\StoreLocator\Domain\Model;
 class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * Title
+	 * name
 	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
-	protected $title;
+	protected $name;
 
 	/**
 	 * Address
@@ -57,6 +57,13 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @validate NotEmpty
 	 */
 	protected $city;
+
+	/**
+	 * state
+	 *
+	 * @var \string
+	 */
+	protected $state;
 
 	/**
 	 * Zipcode
@@ -119,6 +126,13 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $phone;
 
 	/**
+	 * Fax
+	 *
+	 * @var \string
+	 */
+	protected $fax;
+
+	/**
 	 * Logo
 	 *
 	 * @var \string
@@ -126,22 +140,22 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $logo;
 
 	/**
-	 * Returns the title
+	 * Returns the name
 	 *
-	 * @return \string $title
+	 * @return \string $name
 	 */
-	public function getTitle() {
-		return $this->title;
+	public function getName() {
+		return $this->name;
 	}
 
 	/**
-	 * Sets the title
+	 * Sets the name
 	 *
-	 * @param \string $title
+	 * @param \string $name
 	 * @return void
 	 */
-	public function setTitle($title) {
-		$this->title = $title;
+	public function setName($name) {
+		$this->name = $name;
 	}
 
 	/**
@@ -180,6 +194,25 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setCity($city) {
 		$this->city = $city;
+	}
+
+	/**
+	 * Returns the state
+	 *
+	 * @return \string $state
+	 */
+	public function getState() {
+		return $this->state;
+	}
+
+	/**
+	 * Sets the state
+	 *
+	 * @param \string $state
+	 * @return void
+	 */
+	public function setState($state) {
+		$this->state = $state;
 	}
 
 	/**
@@ -332,6 +365,25 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setPhone($phone) {
 		$this->phone = $phone;
+	}
+
+	/**
+	 * Returns the fax
+	 *
+	 * @return \string $fax
+	 */
+	public function getFax() {
+		return $this->fax;
+	}
+
+	/**
+	 * Sets the fax
+	 *
+	 * @param \string $fax
+	 * @return void
+	 */
+	public function setFax($fax) {
+		$this->fax = $fax;
 	}
 
 	/**

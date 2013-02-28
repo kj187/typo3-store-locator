@@ -11,4 +11,12 @@ plugin.tx_storelocator {
 		# uncomment the following line to enable the new Property Mapper.
 		# rewrittenPropertyMapper = 1
 	}
+
+	settings {
+
+		marker {
+			icon = {$plugin.tx_storelocator.settings.marker.icon}
+		}
+
+	}
 }

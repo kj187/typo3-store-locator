@@ -4,14 +4,17 @@
 		<header/>
 		<body>
 
-			<trans-unit id="title.description">
-				<source>Title</source>
+			<trans-unit id="name.description">
+				<source>Name</source>
 			</trans-unit>
 			<trans-unit id="address.description">
 				<source>Address</source>
 			</trans-unit>
 			<trans-unit id="city.description">
 				<source>City</source>
+			</trans-unit>
+			<trans-unit id="state.description">
+				<source>State</source>
 			</trans-unit>
 			<trans-unit id="zipcode.description">
 				<source>Zipcode</source>
@@ -36,6 +39,9 @@
 			</trans-unit>
 			<trans-unit id="phone.description">
 				<source>Telephone</source>
+			</trans-unit>
+			<trans-unit id="fax.description">
+				<source>Fax</source>
 			</trans-unit>
 			<trans-unit id="logo.description">
 				<source>Logo</source>

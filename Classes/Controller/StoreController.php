@@ -87,7 +87,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		//TODO exlude in repo
 
 		// Search the rows in the markers table
-		$query = sprintf("SELECT address, title, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
+		$query = sprintf("SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
 			mysql_real_escape_string($latitude),
 			mysql_real_escape_string($longitude),
 			mysql_real_escape_string($latitude),
@@ -98,20 +98,29 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			die("Invalid query: " . mysql_error());
 		}
 
-		header("Content-type: text/xml");
+		#header("Content-type: text/xml");
 
 		// Iterate through the rows, adding XML nodes for each
 		while ($row = @mysql_fetch_assoc($result)){
 			$node = $dom->createElement("marker");
 			$newnode = $parnode->appendChild($node);
-			$newnode->setAttribute("title", $row['title']);
+			$newnode->setAttribute("uid", $row['uid']);
+			$newnode->setAttribute("name", $row['name']);
 			$newnode->setAttribute("address", $row['address']);
 			$newnode->setAttribute("latitude", $row['latitude']);
 			$newnode->setAttribute("longitude", $row['longitude']);
 			$newnode->setAttribute("distance", $row['distance']);
 		}
 
-		echo $dom->saveXML();
+		#echo $dom->saveXML();
+
+
+		$data = json_encode(array(
+			'xmlMarker' => $dom->saveXML(),
+			'test' => 'OK'
+		));
+		echo $data;
+
 		die();
 
 		// TODO als eID/typeNum auslagern ohne layout schnickschnack
