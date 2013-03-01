@@ -34,7 +34,7 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'name,address,city,state,zipcode,country,latitude,longitude,url,description,email,phone,fax,logo,',
+		'searchFields' => 'name,address,city,street,state,zipcode,country,latitude,longitude,url,description,email,phone,fax,logo,ismainstore',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Store.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_storelocator_domain_model_store.gif'
 	),

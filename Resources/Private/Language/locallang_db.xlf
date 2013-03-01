@@ -10,11 +10,17 @@
 			<trans-unit id="tx_storelocator_domain_model_store.name">
 				<source>Name</source>
 			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.ismainstore">
+				<source>Is mainstore</source>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address">
 				<source>Address</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.city">
 				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.street">
+				<source>Street</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.state">
 				<source>State</source>

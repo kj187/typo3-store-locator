@@ -7,11 +7,17 @@
 			<trans-unit id="name.description">
 				<source>Name</source>
 			</trans-unit>
+			<trans-unit id="ismainstore.description">
+				<source>Is mainstore</source>
+			</trans-unit>
 			<trans-unit id="address.description">
 				<source>Address</source>
 			</trans-unit>
 			<trans-unit id="city.description">
 				<source>City</source>
+			</trans-unit>
+			<trans-unit id="street.description">
+				<source>Street</source>
 			</trans-unit>
 			<trans-unit id="state.description">
 				<source>State</source>

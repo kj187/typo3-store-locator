@@ -59,6 +59,22 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $city;
 
 	/**
+	 * ismainstore
+	 *
+	 * @var \string
+	 * @validate NotEmpty
+	 */
+	protected $ismainstore;
+
+	/**
+	 * Street
+	 *
+	 * @var \string
+	 * @validate NotEmpty
+	 */
+	protected $street;
+
+	/**
 	 * state
 	 *
 	 * @var \string
@@ -194,6 +210,44 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setCity($city) {
 		$this->city = $city;
+	}
+
+	/**
+	 * Returns true if it is a mainstore
+	 *
+	 * @return \boolean $ismainstore
+	 */
+	public function getIsmainstore() {
+		return $this->ismainstore;
+	}
+
+	/**
+	 * Sets the ismainstore
+	 *
+	 * @param \boolean $ismainstore
+	 * @return void
+	 */
+	public function setIsmainstore($ismainstore) {
+		$this->ismainstore = $ismainstore;
+	}
+
+	/**
+	 * Returns the street
+	 *
+	 * @return \string $street
+	 */
+	public function getStreet() {
+		return $this->street;
+	}
+
+	/**
+	 * Sets the street
+	 *
+	 * @param \string $street
+	 * @return void
+	 */
+	public function setStreet($street) {
+		$this->street = $street;
 	}
 
 	/**

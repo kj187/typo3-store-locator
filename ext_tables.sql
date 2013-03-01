@@ -11,6 +11,7 @@ CREATE TABLE tx_storelocator_domain_model_store (
 	latitude varchar(255) DEFAULT '' NOT NULL,
 	longitude varchar(255) DEFAULT '' NOT NULL,
 
+	ismainstore tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	street varchar(255) DEFAULT '' NOT NULL,
 	city varchar(255) DEFAULT '' NOT NULL,
 	state varchar(255) DEFAULT '' NOT NULL,

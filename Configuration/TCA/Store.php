@@ -6,10 +6,10 @@ if (!defined ('TYPO3_MODE')) {
 $TCA['tx_storelocator_domain_model_store'] = array(
 	'ctrl' => $TCA['tx_storelocator_domain_model_store']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, address, city, state, zipcode, country, latitude, longitude, url, description, email, phone, fax, logo',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, ismainstore, address, street, city, state, zipcode, country, latitude, longitude, url, description, email, phone, fax, logo',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, address, latitude, longitude, city, state, zipcode, country, url, email, phone, fax, logo, description,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, ismainstore, address, latitude, longitude, street, city, state, zipcode, country, url, email, phone, fax, logo, description,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -102,6 +102,13 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 				'eval' => 'trim,required'
 			),
 		),
+		'ismainstore' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.ismainstore',
+			'config' => array(
+				'type' => 'check',
+			),
+		),
 		'address' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.address',
@@ -130,6 +137,15 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			),
 		),
 
+		'street' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.street',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,
+				'eval' => 'trim'
+			),
+		),
 		'city' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.city',
