@@ -48,22 +48,17 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return void
 	 */
 	public function listAction() {
-
-		#echo $this->test('51.332268', '6.830757');die();
-		#echo $this->test('30', '12', '5000');die();
-
 		$stores = $this->storeRepository->findAll();
 		$this->view->assign('stores', $stores);
 	}
 
 	/**
-	 * action show
-	 *
-	 * @param \Aijko\StoreLocator\Domain\Model\Store $store
+	 * Get all main stores (for default view)
 	 * @return void
 	 */
-	public function showAction(\Aijko\StoreLocator\Domain\Model\Store $store) {
-		$this->view->assign('store', $store);
+	public function getMainStoresAction() {
+		$stores = $this->storeRepository->findAllMainStores();
+		$this->outputStoreData($stores);
 	}
 
 	/**
@@ -77,51 +72,71 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return xml
 	 */
 	public function getStoresAction($latitude, $longitude, $radius = 50) {
+		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius);
+		$this->outputStoreData($stores);
+	}
 
-
-		//TODO exlude in repo
-
-		// Search the rows in the markers table
-		$query = sprintf("SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
-			mysql_real_escape_string($latitude),
-			mysql_real_escape_string($longitude),
-			mysql_real_escape_string($latitude),
-			mysql_real_escape_string($radius));
-		$result = $GLOBALS['TYPO3_DB']->sql_query($query);
-
-		if (!$result) {
-			die("Invalid query: " . mysql_error());
-		}
-
-		// Iterate through the rows, adding XML nodes for each
+	/**
+	 * TODO als eID/typeNum auslagern
+	 * @param $stores
+	 */
+	protected function outputStoreData($stores) {
 		$locations = array();
 		$sidebarItems = array();
-		while ($row = @mysql_fetch_assoc($result)){
+		$markerContent = array();
 
-			$locations[] = $row;
-			$sidebarItems[] = '
-				<address class="address">
-					<strong>RONAL Vertrieb Schweiz</strong><br>
-					Lerchenbühl 3<br>
-					CH-4624 Härkingen<br>
-					Telefon +41 62 389 06 06<br>
-					Telefax +41 62 389 05 11
-				</address>
-				<div class="address-footer"><a href="#">verkauf@ronal.ch<br></a><a href="#">www.ronal.ch</a></div>
-				';
+		if (NULL !== $stores) {
+			$stores = $stores->toArray();
 
+			foreach ($stores as $store) {
+				$locations[] = $store->toArray();
+				$sidebarItems[] = $this->getSidebarItems($store->toArray());
+				$markerContent[] = $this->getMarkerContent($store->toArray());
+			}
+
+			$data = json_encode(array(
+				'sidebarItems' => $sidebarItems,
+				'markerContent' => $markerContent,
+				'locations' => $locations
+			));
+			echo $data;
 		}
 
-		$data = json_encode(array(
-			'sidebarItems' => $sidebarItems,
-			'locations' => $locations
-		));
-		echo $data;
-
 		die();
-
-		// TODO als eID/typeNum auslagern ohne layout schnickschnack
 	}
+
+	/**
+	 * @param array $store
+	 * @return string
+	 */
+	protected function getSidebarItems(array $store) {
+		return $this->getStandaloneView(array('store' => $store), 'Store/Ajax/Item.html')->render();
+	}
+
+	/**
+	 * @param array $store
+	 * @return string
+	 */
+	protected function getMarkerContent(array $store) {
+		return $this->getStandaloneView(array('store' => $store), 'Store/Ajax/MarkerContent.html')->render();
+	}
+
+	/**
+	 * @param array $store
+	 * @return string
+	 */
+	protected function getStandaloneView(array $variables, $template) {
+		$viewObject = $this->objectManager->create('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+		$viewObject->setFormat('html');
+		$extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+		$templateRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($extbaseFrameworkConfiguration['view']['templateRootPath']);
+		$templatePathAndFilename = $templateRootPath . $template;
+		$viewObject->setTemplatePathAndFilename($templatePathAndFilename);
+		$viewObject->assignMultiple($variables);
+		return $viewObject;
+	}
+
+
 
 }
 ?>

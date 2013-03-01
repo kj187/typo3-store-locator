@@ -459,5 +459,30 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$this->logo = $logo;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function toArray() {
+		return array(
+			'uid' => $this->getUid(),
+			'address' => $this->getAddress(),
+			'city' => $this->getCity(),
+			'country' => $this->getCountry(),
+			'description' => $this->getDescription(),
+			'email' => $this->getEmail(),
+			'fax' => $this->getFax(),
+			'ismainstore' => $this->getIsmainstore(),
+			'latitude' => $this->getLatitude(),
+			'logo' => $this->getLogo(),
+			'longitude' => $this->getLongitude(),
+			'name' => $this->getName(),
+			'phone' => $this->getPhone(),
+			'state' => $this->getState(),
+			'street' => $this->getStreet(),
+			'url' => $this->getUrl(),
+			'zipcode' => $this->getZipcode()
+		);
+	}
+
 }
 ?>

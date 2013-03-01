@@ -7,12 +7,12 @@ if (!defined('TYPO3_MODE')) {
 	'Aijko.' . $_EXTKEY,
 	'Storelocator',
 	array(
-		'Store' => 'list, getStores, show',
+		'Store' => 'list, getStores, getMainStores',
 
 	),
 	// non-cacheable actions
 	array(
-		'Store' => 'getStores',
+		'Store' => 'getStores, getMainStores',
 
 	)
 );

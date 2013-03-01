@@ -26,13 +26,58 @@ namespace Aijko\StoreLocator\Domain\Repository;
  ***************************************************************/
 
 /**
- *
- *
  * @package store_locator
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
 class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
+	/**
+	 * Find all main stores (for default view)
+	 *
+	 * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 */
+	public function findAllMainStores() {
+		$query = $this->createQuery();
+		return $query->matching($query->equals('ismainstore', TRUE))->execute();
+	}
+
+	/**
+	 * @param $latitude
+	 * @param $longitude
+	 * @param int $radius
+	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 */
+	public function findStores($latitude, $longitude, $radius = 50) {
+		$query = $this->createQuery();
+		$settings = $query->getQuerySettings();
+		$storagePageIds = $settings->getStoragePageIds();
+
+		// Using the query statement is not an option. Unfortunately.
+		$result = $GLOBALS['TYPO3_DB']->sql_query(
+			sprintf(
+				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE deleted = 0 AND pid = %s HAVING distance < '%s'  ORDER BY distance LIMIT 0 , 20",
+				mysql_real_escape_string($latitude),
+				mysql_real_escape_string($longitude),
+				mysql_real_escape_string($latitude),
+				$storagePageIds[0],
+				mysql_real_escape_string($radius)
+			)
+		);
+
+		$uids = array();
+		while ($store = mysql_fetch_assoc($result)) {
+			$uids[] = $store['uid'];
+		}
+
+		if (count($uids) > '0') {
+			$query = $this->createQuery();
+			return $query->matching($query->in('uid', $uids))->execute();
+		}
+
+		return NULL;
+	}
+
 }
+
 ?>

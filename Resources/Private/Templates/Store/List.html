@@ -93,6 +93,7 @@
 				 * StoreLocator
 				 */
 				searchLocations: function() {
+					this._clearAllLocations();
 					var address = $('#location').val();
 					var radius = $('#location_radius').val();
 
@@ -102,22 +103,39 @@
 						geocoder.geocode({address: address}, function(results, status) {
 							if (status == google.maps.GeocoderStatus.OK) {
 								var center = results[0].geometry.location;
-								self._initializeLocations(center.lat(), center.lng(), radius);
+								self._findLocations(center.lat(), center.lng(), radius);
 							} else {
 								alert(address + ' not found');
 							}
 						});
 					} else {
-						// TODO default view
-						console.log('TODO, default view');
-						//self._initializeLocations('', '', radius);
+						self._findMainStoreLocations();
 					}
 				},
 
 				/**
 				 * @private
 				 */
-				_initializeLocations: function(lat, lng, radius) {
+				_findMainStoreLocations: function() {
+					this._clearAllLocations();
+
+					var self = this;
+					var getDefaultStoresUri = this.options.getDefaultStoresUri;
+
+					$.ajax({
+						type: 'GET',
+						url: getDefaultStoresUri,
+						dataType: 'json',
+						success: function(data) {
+							self._initializeLocations(data);
+						}
+					});
+				},
+
+				/**
+				 * @private
+				 */
+				_findLocations: function(lat, lng, radius) {
 					this._clearAllLocations();
 
 					var self = this;
@@ -132,32 +150,41 @@
 						url: getStoresUri,
 						dataType: 'json',
 						success: function(data) {
-
-							var locations = data.locations;
-							var sidebarItems = data.sidebarItems;
-							var bounds = new google.maps.LatLngBounds();
-							var sidebar = $('#sidebar').get(0);
-
-							sidebar.innerHTML = '';
-							if (locations.length > 0) {
-								for (var i = 0; i < locations.length; i++) {
-
-									//var distance = parseFloat(locations[i]['distance']);
-									var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
-
-									var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);
-									sidebar.appendChild(sidebarEntry);
-
-									self._createLocationMarker(locations[i], latlng);
-									bounds.extend(latlng);
-								}
-
-								self.map.fitBounds(bounds);
-							} else {
-								sidebar.innerHTML = 'No dealers found';
-							}
+							self._initializeLocations(data);
 						}
 					});
+				},
+
+				/**
+				 * @param data
+				 * @private
+				 */
+				_initializeLocations: function(data) {
+					var self = this;
+					var locations = data.locations;
+					var sidebarItems = data.sidebarItems;
+					var markerContent = data.markerContent;
+					var bounds = new google.maps.LatLngBounds();
+					var sidebar = $('#sidebar').get(0);
+
+					sidebar.innerHTML = '';
+					if (locations.length > 0) {
+						for (var i = 0; i < locations.length; i++) {
+
+							//var distance = parseFloat(locations[i]['distance']);
+							var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
+
+							var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);
+							sidebar.appendChild(sidebarEntry);
+
+							self._createLocationMarker(markerContent[i], locations[i], latlng);
+							bounds.extend(latlng);
+						}
+
+						self.map.fitBounds(bounds);
+					} else {
+						sidebar.innerHTML = 'No dealers found';
+					}
 				},
 
 				/**
@@ -182,7 +209,7 @@
 				 * @param address
 				 * @private
 				 */
-				_createLocationMarker: function(location, latlng) {
+				_createLocationMarker: function(markerContent, location, latlng) {
 					var self = this;
 
 					if (self.options.markerIcon != '') {
@@ -196,10 +223,7 @@
 						animation: google.maps.Animation.DROP
 					});
 
-					var html = '<div style="color:#000;" class="locationContainer">' +
-									'<div class="name">' + location['name'] + '</div>' +
-									'<div class="address">' + location['address'] + '</div>' +
-								'</div>';
+					var html = markerContent;
 
 					google.maps.event.addListener(marker, 'click', function() {
 						self.infoWindow.setContent(html);
@@ -219,6 +243,7 @@
 				 * @private
 				 */
 				_clearAllLocations: function() {
+					$('#sidebar').html('');
 					this.infoWindow.close();
 					for (var i = 0; i < this.markers.length; i++) {
 						this.markers[i].setMap(null);
@@ -232,6 +257,7 @@
 			$(document).ready(function() {
 				StoreLocator.init({
 					getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[",
+					getDefaultStoresUri: "]]>{f:uri.action(action:'getMainStores', noCache:1)}<![CDATA[",
 					markerIcon: "]]>{settings.marker.icon}<![CDATA[",
 				});
 			});
