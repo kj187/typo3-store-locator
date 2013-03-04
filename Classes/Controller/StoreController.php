@@ -85,11 +85,11 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 	/**
 	 * Get all main stores (for default view)
-	 * @return void
+	 * @return string
 	 */
 	public function getMainStoresAction() {
 		$stores = $this->storeRepository->findAllMainStores();
-		$this->outputStoreData($stores);
+		return $this->outputStoreData($stores);
 	}
 
 	/**
@@ -100,15 +100,14 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
 	 *
-	 * @return xml
+	 * @return string
 	 */
 	public function getStoresAction($latitude, $longitude, $radius = 50) {
 		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius);
-		$this->outputStoreData($stores);
+		return $this->outputStoreData($stores);
 	}
 
 	/**
-	 * TODO als eID/typeNum auslagern
 	 * @param $stores
 	 */
 	protected function outputStoreData($stores) {
@@ -138,8 +137,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			);
 		}
 
-		echo json_encode($data);
-		die();
+		return json_encode($data);
 	}
 
 	/**

@@ -16,6 +16,10 @@ plugin.tx_storelocator {
 
 	settings {
 
+		typeNum {
+			ajax = 187
+		}
+
 		marker {
 			icon =
 		}
@@ -26,3 +30,4 @@ plugin.tx_storelocator {
 
 	}
 }
+

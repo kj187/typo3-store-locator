@@ -12,10 +12,14 @@ plugin.tx_storelocator {
 
 	settings {
 
+		typeNum {
+			ajax = {$plugin.tx_storelocator.settings.typeNum.ajax}
+		}
+
 		javascript {
 			load {
 				jQuery {
-					enable = 0
+					enable = 1
 					src = //ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 				}
 
@@ -41,6 +45,17 @@ plugin.tx_storelocator {
 			}
 		}
 
+		search {
+			radius {
+				10 = 10
+				20 = 20
+				30 = 30
+				40 = 40
+				50 = 50
+				100 = 100
+			}
+		}
+
 		marker {
 			icon = {$plugin.tx_storelocator.settings.marker.icon}
 		}
@@ -49,5 +64,21 @@ plugin.tx_storelocator {
 			useCustomInfoBox = {$plugin.tx_storelocator.settings.infoWindow.useCustomInfoBox}
 		}
 
+	}
+}
+
+storeLocatorAjax = PAGE
+storeLocatorAjax {
+	typeNum = {$plugin.tx_storelocator.settings.typeNum.ajax}
+	10 < tt_content.list.20.storelocator_storelocator
+	10 {
+		persistence.storagePid = {$plugin.tx_storelocator.persistence.storagePid}
+	}
+
+	config {
+		disableAllHeaderCode = 1
+		additionalHeaders = Content-type:application/json
+		xhtml_cleaning = 0
+		admPanel = 0
 	}
 }
