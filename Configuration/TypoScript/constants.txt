@@ -1,4 +1,5 @@
 plugin.tx_storelocator {
+
 	view {
 		# cat=plugin.tx_storelocator/file; type=string; label=Path to template root (FE)
 		templateRootPath = EXT:store_locator/Resources/Private/Templates/
@@ -7,6 +8,7 @@ plugin.tx_storelocator {
 		# cat=plugin.tx_storelocator/file; type=string; label=Path to template layouts (FE)
 		layoutRootPath = EXT:store_locator/Resources/Private/Layouts/
 	}
+
 	persistence {
 		# cat=plugin.tx_storelocator//a; type=string; label=Default storage PID
 		storagePid =
@@ -16,6 +18,10 @@ plugin.tx_storelocator {
 
 		marker {
 			icon =
+		}
+
+		infoWindow {
+			useCustomInfoBox = 1
 		}
 
 	}

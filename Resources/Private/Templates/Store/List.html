@@ -2,290 +2,23 @@
 
 <f:section name="main">
 
-
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
-	<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
-
-
-	<script type="text/javascript">
-		<![CDATA[
-
-		(function ($) {
-			StoreLocator = {
-
-				defaultOptions: {
-					'getStoresUri': '',
-					'markerIcon': ''
-				},
-
-				init: function(options) {
-					this._initializeOptions(options);
-					this._initializeMap();
-					this._initializeMarkers();
-					this._attachEvents();
-					this._initializeInfoWindow();
-
-					// default view
-					this.searchLocations();
-				},
-
-				/**
-				 * @private
-				 */
-				_initializeOptions: function(options) {
-					this.options = $.extend({}, this.defaultOptions, options);
-				},
-
-				/**
-				 * @private
-				 */
-				_initializeMap: function() {
-					var mapOptions = {
-						center: new google.maps.LatLng(51, 6),
-						zoom: 8,
-						panControl: true,
-						zoomControl: true,
-						scaleControl: false,
-						disableDefaultUI: false,
-						mapTypeId: google.maps.MapTypeId.ROADMAP,
-						mapTypeControl: true,
-						mapTypeControlOptions: {
-							style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-						}
-					}
-
-					this.map = new google.maps.Map($('#map').get(0), mapOptions);
-				},
-
-				/**
-				 * @private
-				 */
-				_initializeMarkers: function() {
-					this.markers = [];
-				},
-
-				/**
-				 * @private
-				 */
-				_initializeInfoWindow: function() {
-					this.infoWindow = new google.maps.InfoWindow();
-				},
-
-				/**
-				 * @private
-				 */
-				_attachEvents: function() {
-					var $body = $(document.body);
-					$body.on('click', '#searchButton', $.proxy(this, '_startSearch'));
-				},
-
-				/**
-				 * @private
-				 * @return {Boolean}
-				 */
-				_startSearch: function(e) {
-					this.searchLocations();
-					e.preventDefault();
-					return false;
-				},
-
-				/**
-				 * StoreLocator
-				 */
-				searchLocations: function() {
-					this._clearAllLocations();
-					var address = $('#location').val();
-					var radius = $('#location_radius').val();
-
-					var self = this;
-					if (address != '') {
-						var geocoder = new google.maps.Geocoder();
-						geocoder.geocode({address: address}, function(results, status) {
-							if (status == google.maps.GeocoderStatus.OK) {
-								var center = results[0].geometry.location;
-								self._findLocations(center.lat(), center.lng(), radius);
-							} else {
-								alert(address + ' not found');
-							}
-						});
-					} else {
-						self._findMainStoreLocations();
-					}
-				},
-
-				/**
-				 * @private
-				 */
-				_findMainStoreLocations: function() {
-					this._clearAllLocations();
-
-					var self = this;
-					var getDefaultStoresUri = this.options.getDefaultStoresUri;
-
-					$.ajax({
-						type: 'GET',
-						url: getDefaultStoresUri,
-						dataType: 'json',
-						success: function(data) {
-							self._initializeLocations(data);
-						}
-					});
-				},
-
-				/**
-				 * @private
-				 */
-				_findLocations: function(lat, lng, radius) {
-					this._clearAllLocations();
-
-					var self = this;
-					var getStoresUri = this.options.getStoresUri;
-
-					getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
-					getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
-					getStoresUri = getStoresUri.replace('_RADIUS_', radius);
-
-					$.ajax({
-						type: 'GET',
-						url: getStoresUri,
-						dataType: 'json',
-						success: function(data) {
-							self._initializeLocations(data);
-						}
-					});
-				},
-
-				/**
-				 * @param data
-				 * @private
-				 */
-				_initializeLocations: function(data) {
-					var self = this;
-					var locations = data.locations;
-					var sidebarItems = data.sidebarItems;
-					var markerContent = data.markerContent;
-					var bounds = new google.maps.LatLngBounds();
-					var sidebar = $('#sidebar').get(0);
-
-					sidebar.innerHTML = '';
-					if (locations.length > 0) {
-						for (var i = 0; i < locations.length; i++) {
-
-							//var distance = parseFloat(locations[i]['distance']);
-							var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
-
-							var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);
-							sidebar.appendChild(sidebarEntry);
-
-							self._createLocationMarker(markerContent[i], locations[i], latlng);
-							bounds.extend(latlng);
-						}
-
-						self.map.fitBounds(bounds);
-					} else {
-						sidebar.innerHTML = 'No dealers found';
-					}
-				},
-
-				/**
-				 * @param uid
-				 * @param location
-				 * @return {*}
-				 * @private
-				 */
-				_createSidebarItem: function(sidebarItem, location) {
-
-					var list = document.createElement('li');
-					list.innerHTML = sidebarItem + ' <a href="#" id="storeLocatorMarker_' + location['uid'] + '">In der Karte anzeigen</a>';
-					//list.style.cursor = 'pointer';
-
-					return list;
-				},
-
-				/**
-				 * @param uniqueName
-				 * @param latlng
-				 * @param name
-				 * @param address
-				 * @private
-				 */
-				_createLocationMarker: function(markerContent, location, latlng) {
-					var self = this;
-
-					if (self.options.markerIcon != '') {
-						var icon = self.options.markerIcon;
-					}
-
-					var marker = new google.maps.Marker({
-						map: self.map,
-						position: latlng,
-						icon: icon,
-						animation: google.maps.Animation.DROP
-					});
-
-					var html = markerContent;
-
-					google.maps.event.addListener(marker, 'click', function() {
-						self.infoWindow.setContent(html);
-						self.infoWindow.open(self.map, marker);
-					});
-
-					// register click event to open layer from external
-					google.maps.event.addDomListener($('#storeLocatorMarker_' + location['uid']).get(0), 'click', function() {
-						self.infoWindow.setContent(html);
-						self.infoWindow.open(self.map, marker);
-					});
-
-					self.markers.push(marker);
-				},
-
-				/**
-				 * @private
-				 */
-				_clearAllLocations: function() {
-					$('#sidebar').html('');
-					this.infoWindow.close();
-					for (var i = 0; i < this.markers.length; i++) {
-						this.markers[i].setMap(null);
-					}
-					this.markers.length = 0;
-				}
-			}
-
-
-
-			$(document).ready(function() {
-				StoreLocator.init({
-					getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[",
-					getDefaultStoresUri: "]]>{f:uri.action(action:'getMainStores', noCache:1)}<![CDATA[",
-					markerIcon: "]]>{settings.marker.icon}<![CDATA[",
-				});
-			});
-
-		})(jQuery);
-
-		//]]>
-	</script>
-
-
 	<div class="content-centered">
-		<h1 class="h-special">Händler -<span class="text-location">Schweiz</span></h1>
+		<h1 class="h-special"><f:translate id="list.dealer" /> -<span class="text-location">Schweiz</span></h1>
 	</div>
 	<div class="content-line skin-box-config">
 		<div class="content-centered">
 			<div class="clearfix">
 				<form class="unit form-distributor-search">
-					<label for="location">Ort/PLZ</label>
+					<label for="location"><f:translate id="list.cityZip" /></label>
 					<input type="text" id="location" class="input-text">
-					<label for="location_radius">Umkreis</label>
+					<label for="location_radius"><f:translate id="list.radius" /></label>
 					<select id="location_radius" class="input-select">
 						<option value="10">10</option>
 						<option value="30">30</option>
 						<option value="50">50</option>
-						<option value="500">500</option>
-					</select><span>km</span>
-					<button type="submit" id="searchButton" class="button btn-skin-submit">Suchen</button>
-				</form><a data-text-open="Karte öffnen" class="inv-unit button ext-btn-toggle js-toggle-map"><span href="#" class="ctx-btn-icon">Karte schließen</span></a>
+					</select><span><f:translate id="list.radius.format" /></span>
+					<button type="submit" id="searchButton" class="button btn-skin-submit"><f:translate id="list.search" /></button>
+				</form><a data-text-open="{f:translate(id:'list.map.open')}" class="inv-unit button ext-btn-toggle js-toggle-map"><span href="#" class="ctx-btn-icon"><f:translate id="list.map.close" /></span></a>
 			</div>
 		</div>
 	</div>
@@ -293,5 +26,39 @@
 	<div class="content-centered">
 		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
 	</div>
+
+	<script type="text/javascript">
+		<![CDATA[
+			StoreLocatorOptions = {
+				getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[",
+				getDefaultStoresUri: "]]>{f:uri.action(action:'getMainStores', noCache:1)}<![CDATA[",
+				markerIcon: "]]>{settings.marker.icon}<![CDATA[",
+				useCustomInfoBox: ]]>{settings.infoWindow.useCustomInfoBox}<![CDATA[,
+			};
+
+			window.onload = function () {
+				if (typeof jQuery != "undefined") {
+					(function(cash) {
+						//init
+						StoreLocator.init(StoreLocatorOptions);
+					})(window.jQuery);
+				} else {
+					var newScript = document.createElement('script');
+					var head = document.getElementsByTagName("head")[0];
+
+					newScript.type = 'text/javascript';
+					newScript.src = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
+					head.appendChild(newScript);
+
+					newScript.onload = function() {
+						(function(cash) {
+							//init
+							StoreLocator.init(StoreLocatorOptions);
+						})(window.jQuery);
+					}
+				}
+			}
+		//]]>
+	</script>
 
 </f:section>

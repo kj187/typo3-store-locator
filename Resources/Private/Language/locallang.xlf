@@ -55,6 +55,32 @@
 			<trans-unit id="tx_storelocator_domain_model_store.logo">
 				<source>Logo</source>
 			</trans-unit>
+
+
+			<trans-unit id="locations.empty">
+				<source>Es wurde kein Fachhändler gefunden.</source>
+			</trans-unit>
+			<trans-unit id="list.dealer">
+				<source>Händler</source>
+			</trans-unit>
+			<trans-unit id="list.cityZip">
+				<source>Ort/PLZ</source>
+			</trans-unit>
+			<trans-unit id="list.radius">
+				<source>Umkreis</source>
+			</trans-unit>
+			<trans-unit id="list.radius.format">
+				<source>km</source>
+			</trans-unit>
+			<trans-unit id="list.search">
+				<source>Suchen</source>
+			</trans-unit>
+			<trans-unit id="list.map.open">
+				<source>Karte öffnen</source>
+			</trans-unit>
+			<trans-unit id="list.map.close">
+				<source>Karte schließen</source>
+			</trans-unit>
 			
 		</body>
 	</file>

@@ -1,21 +1,52 @@
 plugin.tx_storelocator {
+
 	view {
 		templateRootPath = {$plugin.tx_storelocator.view.templateRootPath}
 		partialRootPath = {$plugin.tx_storelocator.view.partialRootPath}
 		layoutRootPath = {$plugin.tx_storelocator.view.layoutRootPath}
 	}
+
 	persistence {
 		storagePid = {$plugin.tx_storelocator.persistence.storagePid}
-	}
-	features {
-		# uncomment the following line to enable the new Property Mapper.
-		# rewrittenPropertyMapper = 1
 	}
 
 	settings {
 
+		javascript {
+			load {
+				jQuery {
+					enable = 0
+					src = //ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
+				}
+
+				googleMapsApi {
+					enable = 1
+					src = http://maps.googleapis.com/maps/api/js?sensor=false
+				}
+
+				vendorInfoBox {
+					enable = 1
+					src = EXT:store_locator/Resources/Public/Javascript/Vendor/Infobox.js
+				}
+
+				infoWindow {
+					enable = 1
+					src = EXT:store_locator/Resources/Public/Javascript/InfoWindow.js
+				}
+
+				script {
+					enable = 1
+					src = EXT:store_locator/Resources/Public/Javascript/Script.js
+				}
+			}
+		}
+
 		marker {
 			icon = {$plugin.tx_storelocator.settings.marker.icon}
+		}
+
+		infoWindow {
+			useCustomInfoBox = {$plugin.tx_storelocator.settings.infoWindow.useCustomInfoBox}
 		}
 
 	}

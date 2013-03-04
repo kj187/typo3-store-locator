@@ -43,6 +43,38 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	protected $storeRepository;
 
 	/**
+	 * @see parent::initialView
+	 */
+	protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
+		if (count($this->settings['javascript']['load']) > 0) {
+			foreach ($this->settings['javascript']['load'] as $key => $value) {
+				if ($value['enable']) {
+					$this->response->addAdditionalHeaderData($this->wrapJavascriptFile($value['src']));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Wrap js files inside <script> tag
+	 *
+	 * @param string $file Path to file
+	 * @return string <script.. string ready for <head> part
+	 */
+	public function wrapJavascriptFile($file) {
+		if (substr($file, 0, 4) == 'EXT:') {
+			list($extKey, $local) = explode('/', substr($file, 4), 2);
+			if (strcmp($extKey, '') && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey) && strcmp($local, '')) {
+				$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . $local;
+			}
+		}
+
+		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::resolveBackPath($file);
+		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::createVersionNumberedFilename($file);
+		return '<script src="' . htmlspecialchars($file) . '" type="text/javascript"></script>';
+	}
+
+	/**
 	 * action list
 	 *
 	 * @return void
@@ -93,14 +125,20 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				$markerContent[] = $this->getMarkerContent($store->toArray());
 			}
 
-			$data = json_encode(array(
+			$data = array(
 				'sidebarItems' => $sidebarItems,
 				'markerContent' => $markerContent,
 				'locations' => $locations
-			));
-			echo $data;
+			);
+
+		} else {
+			$data = array(
+				'locations' => array(),
+				'notification' => $this->translate('locations.empty')
+			);
 		}
 
+		echo json_encode($data);
 		die();
 	}
 
@@ -109,7 +147,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return string
 	 */
 	protected function getSidebarItems(array $store) {
-		return $this->getStandaloneView(array('store' => $store), 'Store/Ajax/Item.html')->render();
+		return $this->getStandaloneView(array('store' => $store, 'settings' => $this->settings), 'Store/Ajax/Item.html')->render();
 	}
 
 	/**
@@ -117,7 +155,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return string
 	 */
 	protected function getMarkerContent(array $store) {
-		return $this->getStandaloneView(array('store' => $store), 'Store/Ajax/MarkerContent.html')->render();
+		return $this->getStandaloneView(array('store' => $store, 'settings' => $this->settings), 'Store/Ajax/MarkerContent.html')->render();
 	}
 
 	/**
@@ -133,6 +171,14 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		$viewObject->setTemplatePathAndFilename($templatePathAndFilename);
 		$viewObject->assignMultiple($variables);
 		return $viewObject;
+	}
+
+	/**
+	 * @param $id
+	 * @return NULL|string
+	 */
+	protected function translate($id) {
+		return  \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $this->request->getControllerExtensionKey());
 	}
 
 }
