@@ -48,8 +48,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return void
 	 */
 	public function listAction() {
-		$stores = $this->storeRepository->findAll();
-		$this->view->assign('stores', $stores);
+
 	}
 
 	/**
@@ -136,7 +135,6 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		return $viewObject;
 	}
 
-
-
 }
+
 ?>
