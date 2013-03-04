@@ -33,28 +33,77 @@
 				useCustomInfoBox: ]]>{settings.infoWindow.useCustomInfoBox}<![CDATA[,
 			};
 
-			window.onload = function () {
-				if (typeof jQuery != "undefined") {
-					(function(cash) {
-						//init
-						StoreLocator.init(StoreLocatorOptions);
-					})(window.jQuery);
-				} else {
-					var newScript = document.createElement('script');
-					var head = document.getElementsByTagName("head")[0];
 
-					newScript.type = 'text/javascript';
-					newScript.src = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
-					head.appendChild(newScript);
+			<!-- Load jQuery Fallback -->
+			var documentIsReady = false;
 
-					newScript.onload = function() {
-						(function(cash) {
-							//init
-							StoreLocator.init(StoreLocatorOptions);
-						})(window.jQuery);
+			//attach dom ready events
+			if ( document.readyState === "complete" ) {
+				// Handle it asynchronously to allow scripts the opportunity to delay ready
+				setTimeout( onDomIsLoaded );
+
+				// Standards-based browsers support DOMContentLoaded
+			} else if ( document.addEventListener ) {
+				// Use the handy event callback
+				document.addEventListener( "DOMContentLoaded", onDomIsLoaded, false );
+
+				// A fallback to window.onload, that will always work
+				window.addEventListener( "load", onDomIsLoaded, false );
+
+				// If IE event model is used
+			} else {
+				// Ensure firing before onload, maybe late but safe also for iframes
+				document.attachEvent( "onreadystatechange", onDomIsLoaded );
+
+				// A fallback to window.onload, that will always work
+				window.attachEvent( "onload", onDomIsLoaded );
+			}
+
+
+			// on dom ready
+			function onDomIsLoaded(event) {
+				if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
+					detachLoadEvents();
+					if (typeof jQuery != "undefined") {
+						onScriptLoaded();
+					}
+					else {
+						detachLoadEvents();
+						var newScript = document.createElement('script');
+						var head = document.getElementsByTagName("head")[0];
+						newScript.type = 'text/javascript';
+						newScript.src = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
+						head.appendChild(newScript);
+						newScript.onreadystatechange = newScript.onload = function() {
+							var state = newScript.readyState;
+							if (!documentIsReady && (!state || /loaded|complete/.test(state))) {
+								documentIsReady = true;
+								onScriptLoaded();
+							}
+						};
 					}
 				}
 			}
+
+			//init when my script is loaded
+			function onScriptLoaded() {
+				(function($) {
+					// INIT here
+					StoreLocator.init(StoreLocatorOptions);
+				})(window.jQuery);
+			}
+
+			// Clean-up method for dom ready events
+			function detachLoadEvents() {
+				if ( document.addEventListener ) {
+					document.removeEventListener( "DOMContentLoaded", onDomIsLoaded, false );
+					window.removeEventListener( "load", onDomIsLoaded, false );
+				} else {
+					document.detachEvent( "onreadystatechange", onDomIsLoaded );
+					window.detachEvent( "onload", onDomIsLoaded );
+				}
+			}
+
 		//]]>
 	</script>
 
