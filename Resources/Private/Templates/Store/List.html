@@ -2,180 +2,109 @@
 
 <f:section name="main">
 
+	<div class="content-centered">
+		<h1 class="h-special"><f:translate id="list.dealer" /></h1>
+	</div>
+	<div class="content-line skin-box-config">
+		<div class="content-centered">
+			<div class="clearfix">
+				<form class="unit form-distributor-search">
+					<label for="location"><f:translate id="list.cityZip" /></label>
+					<input type="text" id="location" class="input-text">
+					<label for="location_radius"><f:translate id="list.radius" /></label>
+					<f:form.select id="location_radius" name="location_radius" class="input-select" options="{settings.search.radius}" />
+					<span><f:translate id="list.radius.format" /></span>
+					<button type="submit" id="searchButton" class="button btn-skin-submit"><f:translate id="list.search" /></button>
+				</form><a data-text-open="{f:translate(id:'list.map.open')}" class="inv-unit button ext-btn-toggle js-toggle-map"><span href="#" class="ctx-btn-icon"><f:translate id="list.map.close" /></span></a>
+			</div>
+		</div>
+	</div>
+	<div class="google-map" id="map"></div>
+	<div class="content-centered">
+		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
+	</div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
-
-
-    <script type="text/javascript">
-        <![CDATA[
-        var map;
-        var markers = [];
-        var infoWindow;
-        var locationSelect;
-
-        function load() {
-
-            map = new google.maps.Map(document.getElementById('map'), {
-
-                <!-- Need lat and lng from default store -->
-                center: new google.maps.LatLng(51, 6),
-                zoom: 8,
-                panControl: true,
-                zoomControl: true,
-                scaleControl: false,
-                disableDefaultUI: false,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                mapTypeControl: true,
-                //mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR}
-                mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
-            });
-
-
-
-            infoWindow = new google.maps.InfoWindow();
-
-            locationSelect = document.getElementById("locationSelect");
-            locationSelect.onchange = function() {
-                var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
-                if (markerNum != "none"){
-                    google.maps.event.trigger(markers[markerNum], 'click');
-                }
-            };
-        }
-
-        function searchLocations() {
-            var address = document.getElementById("addressInput").value;
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({address: address}, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    searchLocationsNear(results[0].geometry.location);
-                } else {
-                    alert(address + ' not found');
-                }
-            });
-        }
-
-        function clearLocations() {
-            infoWindow.close();
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(null);
-            }
-            markers.length = 0;
-
-            locationSelect.innerHTML = "";
-            var option = document.createElement("option");
-            option.value = "none";
-            option.innerHTML = "See all results:";
-            locationSelect.appendChild(option);
-        }
-
-        function searchLocationsNear(center) {
-            clearLocations();
-
-            var radius = document.getElementById('radiusSelect').value;
-            var searchUrl ="]]>{f:uri.action(action:'getStores', noCache:1, additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[";
-
-            searchUrl = searchUrl.replace('_LATITUDE_', center.lat());
-            searchUrl = searchUrl.replace('_LONGITUD_', center.lng());
-            searchUrl = searchUrl.replace('_RADIUS_', radius);
-
-            downloadUrl(searchUrl, function(data) {
-                var xml = parseXml(data);
-                var markerNodes = xml.documentElement.getElementsByTagName("marker");
-                var bounds = new google.maps.LatLngBounds();
-                for (var i = 0; i < markerNodes.length; i++) {
-                    var name = markerNodes[i].getAttribute("title");
-                    var address = markerNodes[i].getAttribute("address");
-                    var distance = parseFloat(markerNodes[i].getAttribute("distance"));
-                    var latlng = new google.maps.LatLng(
-                            parseFloat(markerNodes[i].getAttribute("latitude")),
-                            parseFloat(markerNodes[i].getAttribute("longitude")));
-
-                    createOption(name, distance, i);
-                    createMarker(latlng, name, address);
-                    bounds.extend(latlng);
-                }
-                map.fitBounds(bounds);
-                locationSelect.style.visibility = "visible";
-                locationSelect.onchange = function() {
-                    var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
-                    google.maps.event.trigger(markers[markerNum], 'click');
-                };
-            });
-        }
-
-        function createMarker(latlng, name, address) {
-            var html = "<b>" + name + "</b> <br/>" + address;
-            var marker = new google.maps.Marker({
-                map: map,
-                position: latlng
-            });
-            google.maps.event.addListener(marker, 'click', function() {
-                infoWindow.setContent(html);
-                infoWindow.open(map, marker);
-            });
-            markers.push(marker);
-        }
-
-        function createOption(name, distance, num) {
-            var option = document.createElement("option");
-            option.value = num;
-            option.innerHTML = name + "(" + distance.toFixed(1) + ")";
-            locationSelect.appendChild(option);
-        }
-
-        function downloadUrl(url, callback) {
-            var request = window.ActiveXObject ?
-                    new ActiveXObject('Microsoft.XMLHTTP') :
-                    new XMLHttpRequest;
-
-            request.onreadystatechange = function() {
-                if (request.readyState == 4) {
-                    request.onreadystatechange = doNothing;
-                    callback(request.responseText, request.status);
-                }
-            };
-
-            request.open('GET', url, true);
-            request.send(null);
-        }
-
-        function parseXml(str) {
-            if (window.ActiveXObject) {
-                var doc = new ActiveXObject('Microsoft.XMLDOM');
-                doc.loadXML(str);
-                return doc;
-            } else if (window.DOMParser) {
-                return (new DOMParser).parseFromString(str, 'text/xml');
-            }
-        }
-
-        function doNothing() {}
+	<script type="text/javascript">
+		<![CDATA[
+			StoreLocatorOptions = {
+				getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, pageType: '{settings.typeNum.ajax}', additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[",
+				getDefaultStoresUri: "]]>{f:uri.action(action:'getMainStores', pageType: '{settings.typeNum.ajax}', noCache:1)}<![CDATA[",
+				markerIcon: "]]>{settings.marker.icon}<![CDATA[",
+				useCustomInfoBox: ]]>{settings.infoWindow.useCustomInfoBox}<![CDATA[,
+			};
 
 
+			<!-- Load jQuery Fallback -->
+			var documentIsReady = false;
+
+			//attach dom ready events
+			if ( document.readyState === "complete" ) {
+				// Handle it asynchronously to allow scripts the opportunity to delay ready
+				setTimeout( onDomIsLoaded );
+
+				// Standards-based browsers support DOMContentLoaded
+			} else if ( document.addEventListener ) {
+				// Use the handy event callback
+				document.addEventListener( "DOMContentLoaded", onDomIsLoaded, false );
+
+				// A fallback to window.onload, that will always work
+				window.addEventListener( "load", onDomIsLoaded, false );
+
+				// If IE event model is used
+			} else {
+				// Ensure firing before onload, maybe late but safe also for iframes
+				document.attachEvent( "onreadystatechange", onDomIsLoaded );
+
+				// A fallback to window.onload, that will always work
+				window.attachEvent( "onload", onDomIsLoaded );
+			}
 
 
-        $(document).ready(function() {
-            load();
-        });
+			// on dom ready
+			function onDomIsLoaded(event) {
+				if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
+					detachLoadEvents();
+					if (typeof jQuery != "undefined") {
+						onScriptLoaded();
+					}
+					else {
+						detachLoadEvents();
+						var newScript = document.createElement('script');
+						var head = document.getElementsByTagName("head")[0];
+						newScript.type = 'text/javascript';
+						newScript.src = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
+						head.appendChild(newScript);
+						newScript.onreadystatechange = newScript.onload = function() {
+							var state = newScript.readyState;
+							if (!documentIsReady && (!state || /loaded|complete/.test(state))) {
+								documentIsReady = true;
+								onScriptLoaded();
+							}
+						};
+					}
+				}
+			}
 
-        //]]>
-    </script>
+			//init when my script is loaded
+			function onScriptLoaded() {
+				(function($) {
+					// INIT here
+					StoreLocator.init(StoreLocatorOptions);
+				})(window.jQuery);
+			}
 
+			// Clean-up method for dom ready events
+			function detachLoadEvents() {
+				if ( document.addEventListener ) {
+					document.removeEventListener( "DOMContentLoaded", onDomIsLoaded, false );
+					window.removeEventListener( "load", onDomIsLoaded, false );
+				} else {
+					document.detachEvent( "onreadystatechange", onDomIsLoaded );
+					window.detachEvent( "onload", onDomIsLoaded );
+				}
+			}
 
-    <div>
-        <input type="text" id="addressInput" size="10"/>
-        <select id="radiusSelect">
-            <option value="25" selected>25mi</option>
-            <option value="100">100mi</option>
-            <option value="200">200mi</option>
-        </select>
-
-        <input type="button" onclick="searchLocations()" value="Search"/>
-    </div>
-    <div><select id="locationSelect" style="width:100%;visibility:hidden"></select></div>
-    <div id="map" style="background-color:#EEE; width: 800px; height: 300px"></div>
-
+		//]]>
+	</script>
 
 </f:section>

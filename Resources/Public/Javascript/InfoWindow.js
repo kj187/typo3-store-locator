@@ -1,9 +1,7 @@
-<?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011 Julian Kleinhans <julian.kleinhans@aijko.de>, aijko GmbH
+ *  (c) 2013 Julian Kleinhans <julian.kleinhans@aijko.de>, aijko GmbH
  *
  *  All rights reserved
  *
@@ -24,28 +22,27 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-if (!defined('TYPO3_MODE')) die ('Access denied.');
+function StoreLocatorInfoWindow(useCustomInfoBox) {
+	if (useCustomInfoBox) {
+		this.infoWindow = new InfoBox({
+			closeBoxURL: '',
+			alignBottom: true,
+			pixelOffset: new google.maps.Size(-70, -57),
+			boxClass: 'map-tooltip'
+		});
+	} else {
+		this.infoWindow = new google.maps.InfoWindow();
+	}
+}
 
+StoreLocatorInfoWindow.prototype.setContent = function(content) {
+	this.infoWindow.setContent(content);
+};
 
+StoreLocatorInfoWindow.prototype.open = function(map, marker) {
+	this.infoWindow.open(map, marker);
+};
 
-
-/*******************************************************************************************************************
- * Configure plugin
- *
- */
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-	'Aijko.' . $_EXTKEY,
-	'Storelocator',
-	array(
-		'Store' => 'list, getStores, getMainStores',
-
-	),
-	// non-cacheable actions
-	array(
-		'Store' => 'getStores, getMainStores',
-
-	)
-);
-
-?>
+StoreLocatorInfoWindow.prototype.close = function() {
+	this.infoWindow.close();
+};

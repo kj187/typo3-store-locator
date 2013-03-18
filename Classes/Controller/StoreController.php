@@ -43,27 +43,53 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	protected $storeRepository;
 
 	/**
+	 * @see parent::initialView
+	 */
+	protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
+		if (count($this->settings['javascript']['load']) > 0) {
+			foreach ($this->settings['javascript']['load'] as $key => $value) {
+				if ($value['enable']) {
+					$this->response->addAdditionalHeaderData($this->wrapJavascriptFile($value['src']));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Wrap js files inside <script> tag
+	 *
+	 * @param string $file Path to file
+	 * @return string <script.. string ready for <head> part
+	 */
+	public function wrapJavascriptFile($file) {
+		if (substr($file, 0, 4) == 'EXT:') {
+			list($extKey, $local) = explode('/', substr($file, 4), 2);
+			if (strcmp($extKey, '') && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey) && strcmp($local, '')) {
+				$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . $local;
+			}
+		}
+
+		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::resolveBackPath($file);
+		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::createVersionNumberedFilename($file);
+		return '<script src="' . htmlspecialchars($file) . '" type="text/javascript"></script>';
+	}
+
+	/**
 	 * action list
 	 *
 	 * @return void
 	 */
 	public function listAction() {
 
-		#echo $this->test('51.332268', '6.830757');die();
-		#echo $this->test('30', '12', '5000');die();
-
-		$stores = $this->storeRepository->findAll();
-		$this->view->assign('stores', $stores);
 	}
 
 	/**
-	 * action show
-	 *
-	 * @param \Aijko\StoreLocator\Domain\Model\Store $store
-	 * @return void
+	 * Get all main stores (for default view)
+	 * @return string
 	 */
-	public function showAction(\Aijko\StoreLocator\Domain\Model\Store $store) {
-		$this->view->assign('store', $store);
+	public function getMainStoresAction() {
+		$stores = $this->storeRepository->findAllMainStores();
+		return $this->outputStoreData($stores);
 	}
 
 	/**
@@ -74,48 +100,85 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
 	 *
-	 * @return xml
+	 * @return string
 	 */
 	public function getStoresAction($latitude, $longitude, $radius = 50) {
+		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius);
+		return $this->outputStoreData($stores);
+	}
 
-		// Start XML file, create parent node
-		$dom = new \DOMDocument("1.0");
-		$node = $dom->createElement("markers");
-		$parnode = $dom->appendChild($node);
+	/**
+	 * @param $stores
+	 */
+	protected function outputStoreData($stores) {
+		$locations = array();
+		$sidebarItems = array();
+		$markerContent = array();
 
+		if (NULL !== $stores) {
+			$stores = $stores->toArray();
 
-		//TODO exlude in repo
+			foreach ($stores as $store) {
+				$locations[] = $store->toArray();
+				$sidebarItems[] = $this->getSidebarItems($store->toArray());
+				$markerContent[] = $this->getMarkerContent($store->toArray());
+			}
 
-		// Search the rows in the markers table
-		$query = sprintf("SELECT address, title, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
-			mysql_real_escape_string($latitude),
-			mysql_real_escape_string($longitude),
-			mysql_real_escape_string($latitude),
-			mysql_real_escape_string($radius));
-		$result = $GLOBALS['TYPO3_DB']->sql_query($query);
+			$data = array(
+				'sidebarItems' => $sidebarItems,
+				'markerContent' => $markerContent,
+				'locations' => $locations
+			);
 
-		if (!$result) {
-			die("Invalid query: " . mysql_error());
+		} else {
+			$data = array(
+				'locations' => array(),
+				'notification' => $this->translate('locations.empty')
+			);
 		}
 
-		header("Content-type: text/xml");
+		return json_encode($data);
+	}
 
-		// Iterate through the rows, adding XML nodes for each
-		while ($row = @mysql_fetch_assoc($result)){
-			$node = $dom->createElement("marker");
-			$newnode = $parnode->appendChild($node);
-			$newnode->setAttribute("title", $row['title']);
-			$newnode->setAttribute("address", $row['address']);
-			$newnode->setAttribute("latitude", $row['latitude']);
-			$newnode->setAttribute("longitude", $row['longitude']);
-			$newnode->setAttribute("distance", $row['distance']);
-		}
+	/**
+	 * @param array $store
+	 * @return string
+	 */
+	protected function getSidebarItems(array $store) {
+		return $this->getStandaloneView(array('store' => $store, 'settings' => $this->settings), 'Store/Ajax/Item.html')->render();
+	}
 
-		echo $dom->saveXML();
-		die();
+	/**
+	 * @param array $store
+	 * @return string
+	 */
+	protected function getMarkerContent(array $store) {
+		return $this->getStandaloneView(array('store' => $store, 'settings' => $this->settings), 'Store/Ajax/MarkerContent.html')->render();
+	}
 
-		// TODO als eID/typeNum auslagern ohne layout schnickschnack
+	/**
+	 * @param array $store
+	 * @return string
+	 */
+	protected function getStandaloneView(array $variables, $template) {
+		$viewObject = $this->objectManager->create('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+		$viewObject->setFormat('html');
+		$extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+		$templateRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($extbaseFrameworkConfiguration['view']['templateRootPath']);
+		$templatePathAndFilename = $templateRootPath . $template;
+		$viewObject->setTemplatePathAndFilename($templatePathAndFilename);
+		$viewObject->assignMultiple($variables);
+		return $viewObject;
+	}
+
+	/**
+	 * @param $id
+	 * @return NULL|string
+	 */
+	protected function translate($id) {
+		return  \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $this->request->getControllerExtensionKey());
 	}
 
 }
+
 ?>

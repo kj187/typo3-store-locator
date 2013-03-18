@@ -7,14 +7,23 @@
 			<trans-unit id="tx_storelocator_domain_model_store">
 				<source>Store</source>
 			</trans-unit>
-			<trans-unit id="tx_storelocator_domain_model_store.title">
-				<source>Title</source>
+			<trans-unit id="tx_storelocator_domain_model_store.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.ismainstore">
+				<source>Is mainstore</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address">
 				<source>Address</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.city">
 				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.street">
+				<source>Street</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.state">
+				<source>State</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.zipcode">
 				<source>Zipcode</source>
@@ -40,8 +49,37 @@
 			<trans-unit id="tx_storelocator_domain_model_store.phone">
 				<source>Telephone</source>
 			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.fax">
+				<source>Fax</source>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.logo">
 				<source>Logo</source>
+			</trans-unit>
+
+
+			<trans-unit id="locations.empty">
+				<source>Es wurde kein Fachhändler gefunden.</source>
+			</trans-unit>
+			<trans-unit id="list.dealer">
+				<source>Händler</source>
+			</trans-unit>
+			<trans-unit id="list.cityZip">
+				<source>Ort/PLZ</source>
+			</trans-unit>
+			<trans-unit id="list.radius">
+				<source>Umkreis</source>
+			</trans-unit>
+			<trans-unit id="list.radius.format">
+				<source>km</source>
+			</trans-unit>
+			<trans-unit id="list.search">
+				<source>Suchen</source>
+			</trans-unit>
+			<trans-unit id="list.map.open">
+				<source>Karte öffnen</source>
+			</trans-unit>
+			<trans-unit id="list.map.close">
+				<source>Karte schließen</source>
 			</trans-unit>
 			
 		</body>

@@ -35,12 +35,12 @@ namespace Aijko\StoreLocator\Domain\Model;
 class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * Title
+	 * name
 	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
-	protected $title;
+	protected $name;
 
 	/**
 	 * Address
@@ -57,6 +57,29 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @validate NotEmpty
 	 */
 	protected $city;
+
+	/**
+	 * ismainstore
+	 *
+	 * @var \string
+	 * @validate NotEmpty
+	 */
+	protected $ismainstore;
+
+	/**
+	 * Street
+	 *
+	 * @var \string
+	 * @validate NotEmpty
+	 */
+	protected $street;
+
+	/**
+	 * state
+	 *
+	 * @var \string
+	 */
+	protected $state;
 
 	/**
 	 * Zipcode
@@ -119,6 +142,13 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $phone;
 
 	/**
+	 * Fax
+	 *
+	 * @var \string
+	 */
+	protected $fax;
+
+	/**
 	 * Logo
 	 *
 	 * @var \string
@@ -126,22 +156,22 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $logo;
 
 	/**
-	 * Returns the title
+	 * Returns the name
 	 *
-	 * @return \string $title
+	 * @return \string $name
 	 */
-	public function getTitle() {
-		return $this->title;
+	public function getName() {
+		return $this->name;
 	}
 
 	/**
-	 * Sets the title
+	 * Sets the name
 	 *
-	 * @param \string $title
+	 * @param \string $name
 	 * @return void
 	 */
-	public function setTitle($title) {
-		$this->title = $title;
+	public function setName($name) {
+		$this->name = $name;
 	}
 
 	/**
@@ -180,6 +210,63 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setCity($city) {
 		$this->city = $city;
+	}
+
+	/**
+	 * Returns true if it is a mainstore
+	 *
+	 * @return \boolean $ismainstore
+	 */
+	public function getIsmainstore() {
+		return $this->ismainstore;
+	}
+
+	/**
+	 * Sets the ismainstore
+	 *
+	 * @param \boolean $ismainstore
+	 * @return void
+	 */
+	public function setIsmainstore($ismainstore) {
+		$this->ismainstore = $ismainstore;
+	}
+
+	/**
+	 * Returns the street
+	 *
+	 * @return \string $street
+	 */
+	public function getStreet() {
+		return $this->street;
+	}
+
+	/**
+	 * Sets the street
+	 *
+	 * @param \string $street
+	 * @return void
+	 */
+	public function setStreet($street) {
+		$this->street = $street;
+	}
+
+	/**
+	 * Returns the state
+	 *
+	 * @return \string $state
+	 */
+	public function getState() {
+		return $this->state;
+	}
+
+	/**
+	 * Sets the state
+	 *
+	 * @param \string $state
+	 * @return void
+	 */
+	public function setState($state) {
+		$this->state = $state;
 	}
 
 	/**
@@ -335,6 +422,25 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * Returns the fax
+	 *
+	 * @return \string $fax
+	 */
+	public function getFax() {
+		return $this->fax;
+	}
+
+	/**
+	 * Sets the fax
+	 *
+	 * @param \string $fax
+	 * @return void
+	 */
+	public function setFax($fax) {
+		$this->fax = $fax;
+	}
+
+	/**
 	 * Returns the logo
 	 *
 	 * @return \string $logo
@@ -351,6 +457,31 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setLogo($logo) {
 		$this->logo = $logo;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray() {
+		return array(
+			'uid' => $this->getUid(),
+			'address' => $this->getAddress(),
+			'city' => $this->getCity(),
+			'country' => $this->getCountry(),
+			'description' => $this->getDescription(),
+			'email' => $this->getEmail(),
+			'fax' => $this->getFax(),
+			'ismainstore' => $this->getIsmainstore(),
+			'latitude' => $this->getLatitude(),
+			'logo' => $this->getLogo(),
+			'longitude' => $this->getLongitude(),
+			'name' => $this->getName(),
+			'phone' => $this->getPhone(),
+			'state' => $this->getState(),
+			'street' => $this->getStreet(),
+			'url' => $this->getUrl(),
+			'zipcode' => $this->getZipcode()
+		);
 	}
 
 }
