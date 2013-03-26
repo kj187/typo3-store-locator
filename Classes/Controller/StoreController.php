@@ -80,7 +80,14 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return void
 	 */
 	public function listAction() {
+		if ($this->settings['region']['htmlTag_langKey']) {
+			$region = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('_', $this->settings['region']['htmlTag_langKey']);
+			$region = $region[1];
+		} else {
+			$region = $this->settings['region']['default'];
+		}
 
+		$this->view->assign('region', $region);
 	}
 
 	/**

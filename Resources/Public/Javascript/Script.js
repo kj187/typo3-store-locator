@@ -114,7 +114,7 @@ StoreLocator = {
 		var self = this;
 		if (address != '') {
 			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({address: address}, function(results, status) {
+			geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					var center = results[0].geometry.location;
 					self._findLocations(center.lat(), center.lng(), radius);

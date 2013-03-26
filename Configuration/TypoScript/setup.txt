@@ -12,6 +12,11 @@ plugin.tx_storelocator {
 
 	settings {
 
+		region {
+			htmlTag_langKey = {$config.htmlTag_langKey}
+			default = de
+		}
+
 		typeNum {
 			ajax = {$plugin.tx_storelocator.settings.typeNum.ajax}
 		}
