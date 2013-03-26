@@ -57,6 +57,7 @@ StoreLocator = {
 		var mapOptions = {
 			center: new google.maps.LatLng(51, 6),
 			zoom: 8,
+			maxZoom: 15,
 			panControl: true,
 			zoomControl: true,
 			scaleControl: false,
