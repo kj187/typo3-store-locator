@@ -32,7 +32,7 @@ function StoreLocatorInfoWindow(useCustomInfoBox) {
 		});
 		this.infoWindow.addListener('domready', function() {
 			var $tooltip = $(this.div_);
-			$tooltip.parent().css('z-index', 'auto').parent().css('z-index', 'auto');
+			$tooltip.parent().css({'z-index': 'auto', '-webkit-transform':'none'}).parent().css({'z-index': 'auto', '-webkit-transform':'none'});
 		});
 	} else {
 		this.infoWindow = new google.maps.InfoWindow();
