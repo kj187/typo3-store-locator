@@ -59,9 +59,15 @@ StoreLocator = {
 		var self = this;
 		geo.geocode({'address':this.options.region, 'region':this.options.region}, function(results, status){
 
+			var zoom = 6;
 			if (status == google.maps.GeocoderStatus.OK) {
 				var lat = results[0].geometry.location.lat();
 				var lng = results[0].geometry.location.lng();
+
+				if (self.options.region == 'europa') {
+					var zoom = 3;
+				}
+
 			} else {
 				var lat = 51;
 				var lng = 6;
@@ -69,7 +75,7 @@ StoreLocator = {
 
 			var mapOptions = {
 				center: new google.maps.LatLng(lat, lng),
-				zoom: 6,
+				zoom: zoom,
 				maxZoom: 15,
 				panControl: true,
 				zoomControl: true,
