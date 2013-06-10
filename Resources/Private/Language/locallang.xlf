@@ -58,28 +58,28 @@
 
 
 			<trans-unit id="locations.empty">
-				<source>Es wurde kein Fachhändler gefunden.</source>
+				<source>No dealer found.</source>
 			</trans-unit>
 			<trans-unit id="list.dealer">
-				<source>Händler</source>
+				<source>Dealer</source>
 			</trans-unit>
 			<trans-unit id="list.cityZip">
-				<source>Ort/PLZ</source>
+				<source>Location/Zip code</source>
 			</trans-unit>
 			<trans-unit id="list.radius">
-				<source>Umkreis</source>
+				<source>Radius</source>
 			</trans-unit>
 			<trans-unit id="list.radius.format">
 				<source>km</source>
 			</trans-unit>
 			<trans-unit id="list.search">
-				<source>Suchen</source>
+				<source>Search</source>
 			</trans-unit>
 			<trans-unit id="list.map.open">
-				<source>Karte öffnen</source>
+				<source>Open the map</source>
 			</trans-unit>
 			<trans-unit id="list.map.close">
-				<source>Karte schließen</source>
+				<source>Close the map</source>
 			</trans-unit>
 			
 		</body>

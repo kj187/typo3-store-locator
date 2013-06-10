@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-02-26T21:15:14Z" product-name="store_locator" target-language="cs">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_storelocator_domain_model_store" approved="yes">
+				<source>Store</source> <target state="translated">Obchod</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.name" approved="yes">
+				<source>Name</source> <target state="translated">Příjmení</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.ismainstore" approved="yes">
+				<source>Is mainstore</source> <target state="translated">Hlavní obchod</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.address" approved="yes">
+				<source>Address</source> <target state="translated">Adresa</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.city" approved="yes">
+				<source>City</source> <target state="translated">Město</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.street" approved="yes">
+				<source>Street</source> <target state="translated">Ulice</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.state" approved="yes">
+				<source>State</source> <target state="translated">Spolková země / Kraj</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.zipcode" approved="yes">
+				<source>Zipcode</source> <target state="translated">PSČ</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.country" approved="yes">
+				<source>Country</source> <target state="translated">Země</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.latitude" approved="yes">
+				<source>Latitude</source> <target state="translated">Šířka</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.longitude" approved="yes">
+				<source>Longitude</source> <target state="translated">Délka</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.url" approved="yes">
+				<source>URL</source> <target state="translated">URL</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.description" approved="yes">
+				<source>Description</source> <target state="translated">Popis</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.email" approved="yes">
+				<source>E-Mail</source> <target state="translated">E-mail</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.phone" approved="yes">
+				<source>Telephone</source> <target state="translated">Telefon</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.fax" approved="yes">
+				<source>Fax</source> <target state="translated">Fax</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.logo" approved="yes">
+				<source>Logo</source> <target state="translated">Logo</target></trans-unit>
+
+
+			<trans-unit id="locations.empty" approved="yes">
+				<source>No dealer found.</source> <target state="translated">Nebyl nalezen žádný specializovaný obchodník.</target></trans-unit>
+			<trans-unit id="list.dealer" approved="yes">
+				<source>Dealer</source> <target state="translated">Obchodník</target></trans-unit>
+			<trans-unit id="list.cityZip" approved="yes">
+				<source>Location/Zip code</source> <target state="translated">Obec / PSČ</target></trans-unit>
+			<trans-unit id="list.radius" approved="yes">
+				<source>Radius</source> <target state="translated">Okruh</target></trans-unit>
+			<trans-unit id="list.radius.format" approved="yes">
+				<source>km</source> <target state="translated">km</target></trans-unit>
+			<trans-unit id="list.search" approved="yes">
+				<source>Search</source> <target state="translated">Hledat</target></trans-unit>
+			<trans-unit id="list.map.open" approved="yes">
+				<source>Open the map</source> <target state="translated">Otevřít kartu</target></trans-unit>
+			<trans-unit id="list.map.close" approved="yes">
+				<source>Close the map</source> <target state="translated">Zavřít kartu</target></trans-unit>
+			
+		</body>
+	</file>
+</xliff>
