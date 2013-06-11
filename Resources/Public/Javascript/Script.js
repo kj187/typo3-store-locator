@@ -51,24 +51,45 @@ StoreLocator = {
 	},
 
 	/**
+	 * @returns {*}
 	 * @private
 	 */
 	_initializeMap: function() {
-		var mapOptions = {
-			center: new google.maps.LatLng(51, 6),
-			zoom: 8,
-			panControl: true,
-			zoomControl: true,
-			scaleControl: false,
-			disableDefaultUI: false,
-			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			mapTypeControl: true,
-			mapTypeControlOptions: {
-				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-			}
-		}
+		var geo = new google.maps.Geocoder;
+		var self = this;
+		geo.geocode({'address':this.options.region, 'region':this.options.region}, function(results, status){
 
-		this.map = new google.maps.Map($('#map').get(0), mapOptions);
+			var zoom = 6;
+			if (status == google.maps.GeocoderStatus.OK) {
+				var lat = results[0].geometry.location.lat();
+				var lng = results[0].geometry.location.lng();
+
+				if (self.options.region == 'europa') {
+					var zoom = 3;
+				}
+
+			} else {
+				var lat = 51;
+				var lng = 6;
+			}
+
+			var mapOptions = {
+				center: new google.maps.LatLng(lat, lng),
+				zoom: zoom,
+				maxZoom: 15,
+				panControl: true,
+				zoomControl: true,
+				scaleControl: false,
+				disableDefaultUI: false,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl: true,
+				mapTypeControlOptions: {
+					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+				}
+			}
+
+			self.map = new google.maps.Map($('#map').get(0), mapOptions);
+		});
 	},
 
 	/**
@@ -114,7 +135,7 @@ StoreLocator = {
 		var self = this;
 		if (address != '') {
 			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({address: address}, function(results, status) {
+			geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					var center = results[0].geometry.location;
 					self._findLocations(center.lat(), center.lng(), radius);
@@ -123,7 +144,9 @@ StoreLocator = {
 				}
 			});
 		} else {
-			self._findMainStoreLocations();
+			if (this.options.enableMainstoreFeature) {
+				self._findMainStoreLocations();
+			}
 		}
 	},
 

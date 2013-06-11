@@ -30,6 +30,10 @@ function StoreLocatorInfoWindow(useCustomInfoBox) {
 			pixelOffset: new google.maps.Size(-70, -57),
 			boxClass: 'map-tooltip'
 		});
+		this.infoWindow.addListener('domready', function() {
+			var $tooltip = $(this.div_);
+			$tooltip.parent().css({'z-index': 'auto', '-webkit-transform':'none'}).parent().css({'z-index': 'auto', '-webkit-transform':'none'});
+		});
 	} else {
 		this.infoWindow = new google.maps.InfoWindow();
 	}

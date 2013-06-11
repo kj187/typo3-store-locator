@@ -12,6 +12,11 @@ plugin.tx_storelocator {
 
 	settings {
 
+		region {
+			htmlTag_langKey = {$config.htmlTag_langKey}
+			default = de
+		}
+
 		typeNum {
 			ajax = {$plugin.tx_storelocator.settings.typeNum.ajax}
 		}
@@ -59,6 +64,9 @@ plugin.tx_storelocator {
 		marker {
 			icon = {$plugin.tx_storelocator.settings.marker.icon}
 		}
+
+		## show all mainstores on first load
+		enableMainstoreFeature = 0
 
 		infoWindow {
 			useCustomInfoBox = {$plugin.tx_storelocator.settings.infoWindow.useCustomInfoBox}
