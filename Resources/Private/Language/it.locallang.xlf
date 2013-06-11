@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-02-26T21:15:14Z" product-name="store_locator">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_storelocator_domain_model_store" approved="yes">
+				<source>Store</source> <target state="translated">Negozio</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.name" approved="yes">
+				<source>Name</source> <target state="translated">Nome</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.ismainstore" approved="yes">
+				<source>Is mainstore</source> <target state="translated">Sede centrale</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.address" approved="yes">
+				<source>Address</source> <target state="translated">Indirizzo</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.city" approved="yes">
+				<source>City</source> <target state="translated">Città</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.street" approved="yes">
+				<source>Street</source> <target state="translated">Via</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.state" approved="yes">
+				<source>State</source> <target state="translated">Land/distretto</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.zipcode" approved="yes">
+				<source>Zipcode</source> <target state="translated">NPA</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.country" approved="yes">
+				<source>Country</source> <target state="translated">Paese</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.latitude" approved="yes">
+				<source>Latitude</source> <target state="translated">Larghezza</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.longitude" approved="yes">
+				<source>Longitude</source> <target state="translated">Lunghezza</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.url" approved="yes">
+				<source>URL</source> <target state="translated">URL</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.description" approved="yes">
+				<source>Description</source> <target state="translated">Descrizione</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.email" approved="yes">
+				<source>E-Mail</source> <target state="translated">E-mail</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.phone" approved="yes">
+				<source>Telephone</source> <target state="translated">Telefono</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.fax" approved="yes">
+				<source>Fax</source> <target state="translated">Fax</target></trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.logo" approved="yes">
+				<source>Logo</source> <target state="translated">Logo</target></trans-unit>
+
+
+			<trans-unit id="locations.empty" approved="yes">
+				<source>No dealer found.</source> <target state="translated">Non è stato trovato nessun negozio specializzato.</target></trans-unit>
+			<trans-unit id="list.dealer" approved="yes">
+				<source>Dealer</source> <target state="translated">Rivenditore</target></trans-unit>
+			<trans-unit id="list.cityZip" approved="yes">
+				<source>Location/Zip code</source> <target state="translated">Località/NPA</target></trans-unit>
+			<trans-unit id="list.radius" approved="yes">
+				<source>Radius</source> <target state="translated">Dintorni</target></trans-unit>
+			<trans-unit id="list.radius.format" approved="yes">
+				<source>km</source> <target state="translated">km</target></trans-unit>
+			<trans-unit id="list.search" approved="yes">
+				<source>Search</source> <target state="translated">Cerca</target></trans-unit>
+			<trans-unit id="list.map.open" approved="yes">
+				<source>Open the map</source> <target state="translated">Apri mappa</target></trans-unit>
+			<trans-unit id="list.map.close" approved="yes">
+				<source>Close the map</source> <target state="translated">Chiudi mappa</target></trans-unit>
+			
+		</body>
+	</file>
+</xliff>
