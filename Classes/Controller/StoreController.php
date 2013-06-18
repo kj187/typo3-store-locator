@@ -110,7 +110,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return string
 	 */
 	public function getStoresAction($latitude, $longitude, $radius = 50) {
-		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius);
+		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $this->settings);
 		return $this->outputStoreData($stores);
 	}
 

@@ -12,6 +12,8 @@ plugin.tx_storelocator {
 
 	settings {
 
+		disableStoragePageId = 0
+
 		region {
 			htmlTag_langKey = {$config.htmlTag_langKey}
 			default = de
