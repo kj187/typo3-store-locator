@@ -49,6 +49,7 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
  */
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Store Locator');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Style', 'Store Locator - Default Style');
 
 
 
