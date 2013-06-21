@@ -32,7 +32,7 @@ plugin.tx_storelocator {
 
 				googleMapsApi {
 					enable = 1
-					src = http://maps.googleapis.com/maps/api/js?sensor=false
+					src = http://maps.googleapis.com/maps/api/js?sensor=false&language={$config.htmlTag_langKey}
 				}
 
 				vendorInfoBox {
