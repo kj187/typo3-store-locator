@@ -25,7 +25,7 @@ plugin.tx_storelocator {
 		}
 
 		infoWindow {
-			useCustomInfoBox = 1
+			useCustomInfoBox = 0
 		}
 
 	}

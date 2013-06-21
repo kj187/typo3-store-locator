@@ -49,6 +49,19 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
  */
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Store Locator');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Style', 'Store Locator - Default Style');
+
+
+
+/*******************************************************************************************************************
+ * Add static tsconf files
+ *
+ */
+
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('static_tsconf')) {
+	Aijko\StaticTsconf\Utility\StaticFileUtility::addStaticFile($_EXTKEY, 'Configuration/TSconfig/Page/default.ts', 'page - default.ts');
+	Aijko\StaticTsconf\Utility\StaticFileUtility::addStaticFileByDirectory($_EXTKEY, 'Configuration/TSconfig/Page/allowedTables/', 'allowedTables - ');
+}
 
 
 

@@ -57,30 +57,28 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 		// Using the query statement is not an option. Unfortunately.
 		if (!$typoscriptSettings['disableStoragePageId']) {
-			$result = $GLOBALS['TYPO3_DB']->sql_query(
-				sprintf(
-					"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE pid = %s " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
-					mysql_real_escape_string($latitude),
-					mysql_real_escape_string($longitude),
-					mysql_real_escape_string($latitude),
-					$storagePageIds[0],
-					mysql_real_escape_string($radius)
-				)
+			$queryString = sprintf(
+				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE pid = %s " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
+				(float)($latitude),
+				(float)($longitude),
+				(float)($latitude),
+				(int)$storagePageIds[0],
+				(int)($radius)
 			);
+			$result = $GLOBALS['TYPO3_DB']->sql_query($queryString);
 		} else {
-			$result = $GLOBALS['TYPO3_DB']->sql_query(
-				sprintf(
-					"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE 1=1 " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
-					mysql_real_escape_string($latitude),
-					mysql_real_escape_string($longitude),
-					mysql_real_escape_string($latitude),
-					mysql_real_escape_string($radius)
-				)
+			$queryString = sprintf(
+				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE 1=1 " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
+				(float)($latitude),
+				(float)($longitude),
+				(float)($latitude),
+				(int)($radius)
 			);
+			$result = $GLOBALS['TYPO3_DB']->sql_query($queryString);
 		}
 
 		$uids = array();
-		while ($store = mysql_fetch_assoc($result)) {
+		while ($store = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			$uids[] = $store['uid'];
 		}
 
