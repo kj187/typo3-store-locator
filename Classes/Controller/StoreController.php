@@ -43,6 +43,14 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	protected $storeRepository;
 
 	/**
+	 * countryRepository
+	 *
+	 * @var \SJBR\StaticInfoTables\Domain\Repository\CountryRepository
+	 * @inject
+	 */
+	protected $countryRepository;
+
+	/**
 	 * @see parent::initialView
 	 */
 	protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
@@ -88,6 +96,21 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		}
 
 		$this->view->assign('region', $region);
+		$this->view->assign('countries', $this->getOnlyCountriesWhereStoresAvailable());
+		$this->view->assign('preSelectedCountry', $this->countryRepository->findOneByIsoCodeA2($region));
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getOnlyCountriesWhereStoresAvailable() {
+		$stores = $this->storeRepository->findAll();
+		$countries = array();
+		foreach ($stores as $store) {
+			$countries[$store->getCountry()->getUid()] = $store->getCountry();
+		}
+
+		return $countries;
 	}
 
 	/**
@@ -103,14 +126,16 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @param float $latitude
 	 * @param float $longitude
 	 * @param int $radius
+	 * @param int $country
 	 * @dontvalidate $latitude
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
+	 * @dontvalidate $country
 	 *
 	 * @return string
 	 */
-	public function getStoresAction($latitude, $longitude, $radius = 50) {
-		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $this->settings);
+	public function getStoresAction($latitude, $longitude, $radius = 50, $country = 0) {
+		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $country, $this->settings);
 		return $this->outputStoreData($stores);
 	}
 

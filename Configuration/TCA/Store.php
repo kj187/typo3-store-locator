@@ -177,9 +177,8 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.country',
 			'config' => array(
-				'type' => 'input',
-				'size' => 30,
-				'eval' => 'trim'
+				'type' => 'select',
+				'foreign_table' => 'static_countries',
 			),
 		),
 		'url' => array(

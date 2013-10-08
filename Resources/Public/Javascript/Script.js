@@ -112,6 +112,7 @@ StoreLocator = {
 	_attachEvents: function() {
 		var $body = $(document.body);
 		$body.on('click', '#searchButton', $.proxy(this, '_startSearch'));
+		$body.on('change', '#location_country', $.proxy(this, '_startSearch'));
 	},
 
 	/**
@@ -130,6 +131,7 @@ StoreLocator = {
 	searchLocations: function() {
 		this._clearAllLocations();
 		var address = $('#location').val();
+		var country = $('#location_country').val();
 		var radius = $('#location_radius').val();
 
 		var self = this;
@@ -138,7 +140,7 @@ StoreLocator = {
 			geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					var center = results[0].geometry.location;
-					self._findLocations(center.lat(), center.lng(), radius);
+					self._findLocations(center.lat(), center.lng(), radius, country);
 				} else {
 					alert(address + ' not found');
 				}
@@ -172,7 +174,7 @@ StoreLocator = {
 	/**
 	 * @private
 	 */
-	_findLocations: function(lat, lng, radius) {
+	_findLocations: function(lat, lng, radius, country) {
 		this._clearAllLocations();
 
 		var self = this;
@@ -181,6 +183,7 @@ StoreLocator = {
 		getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
 		getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
 		getStoresUri = getStoresUri.replace('_RADIUS_', radius);
+		getStoresUri = getStoresUri.replace('_COUNTRY_', country);
 
 		$.ajax({
 			type: 'GET',

@@ -46,19 +46,25 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param $latitude
 	 * @param $longitude
 	 * @param int $radius
+	 * @param int $country
 	 * @param array $typoscriptSettings
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findStores($latitude, $longitude, $radius = 50, array $typoscriptSettings) {
+	public function findStores($latitude, $longitude, $radius = 50, $country, array $typoscriptSettings) {
 		$query = $this->createQuery();
 		$settings = $query->getQuerySettings();
 		$storagePageIds = $settings->getStoragePageIds();
+		$whereClause = array('1=1');
+
+		if ('' != $country) {
+			$whereClause[] = 'country = ' . (int)$country;
+		}
 
 		// Using the query statement is not an option. Unfortunately.
 		if (!$typoscriptSettings['disableStoragePageId']) {
 			$queryString = sprintf(
-				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE pid = %s " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
+				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE " . implode(' AND ', $whereClause) . " AND pid = %s " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
 				(float)($latitude),
 				(float)($longitude),
 				(float)($latitude),
@@ -68,7 +74,7 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			$result = $GLOBALS['TYPO3_DB']->sql_query($queryString);
 		} else {
 			$queryString = sprintf(
-				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE 1=1 " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
+				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE " . implode(' AND ', $whereClause) . " AND  " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " HAVING distance < '%s'  ORDER BY distance",
 				(float)($latitude),
 				(float)($longitude),
 				(float)($latitude),

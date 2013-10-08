@@ -92,8 +92,7 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Country
 	 *
-	 * @var \string
-	 * @validate NotEmpty
+	 * @var \SJBR\StaticInfoTables\Domain\Model\Country
 	 */
 	protected $country;
 
@@ -291,7 +290,7 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Returns the country
 	 *
-	 * @return \string $country
+	 * @return \SJBR\StaticInfoTables\Domain\Model\Country $country
 	 */
 	public function getCountry() {
 		return $this->country;
@@ -300,10 +299,10 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Sets the country
 	 *
-	 * @param \string $country
+	 * @param \SJBR\StaticInfoTables\Domain\Model\Country $country
 	 * @return void
 	 */
-	public function setCountry($country) {
+	public function setCountry(\SJBR\StaticInfoTables\Domain\Model\Country $country) {
 		$this->country = $country;
 	}
 

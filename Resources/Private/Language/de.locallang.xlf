@@ -56,7 +56,11 @@
 				<source>Open the map</source> <target>Karte öffnen</target> </trans-unit>
 			<trans-unit id="list.map.close">
 				<source>Close the map</source> <target>Karte schließen</target> </trans-unit>
-			
+
+			<trans-unit id="select.country.choose">
+				<source>Weltweit</source>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>
