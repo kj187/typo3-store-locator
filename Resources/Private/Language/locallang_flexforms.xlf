@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-02-26T21:15:14Z" product-name="store_locator">
+		<header/>
+		<body>
+
+			<trans-unit id="sheetTitle.general">
+				<source>Genral settings</source>
+			</trans-unit>
+			<trans-unit id="sheetTitle.filter">
+				<source>Filter settings</source>
+			</trans-unit>
+
+			<trans-unit id="settings.general.activate.mainstore">
+				<source>Activate main store feature</source>
+			</trans-unit>
+			<trans-unit id="settings.general.activate.increaseradius">
+				<source>Increase radius automatically</source>
+			</trans-unit>
+
+			<trans-unit id="settings.filter.activate.country">
+				<source>Activate country selector</source>
+			</trans-unit>
+			<trans-unit id="settings.filter.activate.radius">
+				<source>Activate radius selector</source>
+			</trans-unit>
+			<trans-unit id="settings.filter.default.radius">
+				<source>Radius presets in km</source>
+			</trans-unit>
+			<trans-unit id="settings.filter.fallback.radius">
+				<source>Default radius if radius filter is deactivated</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

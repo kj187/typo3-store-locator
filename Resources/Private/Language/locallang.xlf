@@ -85,6 +85,9 @@
 			<trans-unit id="select.country.choose">
 				<source>Worldwide</source>
 			</trans-unit>
+			<trans-unit id="notification.increase.radius">
+				<source>No dealer found with with this settings (_CURRENTRADIUS_ miles). We increase the distance to _RADIUS_ miles</source>
+			</trans-unit>
 			
 		</body>
 	</file>

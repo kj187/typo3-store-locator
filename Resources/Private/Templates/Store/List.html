@@ -1,7 +1,6 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-
 	<div class="content-centered">
 		<h1 class="h-special"><f:translate id="list.dealer" /></h1>
 	</div>
@@ -12,11 +11,20 @@
 					<label for="location"><f:translate id="list.cityZip" /></label>
 					<input type="text" id="location" class="input-text">
 
-					<f:form.select id="location_country" value="{preSelectedCountry}" name="country" options="{countries}" optionLabelField="nameLocalized" sortByOptionLabel="1" prependOptionLabel="{f:translate(id:'select.country.choose')}" prependOptionValue="0" />
+					<f:if condition="{settings.filter.activate.country}">
+						<f:form.select id="location_country" value="{preSelectedCountry}" name="country" options="{countries}" optionLabelField="nameLocalized" sortByOptionLabel="1" prependOptionLabel="{f:translate(id:'select.country.choose')}" prependOptionValue="0" />
+					</f:if>
 
-					<label for="location_radius"><f:translate id="list.radius" /></label>
-					<f:form.select id="location_radius" name="location_radius" class="input-select" options="{settings.search.radius}" />
-					<span><f:translate id="list.radius.format" /></span>
+					<f:if condition="{settings.filter.activate.radius}">
+						<f:then>
+							<label for="location_radius"><f:translate id="list.radius" /></label>
+							<f:form.select id="location_radius" name="location_radius" class="input-select" options="{settings.filter.default.radius}" />
+							<span><f:translate id="list.radius.format" /></span>
+						</f:then>
+						<f:else>
+							<f:form.hidden value="{settings.filter.fallback.radius}" id="location_radius" name="location_radius" />
+						</f:else>
+					</f:if>
 
 					<button type="submit" id="searchButton" class="button btn-skin-submit"><f:translate id="list.search" /></button>
 				</form><a data-text-open="{f:translate(id:'list.map.open')}" class="inv-unit button ext-btn-toggle js-toggle-map"><span href="#" class="ctx-btn-icon"><f:translate id="list.map.close" /></span></a>
@@ -25,6 +33,7 @@
 	</div>
 	<div class="google-map" id="map"></div>
 	<div class="content-centered">
+		<div id="notification"></div>
 		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
 	</div>
 
@@ -36,7 +45,15 @@
 				markerIcon: "]]>{settings.marker.icon}<![CDATA[",
 				useCustomInfoBox: ]]>{settings.infoWindow.useCustomInfoBox}<![CDATA[,
 				region: "]]>{region}<![CDATA[",
-				enableMainstoreFeature: ]]>{settings.enableMainstoreFeature}<![CDATA[,
+
+				labels: {
+					notificationIncreaseRadius: "]]>{f:translate(id:'notification.increase.radius')}<![CDATA[",
+				},
+
+				activate: {
+					mainstore: ]]>{settings.general.activate.mainstore}<![CDATA[,
+					automaticellyIncreaseRadius: ]]>{settings.general.activate.increaseradius}<![CDATA[,
+				},
 			};
 
 

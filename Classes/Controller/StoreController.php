@@ -32,7 +32,7 @@ namespace Aijko\StoreLocator\Controller;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class StoreController extends \Aijko\StoreLocator\Controller\AbstractController {
 
 	/**
 	 * storeRepository
@@ -51,43 +51,14 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	protected $countryRepository;
 
 	/**
-	 * @see parent::initialView
-	 */
-	protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
-		if (count($this->settings['javascript']['load']) > 0) {
-			foreach ($this->settings['javascript']['load'] as $key => $value) {
-				if ($value['enable']) {
-					$this->response->addAdditionalHeaderData($this->wrapJavascriptFile($value['src']));
-				}
-			}
-		}
-	}
-
-	/**
-	 * Wrap js files inside <script> tag
-	 *
-	 * @param string $file Path to file
-	 * @return string <script.. string ready for <head> part
-	 */
-	public function wrapJavascriptFile($file) {
-		if (substr($file, 0, 4) == 'EXT:') {
-			list($extKey, $local) = explode('/', substr($file, 4), 2);
-			if (strcmp($extKey, '') && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey) && strcmp($local, '')) {
-				$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . $local;
-			}
-		}
-
-		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::resolveBackPath($file);
-		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::createVersionNumberedFilename($file);
-		return '<script src="' . htmlspecialchars($file) . '" type="text/javascript"></script>';
-	}
-
-	/**
 	 * action list
 	 *
 	 * @return void
 	 */
 	public function listAction() {
+		$this->settings['filter']['default']['radius'] = $this->prepareDefaultRadius();
+		$this->view->assign('settings', $this->settings);
+
 		if ($this->settings['region']['htmlTag_langKey']) {
 			$region = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('_', $this->settings['region']['htmlTag_langKey']);
 			$region = $region[1];
@@ -127,6 +98,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @param float $longitude
 	 * @param int $radius
 	 * @param int $country
+	 *
 	 * @dontvalidate $latitude
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
@@ -141,6 +113,7 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 	/**
 	 * @param $stores
+	 * @return string
 	 */
 	protected function outputStoreData($stores) {
 		$locations = array();
@@ -189,26 +162,16 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	}
 
 	/**
-	 * @param array $store
-	 * @return string
+	 * @return array
 	 */
-	protected function getStandaloneView(array $variables, $template) {
-		$viewObject = $this->objectManager->create('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-		$viewObject->setFormat('html');
-		$extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-		$templateRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($extbaseFrameworkConfiguration['view']['templateRootPath']);
-		$templatePathAndFilename = $templateRootPath . $template;
-		$viewObject->setTemplatePathAndFilename($templatePathAndFilename);
-		$viewObject->assignMultiple($variables);
-		return $viewObject;
-	}
+	protected function prepareDefaultRadius() {
+		$radiusArrayTemp = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->settings['filter']['default']['radius']);
+		$radiusArray = array();
+		foreach ($radiusArrayTemp as $value) {
+			$radiusArray[$value] = $value;
+		}
 
-	/**
-	 * @param $id
-	 * @return NULL|string
-	 */
-	protected function translate($id) {
-		return  \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $this->request->getControllerExtensionKey());
+		return $radiusArray;
 	}
 
 }

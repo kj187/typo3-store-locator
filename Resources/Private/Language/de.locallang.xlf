@@ -5,60 +5,112 @@
 		<body>
 
 			<trans-unit id="tx_storelocator_domain_model_store" approved="yes">
-				<source>Store</source> <target state="translated">Geschäft</target></trans-unit>
+				<source>Store</source>
+				<target state="translated">Geschäft</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.name" approved="yes">
-				<source>Name</source> <target state="translated">Name</target></trans-unit>
+				<source>Name</source>
+				<target state="translated">Name</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.ismainstore" approved="yes">
-				<source>Is mainstore</source> <target state="translated">Hauptgeschäft</target></trans-unit>
+				<source>Is mainstore</source>
+				<target state="translated">Hauptgeschäft</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address" approved="yes">
-				<source>Address</source> <target state="translated">Adresse</target></trans-unit>
+				<source>Address</source>
+				<target state="translated">Adresse</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.city" approved="yes">
-				<source>City</source> <target state="translated">Stadt</target></trans-unit>
+				<source>City</source>
+				<target state="translated">Stadt</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.street" approved="yes">
-				<source>Street</source> <target state="translated">Strasse</target></trans-unit>
+				<source>Street</source>
+				<target state="translated">Strasse</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.state" approved="yes">
-				<source>State</source> <target state="translated">Land</target></trans-unit>
+				<source>State</source>
+				<target state="translated">Land</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.zipcode" approved="yes">
-				<source>Zipcode</source> <target state="translated">PLZ</target></trans-unit>
+				<source>Zipcode</source>
+				<target state="translated">PLZ</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.country" approved="yes">
-				<source>Country</source> <target state="translated">Land</target></trans-unit>
+				<source>Country</source>
+				<target state="translated">Land</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.latitude" approved="yes">
-				<source>Latitude</source> <target state="translated">Breite</target></trans-unit>
+				<source>Latitude</source>
+				<target state="translated">Breite</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.longitude" approved="yes">
-				<source>Longitude</source> <target state="translated">Länge</target></trans-unit>
+				<source>Longitude</source>
+				<target state="translated">Länge</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.url" approved="yes">
-				<source>URL</source> <target state="translated">URL</target></trans-unit>
+				<source>URL</source>
+				<target state="translated">URL</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.description" approved="yes">
-				<source>Description</source> <target state="translated">Beschreibung</target></trans-unit>
+				<source>Description</source>
+				<target state="translated">Beschreibung</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.email" approved="yes">
-				<source>E-Mail</source> <target state="translated">E-Mail</target></trans-unit>
+				<source>E-Mail</source>
+				<target state="translated">E-Mail</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.phone" approved="yes">
-				<source>Telephone</source> <target state="translated">Telefon</target></trans-unit>
+				<source>Telephone</source>
+				<target state="translated">Telefon</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.fax" approved="yes">
-				<source>Fax</source> <target state="translated">Fax</target></trans-unit>
+				<source>Fax</source>
+				<target state="translated">Fax</target>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.logo" approved="yes">
-				<source>Logo</source> <target state="translated">Logo</target></trans-unit>
+				<source>Logo</source>
+				<target state="translated">Logo</target>
+			</trans-unit>
 
 
 			<trans-unit id="locations.empty">
-				<source>No dealer found.</source> <target>Es wurde kein Fachhändler gefunden.</target> </trans-unit>
+				<source>No dealer found.</source>
+				<target>Es wurde kein Fachhändler gefunden.</target>
+			</trans-unit>
 			<trans-unit id="list.dealer">
-				<source>Dealer</source> <target>Händler</target> </trans-unit>
+				<source>Dealer</source>
+				 <target>Händler</target> </trans-unit>
 			<trans-unit id="list.cityZip">
-				<source>Location/Zip code</source> <target>Ort/PLZ</target> </trans-unit>
+				<source>Location/Zip code</source>
+				<target>Ort/PLZ</target>
+			</trans-unit>
 			<trans-unit id="list.radius">
-				<source>Radius</source> <target>Umkreis</target> </trans-unit>
+				<source>Radius</source>
+				<target>Umkreis</target>
+			</trans-unit>
 			<trans-unit id="list.radius.format">
-				<source>km</source> <target>km</target> </trans-unit>
+				<source>km</source>
+				<target>km</target>
+			</trans-unit>
 			<trans-unit id="list.search">
-				<source>Search</source> <target>Suchen</target> </trans-unit>
+				<source>Search</source>
+				<target>Suchen</target>
+			</trans-unit>
 			<trans-unit id="list.map.open">
-				<source>Open the map</source> <target>Karte öffnen</target> </trans-unit>
+				<source>Open the map</source>
+				<target>Karte öffnen</target>
+			</trans-unit>
 			<trans-unit id="list.map.close">
-				<source>Close the map</source> <target>Karte schließen</target> </trans-unit>
+				<source>Close the map</source>
+				<target>Karte schließen</target>
+			</trans-unit>
 
-			<trans-unit id="select.country.choose">
+			<trans-unit id="select.country.choose"  approved="yes">
 				<source>Weltweit</source>
+			</trans-unit>
+			<trans-unit id="notification.increase.radius" approved="yes">
+				<target>Es wurden mit Ihren Einstellungen (_CURRENTRADIUS_ km) keine Ergebnisse gefunden. Der Radius wurde daraufhin auf _RADIUS_ km erweitert.</target>
 			</trans-unit>
 
 		</body>

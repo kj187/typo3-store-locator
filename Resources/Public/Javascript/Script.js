@@ -131,7 +131,7 @@ StoreLocator = {
 	searchLocations: function() {
 		this._clearAllLocations();
 		var address = $('#location').val();
-		var country = $('#location_country').val();
+		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 		var radius = $('#location_radius').val();
 
 		var self = this;
@@ -146,7 +146,7 @@ StoreLocator = {
 				}
 			});
 		} else {
-			if (this.options.enableMainstoreFeature) {
+			if (this.options.activate.mainstore) {
 				self._findMainStoreLocations();
 			}
 		}
@@ -206,8 +206,10 @@ StoreLocator = {
 		var markerContent = data.markerContent;
 		var bounds = new google.maps.LatLngBounds();
 		var sidebar = $('#sidebar').get(0);
+		var notification = $('#notification').get(0);
 
 		sidebar.innerHTML = '';
+		//notification.innerHTML = '';
 		if (locations.length > 0) {
 			for (var i = 0; i < locations.length; i++) {
 
@@ -223,7 +225,31 @@ StoreLocator = {
 
 			self.map.fitBounds(bounds);
 		} else {
-			sidebar.innerHTML = data.notification;
+			notification.innerHTML = data.notification;
+			if (this.options.activate.automaticellyIncreaseRadius) {
+				self._increaseRadius(notification);
+			}
+		}
+	},
+
+	/**
+	 * Increase radius automatically
+	 *
+	 * @param notification
+	 * @private
+	 */
+	_increaseRadius: function(notification) {
+		if ($('#location_radius').is('select')) {
+			var currentRadius = $('#location_radius option:selected').val();
+			var nextRadius = $('#location_radius option:selected').next().val();
+			if ($.isNumeric(nextRadius)) {
+				$('#location_radius').val(nextRadius);
+				label = this.options.labels.notificationIncreaseRadius;
+				label = label.replace('_RADIUS_', nextRadius);
+				label = label.replace('_CURRENTRADIUS_', currentRadius);
+				notification.innerHTML = label;
+				this.searchLocations();
+			}
 		}
 	},
 
