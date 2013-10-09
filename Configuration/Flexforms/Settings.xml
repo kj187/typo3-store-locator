@@ -14,16 +14,16 @@
 				<el>
 					<settings.general.google.apikey>
 						<TCEforms>
-							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.general.activate.increaseradius</label>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.general.google.apikey</label>
 							<config>
 								<type>input</type>
 								<default></default>
 							</config>
 						</TCEforms>
 					</settings.general.google.apikey>
-
 					<settings.general.activate.increaseradius>
 						<TCEforms>
+							<onChange>reload</onChange>
 							<!--<displayCond>FIELD:filterSheet.settings.filter.activate.radius:=:1</displayCond>-->
 							<exclude>0</exclude>
 							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.general.activate.increaseradius</label>
@@ -32,6 +32,17 @@
 							</config>
 						</TCEforms>
 					</settings.general.activate.increaseradius>
+					<settings.general.activate.increaseradiusmaxresults>
+						<TCEforms>
+							<displayCond>FIELD:settings.general.activate.increaseradius:=:1</displayCond>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.general.activate.increaseradiusmaxresults</label>
+							<config>
+								<type>input</type>
+								<default>3</default>
+							</config>
+						</TCEforms>
+					</settings.general.activate.increaseradiusmaxresults>
 					<settings.general.activate.mainstore>
 						<TCEforms>
 							<exclude>0</exclude>

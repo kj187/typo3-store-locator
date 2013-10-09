@@ -209,8 +209,14 @@ StoreLocator = {
 		var notification = $('#notification').get(0);
 
 		sidebar.innerHTML = '';
-		//notification.innerHTML = '';
 		if (locations.length > 0) {
+			if (this.options.activate.automaticellyIncreaseRadius) {
+				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems) {
+					self._increaseRadius(notification);
+					return;
+				}
+			}
+
 			for (var i = 0; i < locations.length; i++) {
 
 				//var distance = parseFloat(locations[i]['distance']);

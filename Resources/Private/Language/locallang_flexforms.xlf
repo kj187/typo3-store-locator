@@ -11,11 +11,17 @@
 				<source>Filter settings</source>
 			</trans-unit>
 
+			<trans-unit id="settings.general.google.apikey">
+				<source>Google API key</source>
+			</trans-unit>
 			<trans-unit id="settings.general.activate.mainstore">
 				<source>Activate main store feature</source>
 			</trans-unit>
 			<trans-unit id="settings.general.activate.increaseradius">
 				<source>Increase radius automatically</source>
+			</trans-unit>
+			<trans-unit id="settings.general.activate.increaseradiusmaxresults">
+				<source>Increase radius until you find X results</source>
 			</trans-unit>
 
 			<trans-unit id="settings.filter.activate.country">
