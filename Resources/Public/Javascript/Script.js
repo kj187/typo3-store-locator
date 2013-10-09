@@ -218,8 +218,7 @@ StoreLocator = {
 			}
 
 			for (var i = 0; i < locations.length; i++) {
-
-				//var distance = parseFloat(locations[i]['distance']);
+				var distance = parseFloat(locations[i]['distance']);
 				var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
 
 				var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);

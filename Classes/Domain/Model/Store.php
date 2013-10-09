@@ -155,6 +155,11 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $logo;
 
 	/**
+	 * @var float
+	 */
+	protected $distance;
+
+	/**
 	 * Returns the name
 	 *
 	 * @return \string $name
@@ -459,6 +464,20 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param float $distance
+	 */
+	public function setDistance($distance) {
+		$this->distance = $distance;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getDistance() {
+		return $this->distance;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function toArray() {
@@ -479,7 +498,8 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			'state' => $this->getState(),
 			'street' => $this->getStreet(),
 			'url' => $this->getUrl(),
-			'zipcode' => $this->getZipcode()
+			'zipcode' => $this->getZipcode(),
+			'distance' => $this->getDistance()
 		);
 	}
 

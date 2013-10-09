@@ -84,8 +84,10 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		}
 
 		$uids = array();
+		$temporaryDistanceArray = array();
 		while ($store = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			$uids[] = $store['uid'];
+			$temporaryDistanceArray[$store['uid']] = $store['distance'];
 		}
 
 		if (count($uids) > '0') {
@@ -94,7 +96,15 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			if ($typoscriptSettings['disableStoragePageId']) {
 				$settings->setRespectStoragePage(FALSE);
 			}
-			return $query->matching($query->in('uid', $uids))->execute();
+
+			$stores = $query->matching($query->in('uid', $uids))->execute();
+			$returnValue = array();
+			foreach ($stores as $store) {
+				$store->setDistance($temporaryDistanceArray[$store->getUid()]);
+				$returnValue[] = $store;
+			}
+
+			return $returnValue;
 		}
 
 		return NULL;

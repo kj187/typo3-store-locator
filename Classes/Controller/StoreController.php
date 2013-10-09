@@ -119,10 +119,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		$locations = array();
 		$sidebarItems = array();
 		$markerContent = array();
-
 		if (NULL !== $stores) {
-			$stores = $stores->toArray();
-
 			foreach ($stores as $store) {
 				$locations[] = $store->toArray();
 				$sidebarItems[] = $this->getSidebarItems($store->toArray());
