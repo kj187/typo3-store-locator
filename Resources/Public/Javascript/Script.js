@@ -48,6 +48,7 @@ StoreLocator = {
 	 */
 	_initializeOptions: function(options) {
 		this.options = $.extend({}, this.defaultOptions, options);
+		this.options.maxResultItemsOriginal = this.options.maxResultItems;
 	},
 
 	/**
@@ -111,8 +112,19 @@ StoreLocator = {
 	 */
 	_attachEvents: function() {
 		var $body = $(document.body);
-		$body.on('click', '#searchButton', $.proxy(this, '_startSearch'));
-		$body.on('change', '#location_country', $.proxy(this, '_startSearch'));
+		$body.on('change', '#location_country', $.proxy(function(e) {
+			this._clearAllLocations();
+			this._startSearch(e);
+		}, this));
+		$body.on('click', '#searchButton', $.proxy(function(e) {
+			this.options.maxResultItems = this.options.maxResultItemsOriginal;
+			this._clearAllLocations();
+			this._startSearch(e);
+		}, this));
+		$body.on('click', '#more-button', $.proxy(function(e) {
+			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
+			this._startSearch(e);
+		}, this));
 	},
 
 	/**
@@ -129,7 +141,7 @@ StoreLocator = {
 	 * StoreLocator
 	 */
 	searchLocations: function() {
-		this._clearAllLocations();
+		//this._clearAllLocations();
 		var address = $('#location').val();
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 		var radius = $('#location_radius').val();
@@ -175,7 +187,6 @@ StoreLocator = {
 	 * @private
 	 */
 	_findLocations: function(lat, lng, radius, country) {
-		this._clearAllLocations();
 
 		var self = this;
 		var getStoresUri = this.options.getStoresUri;
@@ -207,6 +218,7 @@ StoreLocator = {
 		var bounds = new google.maps.LatLngBounds();
 		var sidebar = $('#sidebar').get(0);
 		var notification = $('#notification').get(0);
+		var moreButton = $('#more-button');
 
 		sidebar.innerHTML = '';
 		if (locations.length > 0) {
@@ -217,8 +229,17 @@ StoreLocator = {
 				}
 			}
 
+			if (locations.length > this.options.maxResultItems) {
+				moreButton.show();
+			} else {
+				moreButton.hide();
+			}
+
 			for (var i = 0; i < locations.length; i++) {
-				var distance = parseFloat(locations[i]['distance']);
+				if (i > (this.options.maxResultItems-1)) {
+					break;
+				}
+
 				var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
 
 				var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);

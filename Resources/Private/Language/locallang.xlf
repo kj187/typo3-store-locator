@@ -81,6 +81,9 @@
 			<trans-unit id="list.map.close">
 				<source>Close the map</source>
 			</trans-unit>
+			<trans-unit id="list.map.moreButton">
+				<source>Show more</source>
+			</trans-unit>
 
 			<trans-unit id="select.country.choose">
 				<source>Worldwide</source>

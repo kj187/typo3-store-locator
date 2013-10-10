@@ -23,6 +23,9 @@
 			<trans-unit id="settings.general.activate.increaseradiusmaxresults">
 				<source>Increase radius until you find X results</source>
 			</trans-unit>
+			<trans-unit id="settings.general.results.maxitems">
+				<source>Show max X items</source>
+			</trans-unit>
 
 			<trans-unit id="settings.filter.activate.country">
 				<source>Activate country selector</source>

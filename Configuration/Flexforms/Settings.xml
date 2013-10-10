@@ -52,6 +52,16 @@
 							</config>
 						</TCEforms>
 					</settings.general.activate.mainstore>
+					<settings.general.results.maxitems>
+						<TCEforms>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.general.results.maxitems</label>
+							<config>
+								<type>input</type>
+								<default>10</default>
+							</config>
+						</TCEforms>
+					</settings.general.results.maxitems>
 				</el>
 			</ROOT>
 		</generalSheet>
