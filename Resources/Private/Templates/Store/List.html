@@ -35,6 +35,7 @@
 	<div class="content-centered">
 		<div id="notification"></div>
 		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
+		<button id="more-button" style="display:none;"><f:translate id="list.map.moreButton" /></button>
 	</div>
 
 	<script type="text/javascript">
@@ -47,6 +48,7 @@
 				region: "]]>{region}<![CDATA[",
 
 				automaticallyIncreaseRadiusMaxResultItems: ]]>{settings.general.activate.increaseradiusmaxresults}<![CDATA[,
+				maxResultItems: ]]>{settings.general.results.maxitems}<![CDATA[,
 
 				labels: {
 					notificationIncreaseRadius: "]]>{f:translate(id:'notification.increase.radius')}<![CDATA[",
@@ -55,7 +57,7 @@
 				activate: {
 					mainstore: ]]>{settings.general.activate.mainstore}<![CDATA[,
 					automaticellyIncreaseRadius: ]]>{settings.general.activate.increaseradius}<![CDATA[,
-				},
+				}
 			};
 
 

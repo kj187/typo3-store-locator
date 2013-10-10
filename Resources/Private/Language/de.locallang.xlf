@@ -105,6 +105,9 @@
 				<source>Close the map</source>
 				<target>Karte schließen</target>
 			</trans-unit>
+			<trans-unit id="list.map.moreButton">
+				<target>Weitere Fachhändler anzeigen</target>
+			</trans-unit>
 
 			<trans-unit id="select.country.choose"  approved="yes">
 				<source>Weltweit</source>

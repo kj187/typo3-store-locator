@@ -99,11 +99,12 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 			$stores = $query->matching($query->in('uid', $uids))->execute();
 			$returnValue = array();
+			$transformationForSorting = array_flip($uids);
 			foreach ($stores as $store) {
 				$store->setDistance($temporaryDistanceArray[$store->getUid()]);
-				$returnValue[] = $store;
+				$returnValue[$transformationForSorting[$store->getUid()]] = $store;
 			}
-
+			ksort($returnValue);
 			return $returnValue;
 		}
 
