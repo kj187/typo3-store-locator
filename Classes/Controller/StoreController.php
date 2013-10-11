@@ -55,20 +55,21 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	 *
 	 * @return void
 	 */
-	public function listAction() {
+	public function storeSearchAction() {
 		$this->settings['filter']['default']['radius'] = $this->prepareDefaultRadius();
 		$this->view->assign('settings', $this->settings);
-
-		if ($this->settings['region']['htmlTag_langKey']) {
-			$region = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('_', $this->settings['region']['htmlTag_langKey']);
-			$region = $region[1];
-		} else {
-			$region = $this->settings['region']['default'];
-		}
-
-		$this->view->assign('region', $region);
+		$this->view->assign('displayMode', 'storeSearch');
 		$this->view->assign('countries', $this->getOnlyCountriesWhereStoresAvailable());
-		$this->view->assign('preSelectedCountry', $this->countryRepository->findOneByIsoCodeA2($region));
+		$this->view->assign('preSelectedCountry', $this->countryRepository->findOneByIsoCodeA2($this->region));
+	}
+
+	/**
+	 *
+	 */
+	public function directionsServiceAction() {
+		$this->view->assign('displayMode', 'directionsService');
+		$store = $this->storeRepository->findByUid($this->settings['directionsservice']['destination']);
+		$this->view->assign('defaultStore', $this->outputStoreData(array($store)));
 	}
 
 	/**
@@ -119,7 +120,8 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		$locations = array();
 		$sidebarItems = array();
 		$markerContent = array();
-		if (NULL !== $stores) {
+
+		if (count($stores)>0) {
 			foreach ($stores as $store) {
 				$locations[] = $store->toArray();
 				$sidebarItems[] = $this->getSidebarItems($store->toArray());
@@ -129,7 +131,8 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 			$data = array(
 				'sidebarItems' => $sidebarItems,
 				'markerContent' => $markerContent,
-				'locations' => $locations
+				'locations' => $locations,
+				'notification' => ''
 			);
 
 		} else {

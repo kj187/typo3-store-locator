@@ -51,6 +51,11 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $contentObjectData = array();
 
 	/**
+	 * @var string
+	 */
+	protected $region;
+
+	/**
 	 * Initializes the view before invoking an action method.
 	 *
 	 * Override this method to solve assign variables common for all actions
@@ -65,6 +70,15 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->contentObjectData = $this->contentObject->data;
 		$this->data['parent'] = $this->contentObjectData;
 		$view->assign('data', $this->data);
+
+		if ($this->settings['region']['htmlTag_langKey']) {
+			$this->region = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('_', $this->settings['region']['htmlTag_langKey']);
+			$this->region = $this->region[1];
+		} else {
+			$this->region = $this->settings['region']['default'];
+		}
+		$view->assign('region', $this->region);
+
 		parent::initializeView($view);
 
 		if (count($this->settings['javascript']['load']) > 0) {

@@ -39,7 +39,7 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 */
 	public function findAllMainStores() {
 		$query = $this->createQuery();
-		return $query->matching($query->equals('ismainstore', TRUE))->execute();
+		return $query->matching($query->equals('ismainstore', TRUE))->execute()->toArray();
 	}
 
 	/**
@@ -84,10 +84,8 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		}
 
 		$uids = array();
-		$temporaryDistanceArray = array();
 		while ($store = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			$uids[] = $store['uid'];
-			$temporaryDistanceArray[$store['uid']] = $store['distance'];
 		}
 
 		if (count($uids) > '0') {
@@ -101,7 +99,6 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			$returnValue = array();
 			$transformationForSorting = array_flip($uids);
 			foreach ($stores as $store) {
-				$store->setDistance($temporaryDistanceArray[$store->getUid()]);
 				$returnValue[$transformationForSorting[$store->getUid()]] = $store;
 			}
 			ksort($returnValue);

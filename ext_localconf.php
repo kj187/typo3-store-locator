@@ -38,7 +38,7 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 	'Aijko.' . $_EXTKEY,
 	'Storelocator',
 	array(
-		'Store' => 'list, getStores, getMainStores',
+		'Store' => 'storeSearch, directionsService, getStores, getMainStores',
 
 	),
 	// non-cacheable actions

@@ -28,9 +28,13 @@ StoreLocator = {
 	defaultOptions: {
 		'getStoresUri': '',
 		'markerIcon': '',
-		'useCustomInfoBox': false
+		'useCustomInfoBox': false,
+		'maxResultItemsOriginal': 10
 	},
 
+	/**
+	 * @param options
+	 */
 	init: function(options) {
 		this._initializeOptions(options);
 		this._initializeMap();
@@ -39,93 +43,20 @@ StoreLocator = {
 		this._initializeInfoWindow();
 		this._initializeToggleMap();
 
-		// default view
-		this.searchLocations();
+		if (this.options.displayMode == 'storeSearch') {
+			this._initializeMapPosition();
+			this.searchLocations();
+		}
+		if (this.options.displayMode == 'directionsService') {
+			this._initializeDefaultLocation();
+			this._initializeDirectionService();
+		}
 	},
 
-	/**
-	 * @private
+
+	/****************************************************************************************
+	 * Store Search
 	 */
-	_initializeOptions: function(options) {
-		this.options = $.extend({}, this.defaultOptions, options);
-		this.options.maxResultItemsOriginal = this.options.maxResultItems;
-	},
-
-	/**
-	 * @returns {*}
-	 * @private
-	 */
-	_initializeMap: function() {
-		var geo = new google.maps.Geocoder;
-		var self = this;
-		geo.geocode({'address':this.options.region, 'region':this.options.region}, function(results, status){
-
-			var zoom = 6;
-			if (status == google.maps.GeocoderStatus.OK) {
-				var lat = results[0].geometry.location.lat();
-				var lng = results[0].geometry.location.lng();
-
-				if (self.options.region == 'europa') {
-					var zoom = 3;
-				}
-
-			} else {
-				var lat = 51;
-				var lng = 6;
-			}
-
-			var mapOptions = {
-				center: new google.maps.LatLng(lat, lng),
-				zoom: zoom,
-				maxZoom: 15,
-				panControl: true,
-				zoomControl: true,
-				scaleControl: false,
-				disableDefaultUI: false,
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				mapTypeControl: true,
-				mapTypeControlOptions: {
-					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-				}
-			}
-
-			self.map = new google.maps.Map($('#map').get(0), mapOptions);
-		});
-	},
-
-	/**
-	 * @private
-	 */
-	_initializeMarkers: function() {
-		this.markers = [];
-	},
-
-	/**
-	 * @private
-	 */
-	_initializeInfoWindow: function() {
-		this.infoWindow = new StoreLocatorInfoWindow(this.options.useCustomInfoBox);
-	},
-
-	/**
-	 * @private
-	 */
-	_attachEvents: function() {
-		var $body = $(document.body);
-		$body.on('change', '#location_country', $.proxy(function(e) {
-			this._clearAllLocations();
-			this._startSearch(e);
-		}, this));
-		$body.on('click', '#searchButton', $.proxy(function(e) {
-			this.options.maxResultItems = this.options.maxResultItemsOriginal;
-			this._clearAllLocations();
-			this._startSearch(e);
-		}, this));
-		$body.on('click', '#more-button', $.proxy(function(e) {
-			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
-			this._startSearch(e);
-		}, this));
-	},
 
 	/**
 	 * @private
@@ -216,11 +147,14 @@ StoreLocator = {
 		var sidebarItems = data.sidebarItems;
 		var markerContent = data.markerContent;
 		var bounds = new google.maps.LatLngBounds();
-		var sidebar = $('#sidebar').get(0);
+		var sidebar = $('#sidebar').eq(0);
 		var notification = $('#notification').get(0);
 		var moreButton = $('#more-button');
+		var address = $('#location').val();
+		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
 		sidebar.innerHTML = '';
+		notification.innerHTML = data.notification;
 		if (locations.length > 0) {
 			if (this.options.activate.automaticellyIncreaseRadius) {
 				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems) {
@@ -236,14 +170,12 @@ StoreLocator = {
 			}
 
 			for (var i = 0; i < locations.length; i++) {
-				if (i > (this.options.maxResultItems-1)) {
-					break;
-				}
-
+				if (i > (this.options.maxResultItems-1)) break;
 				var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
+				this._setDistance(locations[i].uid, address, country, latlng);
 
-				var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);
-				sidebar.appendChild(sidebarEntry);
+				var sidebarEntry = self._createSidebarItem($(sidebarItems[i]), locations[i]);
+				sidebar.append(sidebarEntry);
 
 				self._createLocationMarker(markerContent[i], locations[i], latlng);
 				bounds.extend(latlng);
@@ -251,11 +183,40 @@ StoreLocator = {
 
 			self.map.fitBounds(bounds);
 		} else {
-			notification.innerHTML = data.notification;
 			if (this.options.activate.automaticellyIncreaseRadius) {
 				self._increaseRadius(notification);
 			}
 		}
+	},
+
+	/**
+	 * @param storeUid
+	 * @param address
+	 * @param country
+	 * @param latlng
+	 * @private
+	 */
+	_setDistance: function(storeUid, address, country, latlng) {
+		var distanceMatrixCallback = function(response, status) {
+			if (status == google.maps.DistanceMatrixStatus.OK) {
+				var distance = response.rows[0].elements[0].distance.text;
+				var duration = response.rows[0].elements[0].duration.text;
+
+				$('#distance_' + this.storeUid).html(distance);
+				$('#duration_' + this.storeUid).html(duration);
+			}
+		}
+
+		var service = new google.maps.DistanceMatrixService()
+		service.storeUid = storeUid;
+		service.getDistanceMatrix({
+				origins: [address, country],
+				destinations: [latlng],
+				travelMode: google.maps.TravelMode.DRIVING,
+				avoidHighways: false,
+				avoidTolls: false
+			}, distanceMatrixCallback.bind(service)
+		);
 	},
 
 	/**
@@ -286,19 +247,153 @@ StoreLocator = {
 	 * @private
 	 */
 	_createSidebarItem: function(sidebarItem, location) {
-		var list = document.createElement('li');
-		list.innerHTML = sidebarItem;
+		var list = $('<li/>');
+		list.append(sidebarItem);
 		return list;
 	},
 
 	/**
-	 * @param uniqueName
-	 * @param latlng
-	 * @param name
-	 * @param address
 	 * @private
 	 */
-	_createLocationMarker: function(markerContent, location, latlng) {
+	_clearAllLocations: function() {
+		$('#sidebar').html('');
+		this.infoWindow.close();
+		for (var i = 0; i < this.markers.length; i++) {
+			this.markers[i].setMap(null);
+		}
+		this.markers.length = 0;
+	},
+
+
+	/****************************************************************************************
+	 * Directions Service
+	 */
+
+	/**
+	 * @private
+	 */
+	_calculateDirectionRoute: function(e) {
+		var self = this;
+		var originStreet = $('#from-street').val();
+		var originZip = $('#from-zip').val();
+		var originCity = $('#from-city').val();
+
+		if (originStreet || originZip || originCity) {
+			this.infoWindow.close();
+			var request = {
+				origin: originStreet + ',' +  originZip + ', ' + originCity + ', ' + this.options.region,
+				destination: this.options.defaultStore.locations[0].address,
+				travelMode: google.maps.TravelMode.DRIVING,
+				unitSystem: google.maps.UnitSystem.METRIC
+			};
+			this.directionsService.route(request, function(response, status) {
+				if (status == google.maps.DirectionsStatus.OK) {
+					self.directionsDisplay.setDirections(response);
+				} else {
+					alert('Unable to retrieve your route');
+				}
+			});
+		}
+
+		e.preventDefault();
+		return false;
+	},
+
+	/**
+	 *
+	 * @private
+	 */
+	_initializeDefaultLocation: function() {
+		var locations = this.options.defaultStore.locations;
+		var markerContent = this.options.defaultStore.markerContent;
+		var latlng = new google.maps.LatLng(parseFloat(locations[0]['latitude']), parseFloat(locations[0]['longitude']));
+
+		this._createLocationMarker(markerContent[0], locations[0], latlng, true);
+		this.map.setCenter(latlng);
+		this.map.setZoom(15);
+	},
+
+	/**
+	 * @private
+	 */
+	_initializeDirectionService: function() {
+		this.directionsService = new google.maps.DirectionsService();
+		this.directionsDisplay = new google.maps.DirectionsRenderer();
+		this.directionsDisplay.setMap(this.map);
+		this.directionsDisplay.setPanel($('#directions-panel').get(0));
+	},
+
+	/****************************************************************************************
+	 * General
+	 */
+
+	/**
+	 * @private
+	 */
+	_initializeOptions: function(options) {
+		this.options = $.extend({}, this.defaultOptions, options);
+		this.options.maxResultItemsOriginal = this.options.maxResultItems;
+	},
+
+	/**
+	 * @returns {*}
+	 * @private
+	 */
+	_initializeMap: function() {
+		var mapOptions = {
+			maxZoom: 15,
+			panControl: true,
+			zoomControl: true,
+			scaleControl: false,
+			disableDefaultUI: false,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			mapTypeControl: true,
+			mapTypeControlOptions: {
+				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+			}
+		}
+
+		this.map = new google.maps.Map($('#map').get(0), mapOptions);
+	},
+
+	/**
+	 * @private
+	 */
+	_initializeMapPosition: function() {
+		var self = this;
+		var geo = new google.maps.Geocoder;
+		var zoom = (this.options.region == 'europa' ? 3 : 6);
+
+		geo.geocode({'address': this.options.region, 'region':this.options.region}, function(results, status){
+			if (status == google.maps.GeocoderStatus.OK) {
+				self.map.setCenter(results[0].geometry.location);
+				self.map.setZoom(zoom);
+			}
+		});
+	},
+
+	/**
+	 * @private
+	 */
+	_initializeMarkers: function() {
+		this.markers = [];
+	},
+
+	/**
+	 * @private
+	 */
+	_initializeInfoWindow: function() {
+		this.infoWindow = new StoreLocatorInfoWindow(this.options.useCustomInfoBox);
+	},
+
+	/**
+	 * @param markerContent
+	 * @param location
+	 * @param latlng
+	 * @param infoWindowIsOpen
+	 * @private
+	 */
+	_createLocationMarker: function(markerContent, location, latlng, infoWindowIsOpen = false) {
 		var self = this;
 
 		if (self.options.markerIcon != '') {
@@ -309,7 +404,7 @@ StoreLocator = {
 			map: self.map,
 			position: latlng,
 			icon: icon,
-			animation: google.maps.Animation.DROP
+			animation: google.maps.Animation.DROP,
 		});
 
 		var html = markerContent;
@@ -318,6 +413,11 @@ StoreLocator = {
 			self.infoWindow.setContent(html);
 			self.infoWindow.open(self.map, marker);
 		});
+
+		if (infoWindowIsOpen) {
+			self.infoWindow.setContent(html);
+			self.infoWindow.open(self.map, marker);
+		}
 
 		// register click event to open layer from external
 		$('#storeLocatorMarker_' + location['uid']).bind('click', function() {
@@ -333,13 +433,24 @@ StoreLocator = {
 	/**
 	 * @private
 	 */
-	_clearAllLocations: function() {
-		$('#sidebar').html('');
-		this.infoWindow.close();
-		for (var i = 0; i < this.markers.length; i++) {
-			this.markers[i].setMap(null);
-		}
-		this.markers.length = 0;
+	_attachEvents: function() {
+		var $body = $(document.body);
+		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
+			this._clearAllLocations();
+			this._startSearch(e);
+		}, this));
+		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
+			this.options.maxResultItems = this.options.maxResultItemsOriginal;
+			this._clearAllLocations();
+			this._startSearch(e);
+		}, this));
+		$body.on('click', '.directionsService #searchButton', $.proxy(function(e) {
+			this._calculateDirectionRoute(e);
+		}, this));
+		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
+			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
+			this._startSearch(e);
+		}, this));
 	},
 
 	/**

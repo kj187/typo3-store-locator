@@ -7,23 +7,43 @@
 			<trans-unit id="sheetTitle.general">
 				<source>Genral settings</source>
 			</trans-unit>
+			<trans-unit id="sheetTitle.directionsserviceSheet">
+				<source>Directions service settings</source>
+			</trans-unit>
+			<trans-unit id="sheetTitle.storesearchSheet">
+				<source>Store search settings</source>
+			</trans-unit>
 			<trans-unit id="sheetTitle.filter">
 				<source>Filter settings</source>
+			</trans-unit>
+
+			<trans-unit id="switchableControllerActions">
+				<source>Display mode</source>
+			</trans-unit>
+			<trans-unit id="switchableControllerActions.0">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="switchableControllerActions.1">
+				<source>Store search</source>
+			</trans-unit>
+			<trans-unit id="switchableControllerActions.2">
+				<source>Driving route to specific store</source>
 			</trans-unit>
 
 			<trans-unit id="settings.general.google.apikey">
 				<source>Google API key</source>
 			</trans-unit>
-			<trans-unit id="settings.general.activate.mainstore">
+
+			<trans-unit id="settings.storesearch.activate.mainstore">
 				<source>Activate main store feature</source>
 			</trans-unit>
-			<trans-unit id="settings.general.activate.increaseradius">
+			<trans-unit id="settings.storesearch.activate.increaseradius">
 				<source>Increase radius automatically</source>
 			</trans-unit>
-			<trans-unit id="settings.general.activate.increaseradiusmaxresults">
+			<trans-unit id="settings.storesearch.activate.increaseradiusmaxresults">
 				<source>Increase radius until you find X results</source>
 			</trans-unit>
-			<trans-unit id="settings.general.results.maxitems">
+			<trans-unit id="settings.storesearch.results.maxitems">
 				<source>Show max X items</source>
 			</trans-unit>
 
@@ -38,6 +58,10 @@
 			</trans-unit>
 			<trans-unit id="settings.filter.fallback.radius">
 				<source>Default radius if radius filter is deactivated</source>
+			</trans-unit>
+
+			<trans-unit id="settings.directionsservice.destination">
+				<source>Destination</source>
 			</trans-unit>
 		</body>
 	</file>
