@@ -85,7 +85,7 @@ StoreLocator = {
 					var center = results[0].geometry.location;
 					self._findLocations(center.lat(), center.lng(), radius, country);
 				} else {
-					alert(address + ' not found');
+					self._noResultsFound(address);
 				}
 			});
 		} else {
@@ -148,17 +148,17 @@ StoreLocator = {
 		var markerContent = data.markerContent;
 		var bounds = new google.maps.LatLngBounds();
 		var sidebar = $('#sidebar').eq(0);
-		var notification = $('#notification').get(0);
 		var moreButton = $('#more-button');
 		var address = $('#location').val();
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
 		sidebar.innerHTML = '';
-		notification.innerHTML = data.notification;
 		if (locations.length > 0) {
 			if (this.options.activate.automaticellyIncreaseRadius) {
-				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems) {
-					self._increaseRadius(notification);
+
+				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems && !$('#location_radius option:last').is(':selected')) {
+					// mind. Anzahl nicht erreicht, weiter suchen
+					self._increaseRadius();
 					return;
 				}
 			}
@@ -183,8 +183,10 @@ StoreLocator = {
 
 			self.map.fitBounds(bounds);
 		} else {
-			if (this.options.activate.automaticellyIncreaseRadius) {
-				self._increaseRadius(notification);
+			if (this.options.activate.automaticellyIncreaseRadius && !$('#location_radius option:last').is(':selected')) {
+				self._increaseRadius();
+			} else {
+				self._noResultsFound(address);
 			}
 		}
 	},
@@ -222,19 +224,18 @@ StoreLocator = {
 	/**
 	 * Increase radius automatically
 	 *
-	 * @param notification
 	 * @private
 	 */
-	_increaseRadius: function(notification) {
+	_increaseRadius: function() {
 		if ($('#location_radius').is('select')) {
 			var currentRadius = $('#location_radius option:selected').val();
 			var nextRadius = $('#location_radius option:selected').next().val();
 			if ($.isNumeric(nextRadius)) {
 				$('#location_radius').val(nextRadius);
-				label = this.options.labels.notificationIncreaseRadius;
+				var label = this.options.labels.notificationIncreaseRadius;
 				label = label.replace('_RADIUS_', nextRadius);
 				label = label.replace('_CURRENTRADIUS_', currentRadius);
-				notification.innerHTML = label;
+				$('#notification').html(label);
 				this.searchLocations();
 			}
 		}
@@ -290,7 +291,7 @@ StoreLocator = {
 				if (status == google.maps.DirectionsStatus.OK) {
 					self.directionsDisplay.setDirections(response);
 				} else {
-					alert('Unable to retrieve your route');
+					self._noResultsFound(originZip + ' ' + originCity + ' ' + originStreet);
 				}
 			});
 		}
@@ -438,18 +439,22 @@ StoreLocator = {
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
 			this._clearAllLocations();
 			this._startSearch(e);
+			this._clearNotification();
 		}, this));
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
 			this._clearAllLocations();
 			this._startSearch(e);
+			this._clearNotification();
 		}, this));
 		$body.on('click', '.directionsService #searchButton', $.proxy(function(e) {
 			this._calculateDirectionRoute(e);
+			this._clearNotification();
 		}, this));
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
 			this._startSearch(e);
+			this._clearNotification();
 		}, this));
 	},
 
@@ -485,6 +490,21 @@ StoreLocator = {
 
 			return false;
 		});
-	}
+	},
+
+	/**
+	 * @private
+	 */
+	_noResultsFound: function(address) {
+		var notificationText = this.options.labels.notificationNoDealerFound.replace('_KEYWORD_', address);
+		$('#notification').html(notificationText);
+	},
+
+	/**
+	 * @private
+	 */
+	_clearNotification: function() {
+		$('#notification').html('');
+	},
 
 }

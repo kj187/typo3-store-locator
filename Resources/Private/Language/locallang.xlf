@@ -58,7 +58,7 @@
 
 
 			<trans-unit id="locations.empty">
-				<source>No dealer found.</source>
+				<source>No dealer found with keyword "_KEYWORD_".</source>
 			</trans-unit>
 			<trans-unit id="list.dealer">
 				<source>Dealer</source>

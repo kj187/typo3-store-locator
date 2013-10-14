@@ -75,8 +75,7 @@
 
 
 			<trans-unit id="locations.empty">
-				<source>No dealer found.</source>
-				<target>Es wurde kein Fachhändler gefunden.</target>
+				<target>Ihre Suchanfrage [_KEYWORD_] lieferte leider keine Ergebnisse! Überprüfen Sie bitte Ihre Eingabe und versuchen Sie es erneut.</target>
 			</trans-unit>
 			<trans-unit id="list.dealer">
 				<source>Dealer</source>
@@ -114,22 +113,21 @@
 			</trans-unit>
 
 			<trans-unit id="select.country.choose"  approved="yes">
-				<source>Weltweit</source>
+				<target>Weltweit</target>
 			</trans-unit>
 			<trans-unit id="notification.increase.radius" approved="yes">
 				<target>Es wurden mit Ihren Einstellungen (_CURRENTRADIUS_ km) keine Ergebnisse gefunden. Der Radius wurde daraufhin auf _RADIUS_ km erweitert.</target>
 			</trans-unit>
 
 			<trans-unit id="directionsservice.from.zip">
-				<source>PLZ</source>
+				<target>PLZ</target>
 			</trans-unit>
 			<trans-unit id="directionsservice.from.street">
-				<source>Straße</source>
+				<target>Straße</target>
 			</trans-unit>
 			<trans-unit id="directionsservice.from.city">
-				<source>Stadt</source>
+				<target>Stadt</target>
 			</trans-unit>
-
 		</body>
 	</file>
 </xliff>

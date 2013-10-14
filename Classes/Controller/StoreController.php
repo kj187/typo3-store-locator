@@ -138,7 +138,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		} else {
 			$data = array(
 				'locations' => array(),
-				'notification' => $this->translate('locations.empty')
+				//'notification' => $this->translate('locations.empty')
 			);
 		}
 
