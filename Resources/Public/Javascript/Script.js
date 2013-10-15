@@ -232,10 +232,6 @@ StoreLocator = {
 			var nextRadius = $('#location_radius option:selected').next().val();
 			if ($.isNumeric(nextRadius)) {
 				$('#location_radius').val(nextRadius);
-				var label = this.options.labels.notificationIncreaseRadius;
-				label = label.replace('_RADIUS_', nextRadius);
-				label = label.replace('_CURRENTRADIUS_', currentRadius);
-				$('#notification').html(label);
 				this.searchLocations();
 			}
 		}

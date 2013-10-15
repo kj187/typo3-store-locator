@@ -115,9 +115,6 @@
 			<trans-unit id="select.country.choose"  approved="yes">
 				<target>Weltweit</target>
 			</trans-unit>
-			<trans-unit id="notification.increase.radius" approved="yes">
-				<target>Es wurden mit Ihren Einstellungen (_CURRENTRADIUS_ km) keine Ergebnisse gefunden. Der Radius wurde daraufhin auf _RADIUS_ km erweitert.</target>
-			</trans-unit>
 
 			<trans-unit id="directionsservice.from.zip">
 				<target>PLZ</target>
