@@ -26,7 +26,7 @@ namespace Aijko\StoreLocator\Controller;
  ***************************************************************/
 
 /**
- *
+ * Store locator controller
  *
  * @package store_locator
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -35,36 +35,34 @@ namespace Aijko\StoreLocator\Controller;
 class StoreController extends \Aijko\StoreLocator\Controller\AbstractController {
 
 	/**
-	 * storeRepository
-	 *
 	 * @var \Aijko\StoreLocator\Domain\Repository\StoreRepository
 	 * @inject
 	 */
 	protected $storeRepository;
 
 	/**
-	 * countryRepository
-	 *
 	 * @var \SJBR\StaticInfoTables\Domain\Repository\CountryRepository
 	 * @inject
 	 */
 	protected $countryRepository;
 
 	/**
-	 * action list
+	 * Store search
 	 *
 	 * @return void
 	 */
 	public function storeSearchAction() {
-		$this->settings['filter']['default']['radius'] = $this->prepareDefaultRadius();
-		$this->view->assign('settings', $this->settings);
 		$this->view->assign('displayMode', 'storeSearch');
+		$this->settings['filter']['default']['radius'] = $this->getDefaultRadiusAsArray();
+		$this->view->assign('settings', $this->settings);
 		$this->view->assign('countries', $this->getOnlyCountriesWhereStoresAvailable());
 		$this->view->assign('preSelectedCountry', $this->countryRepository->findOneByIsoCodeA2($this->region));
 	}
 
 	/**
+	 * Direction service
 	 *
+	 * @return void
 	 */
 	public function directionsServiceAction() {
 		$this->view->assign('displayMode', 'directionsService');
@@ -73,20 +71,8 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	}
 
 	/**
-	 * @return array
-	 */
-	protected function getOnlyCountriesWhereStoresAvailable() {
-		$stores = $this->storeRepository->findAll();
-		$countries = array();
-		foreach ($stores as $store) {
-			$countries[$store->getCountry()->getUid()] = $store->getCountry();
-		}
-
-		return $countries;
-	}
-
-	/**
 	 * Get all main stores (for default view)
+	 *
 	 * @return string
 	 */
 	public function getMainStoresAction() {
@@ -95,11 +81,12 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	}
 
 	/**
+	 * Get stores (for ajax request)
+	 *
 	 * @param float $latitude
 	 * @param float $longitude
 	 * @param int $radius
 	 * @param int $country
-	 *
 	 * @dontvalidate $latitude
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
@@ -113,15 +100,18 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	}
 
 	/**
-	 * @param $stores
+	 * Prepare json output for ajax request
+	 *
+	 * @param array $stores
 	 * @return string
 	 */
 	protected function outputStoreData($stores) {
 		$locations = array();
 		$sidebarItems = array();
 		$markerContent = array();
+		$data = array('locations' => array());
 
-		if (count($stores)>0) {
+		if (count($stores) > 0) {
 			foreach ($stores as $store) {
 				$locations[] = $store->toArray();
 				$sidebarItems[] = $this->getSidebarItems($store->toArray());
@@ -131,14 +121,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 			$data = array(
 				'sidebarItems' => $sidebarItems,
 				'markerContent' => $markerContent,
-				'locations' => $locations,
-				'notification' => ''
-			);
-
-		} else {
-			$data = array(
-				'locations' => array(),
-				//'notification' => $this->translate('locations.empty')
+				'locations' => $locations
 			);
 		}
 
@@ -146,6 +129,8 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	}
 
 	/**
+	 * Get sidebar items (the address cards below the map)
+	 *
 	 * @param array $store
 	 * @return string
 	 */
@@ -154,6 +139,8 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	}
 
 	/**
+	 * Get marker content (overlay in the map)
+	 *
 	 * @param array $store
 	 * @return string
 	 */
@@ -164,7 +151,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	/**
 	 * @return array
 	 */
-	protected function prepareDefaultRadius() {
+	protected function getDefaultRadiusAsArray() {
 		$radiusArrayTemp = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->settings['filter']['default']['radius']);
 		$radiusArray = array();
 		foreach ($radiusArrayTemp as $value) {
@@ -172,6 +159,19 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		}
 
 		return $radiusArray;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getOnlyCountriesWhereStoresAvailable() {
+		$stores = $this->storeRepository->findAll();
+		$countries = array();
+		foreach ($stores as $store) {
+			$countries[$store->getCountry()->getUid()] = $store->getCountry();
+		}
+
+		return $countries;
 	}
 
 }

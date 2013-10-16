@@ -26,9 +26,10 @@ namespace Aijko\StoreLocator\Domain\Repository;
  ***************************************************************/
 
 /**
+ * Store repository
+ *
  * @package store_locator
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
  */
 class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 

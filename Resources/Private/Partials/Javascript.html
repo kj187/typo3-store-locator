@@ -1,3 +1,12 @@
+<f:section name="InitializeMin">
+	<script type="text/javascript">
+		<![CDATA[ var documentIsReady=false;if(document.readyState==="complete"){setTimeout(onDomIsLoaded)}else{if(document.addEventListener){document.addEventListener("DOMContentLoaded",onDomIsLoaded,false);window.addEventListener("load",onDomIsLoaded,false)}else{document.attachEvent("onreadystatechange",onDomIsLoaded);window.attachEvent("onload",onDomIsLoaded)}}function onDomIsLoaded(c){if(document.addEventListener||c.type==="load"||document.readyState==="complete"){detachLoadEvents();if(typeof jQuery!="undefined"){onScriptLoaded()}else{detachLoadEvents();var a=document.createElement("script");var b=document.getElementsByTagName("head")[0];a.type="text/javascript";a.src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js";b.appendChild(a);a.onreadystatechange=a.onload=function(){var d=a.readyState;if(!documentIsReady&&(!d||/loaded|complete/.test(d))){documentIsReady=true;onScriptLoaded()}}}}}function onScriptLoaded(){(function(a){StoreLocator.run(StoreLocatorOptions)})(window.jQuery)}function detachLoadEvents(){if(document.addEventListener){document.removeEventListener("DOMContentLoaded",onDomIsLoaded,false);window.removeEventListener("load",onDomIsLoaded,false)}else{document.detachEvent("onreadystatechange",onDomIsLoaded);window.detachEvent("onload",onDomIsLoaded)}}; //]]>
+	</script>
+</f:section>
+
+
+
+
 <f:section name="Initialize">
 	<script type="text/javascript">
 		<![CDATA[
@@ -57,7 +66,7 @@
 			function onScriptLoaded() {
 				(function($) {
 					// INIT here
-					StoreLocator.init(StoreLocatorOptions);
+					StoreLocator.run(StoreLocatorOptions);
 				})(window.jQuery);
 			}
 

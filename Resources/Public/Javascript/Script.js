@@ -34,9 +34,11 @@ StoreLocator = {
 	},
 
 	/**
+	 * Run store locator
+	 *
 	 * @param options
 	 */
-	init: function(options) {
+	run: function(options) {
 		this._initializeOptions(options);
 		this._initializeMap();
 		this._initializeRadius();
@@ -47,7 +49,7 @@ StoreLocator = {
 
 		if (this.options.displayMode == 'storeSearch') {
 			this._initializeMapPosition();
-			this.searchLocations();
+			this._searchLocations();
 		}
 		if (this.options.displayMode == 'directionsService') {
 			this._initializeDefaultLocation();
@@ -56,6 +58,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize radius
+	 *
 	 * @private
 	 */
 	_initializeRadius: function() {
@@ -71,25 +75,27 @@ StoreLocator = {
 	 */
 
 	/**
+	 * Start search
+	 *
 	 * @private
-	 * @return {Boolean}
+	 * @return false
 	 */
 	_startSearch: function(e) {
-		this.searchLocations();
+		this._searchLocations();
 		e.preventDefault();
 		return false;
 	},
 
 	/**
-	 * StoreLocator
+	 * @private
 	 */
-	searchLocations: function() {
+	_searchLocations: function() {
 		var address = $('#location').val();
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
 		if (address != '') {
 			if (this.userLocation && this.lastQueryAddress == address) { // Performance improvement, avoid OVER_QUERY_LIMIT
-				this._findLocations(this.userLocation.lat(), this.userLocation.lng(), country);
+				this._loadLocations(this.userLocation.lat(), this.userLocation.lng(), country);
 			} else {
 				this._firstSearchWithoutUserLocationData(address, country);
 			}
@@ -101,6 +107,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Find user location and store it a variable to avoid an geocode OVER_QUERY_LIMIT
+	 *
 	 * @param address
 	 * @param country
 	 * @private
@@ -113,7 +121,7 @@ StoreLocator = {
 		geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				self.userLocation = results[0].geometry.location;
-				self._findLocations(self.userLocation.lat(), self.userLocation.lng(), country);
+				self._loadLocations(self.userLocation.lat(), self.userLocation.lng(), country);
 			} else {
 				self._noResultsFound(address);
 			}
@@ -121,6 +129,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Find main store locations (if activated, should be displayed on the first page load)
+	 *
 	 * @private
 	 */
 	_findMainStoreLocations: function() {
@@ -134,15 +144,17 @@ StoreLocator = {
 			url: getDefaultStoresUri,
 			dataType: 'json',
 			success: function(data) {
-				self._initializeLocations(data);
+				self._initializeAndOutputLocations(data);
 			}
 		});
 	},
 
 	/**
+	 * Load locations
+	 *
 	 * @private
 	 */
-	_findLocations: function(lat, lng, country) {
+	_loadLocations: function(lat, lng, country) {
 
 		var self = this;
 		var getStoresUri = this.options.getStoresUri;
@@ -157,16 +169,18 @@ StoreLocator = {
 			url: getStoresUri,
 			dataType: 'json',
 			success: function(data) {
-				self._initializeLocations(data);
+				self._initializeAndOutputLocations(data);
 			}
 		});
 	},
 
 	/**
+	 * Initialize and output locations
+	 *
 	 * @param data
 	 * @private
 	 */
-	_initializeLocations: function(data) {
+	_initializeAndOutputLocations: function(data) {
 		var self = this;
 		var locations = data.locations;
 		var sidebarItems = data.sidebarItems;
@@ -180,7 +194,6 @@ StoreLocator = {
 		if (locations.length > 0) {
 			if (this.options.activate.automaticellyIncreaseRadius) {
 				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems && this.radius < this.options.maxRadius) {
-					// mind. Anzahl nicht erreicht, weiter suchen
 					self._increaseRadius();
 					return;
 				}
@@ -198,7 +211,7 @@ StoreLocator = {
 				var sidebarEntry = self._createSidebarItem($(sidebarItems[i]), locations[i]);
 
 				sidebar.append(sidebarEntry);
-				self._createLocationMarker(markerContent[i], locations[i], latlng);
+				self._createLocationMarker(markerContent[i], locations[i], latlng, false);
 				bounds.extend(latlng);
 			}
 
@@ -219,10 +232,12 @@ StoreLocator = {
 	 */
 	_increaseRadius: function() {
 		this.radius = (this.radius + parseInt(this.options.defaultRadius));
-		this.searchLocations();
+		this._searchLocations();
 	},
 
 	/**
+	 * Create sidebar items
+	 *
 	 * @param uid
 	 * @param location
 	 * @return {*}
@@ -235,6 +250,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Clear locations
+	 *
 	 * @private
 	 */
 	_clearAllLocations: function() {
@@ -252,6 +269,8 @@ StoreLocator = {
 	 */
 
 	/**
+	 * Calculate direction route to a specific store
+	 *
 	 * @private
 	 */
 	_calculateDirectionRoute: function(e) {
@@ -282,6 +301,7 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize default locations
 	 *
 	 * @private
 	 */
@@ -296,6 +316,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize direction service
+	 *
 	 * @private
 	 */
 	_initializeDirectionService: function() {
@@ -310,6 +332,8 @@ StoreLocator = {
 	 */
 
 	/**
+	 * Initialize options
+	 *
 	 * @private
 	 */
 	_initializeOptions: function(options) {
@@ -318,6 +342,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize google map
+	 *
 	 * @returns {*}
 	 * @private
 	 */
@@ -339,6 +365,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize map position
+	 *
 	 * @private
 	 */
 	_initializeMapPosition: function() {
@@ -355,6 +383,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize markers
+	 *
 	 * @private
 	 */
 	_initializeMarkers: function() {
@@ -362,6 +392,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize info window (overlay)
+	 *
 	 * @private
 	 */
 	_initializeInfoWindow: function() {
@@ -369,13 +401,15 @@ StoreLocator = {
 	},
 
 	/**
+	 * Create location marker (overlay)
+	 *
 	 * @param markerContent
 	 * @param location
 	 * @param latlng
 	 * @param infoWindowIsOpen
 	 * @private
 	 */
-	_createLocationMarker: function(markerContent, location, latlng, infoWindowIsOpen = false) {
+	_createLocationMarker: function(markerContent, location, latlng, infoWindowIsOpen) {
 		var self = this;
 
 		if (self.options.markerIcon != '') {
@@ -413,16 +447,20 @@ StoreLocator = {
 	},
 
 	/**
+	 * Attach events
+	 *
 	 * @private
 	 */
 	_attachEvents: function() {
 		var $body = $(document.body);
+
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
 			this._clearNotification();
 		}, this));
+
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
 			this._clearAllLocations();
@@ -430,10 +468,12 @@ StoreLocator = {
 			this._startSearch(e);
 			this._clearNotification();
 		}, this));
+
 		$body.on('click', '.directionsService #searchButton', $.proxy(function(e) {
 			this._calculateDirectionRoute(e);
 			this._clearNotification();
 		}, this));
+
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
 			this._startSearch(e);
@@ -443,22 +483,20 @@ StoreLocator = {
 	},
 
 	/**
+	 * Initialize toggle map (show/hide map)
 	 *
 	 * @private
 	 */
 	_initializeToggleMap: function() {
-
-		var $el = $('#retailer_search'),
-			$mapHolder = $el.find('.google-map'),
-			self = this,
-			mapHeight = $mapHolder.height(),
-			$btn = $el.find('.js-toggle-map'),
-			$btnInner = $btn.find('span'),
-			textClose = $btnInner.text(),
-			textOpen = $btn.attr('data-text-open');
+		var $el = $('#retailer_search');
+		var $mapHolder = $el.find('.google-map');
+		var mapHeight = $mapHolder.height();
+		var $btn = $el.find('.js-toggle-map');
+		var $btnInner = $btn.find('span');
+		var textClose = $btnInner.text();
+		var textOpen = $btn.attr('data-text-open');
 
 		$btn.bind('click', function() {
-
 			if (!$mapHolder.is(':animated')) {
 				if ($btn.hasClass('closed')) {
 					$mapHolder.animate({height: mapHeight}, 500);
@@ -477,6 +515,8 @@ StoreLocator = {
 	},
 
 	/**
+	 * Displays a notification if no results found
+	 *
 	 * @private
 	 */
 	_noResultsFound: function(address) {
@@ -485,10 +525,12 @@ StoreLocator = {
 	},
 
 	/**
+	 * Clear the notification box
+	 *
 	 * @private
 	 */
 	_clearNotification: function() {
 		$('#notification').html('');
-	},
+	}
 
 }

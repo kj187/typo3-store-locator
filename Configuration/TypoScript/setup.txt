@@ -20,7 +20,6 @@ plugin.tx_storelocator {
 		filter.activate.radius = 0
 		filter.activate.country = 0
 
-
 		disableStoragePageId = 0
 
 		region {
@@ -51,12 +50,12 @@ plugin.tx_storelocator {
 
 				infoWindow {
 					enable = 1
-					src = EXT:store_locator/Resources/Public/Javascript/InfoWindow.js
+					src = EXT:store_locator/Resources/Public/Javascript/InfoWindow.min.js
 				}
 
 				script {
 					enable = 1
-					src = EXT:store_locator/Resources/Public/Javascript/Script.js
+					src = EXT:store_locator/Resources/Public/Javascript/Script.min.js
 				}
 			}
 		}

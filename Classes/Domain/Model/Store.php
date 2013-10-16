@@ -26,7 +26,7 @@ namespace Aijko\StoreLocator\Domain\Model;
  ***************************************************************/
 
 /**
- *
+ * Store Model
  *
  * @package store_locator
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -35,121 +35,89 @@ namespace Aijko\StoreLocator\Domain\Model;
 class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * name
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $name;
 
 	/**
-	 * Address
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $address;
 
 	/**
-	 * City
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $city;
 
 	/**
-	 * ismainstore
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $ismainstore;
 
 	/**
-	 * Street
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $street;
 
 	/**
-	 * state
-	 *
 	 * @var \string
 	 */
 	protected $state;
 
 	/**
-	 * Zipcode
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $zipcode;
 
 	/**
-	 * Country
-	 *
 	 * @var \SJBR\StaticInfoTables\Domain\Model\Country
 	 */
 	protected $country;
 
 	/**
-	 * Latitude
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $latitude;
 
 	/**
-	 * Longitude
-	 *
 	 * @var \string
 	 * @validate NotEmpty
 	 */
 	protected $longitude;
 
 	/**
-	 * URL
-	 *
 	 * @var \string
 	 */
 	protected $url;
 
 	/**
-	 * Description
-	 *
 	 * @var \string
 	 */
 	protected $description;
 
 	/**
-	 * E-Mail
-	 *
 	 * @var \string
 	 */
 	protected $email;
 
 	/**
-	 * Telephone
-	 *
 	 * @var \string
 	 */
 	protected $phone;
 
 	/**
-	 * Fax
-	 *
 	 * @var \string
 	 */
 	protected $fax;
 
 	/**
-	 * Logo
-	 *
 	 * @var \string
 	 */
 	protected $logo;
