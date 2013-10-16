@@ -57,7 +57,7 @@
 				<source>Radius presets in km</source>
 			</trans-unit>
 			<trans-unit id="settings.filter.fallback.radius">
-				<source>Default radius if radius filter is deactivated</source>
+				<source>Default radius (if radius selector is deactivated, also used to increase next radius)</source>
 			</trans-unit>
 
 			<trans-unit id="settings.directionsservice.destination">

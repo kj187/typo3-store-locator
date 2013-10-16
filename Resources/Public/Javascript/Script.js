@@ -29,7 +29,8 @@ StoreLocator = {
 		'getStoresUri': '',
 		'markerIcon': '',
 		'useCustomInfoBox': false,
-		'maxResultItemsOriginal': 10
+		'maxResultItemsOriginal': 10,
+		'maxRadius': 50000
 	},
 
 	/**
@@ -38,6 +39,7 @@ StoreLocator = {
 	init: function(options) {
 		this._initializeOptions(options);
 		this._initializeMap();
+		this._initializeRadius();
 		this._initializeMarkers();
 		this._attachEvents();
 		this._initializeInfoWindow();
@@ -53,6 +55,16 @@ StoreLocator = {
 		}
 	},
 
+	/**
+	 * @private
+	 */
+	_initializeRadius: function() {
+		if ($('#location_radius').is('select')) {
+			this.radius = parseInt($('#location_radius option:selected').val());
+		} else {
+			this.radius = parseInt($('#location_radius').val());
+		}
+	},
 
 	/****************************************************************************************
 	 * Store Search
@@ -72,27 +84,39 @@ StoreLocator = {
 	 * StoreLocator
 	 */
 	searchLocations: function() {
-		//this._clearAllLocations();
 		var address = $('#location').val();
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
-		var radius = $('#location_radius').val();
 
-		var self = this;
 		if (address != '') {
-			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
-				if (status == google.maps.GeocoderStatus.OK) {
-					var center = results[0].geometry.location;
-					self._findLocations(center.lat(), center.lng(), radius, country);
-				} else {
-					self._noResultsFound(address);
-				}
-			});
+			if (this.userLocation) { // Performance improvement, avoid OVER_QUERY_LIMIT
+				this._findLocations(this.userLocation.lat(), this.userLocation.lng(), country);
+			} else {
+				this._firstSearchWithoutUserLocationData(address, country);
+			}
 		} else {
 			if (this.options.activate.mainstore) {
-				self._findMainStoreLocations();
+				this._findMainStoreLocations();
 			}
 		}
+	},
+
+	/**
+	 * @param address
+	 * @param country
+	 * @private
+	 */
+	_firstSearchWithoutUserLocationData: function(address, country) {
+		var geocoder = new google.maps.Geocoder();
+		var self = this;
+
+		geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				self.userLocation = results[0].geometry.location;
+				self._findLocations(self.userLocation.lat(), self.userLocation.lng(), country);
+			} else {
+				self._noResultsFound(address);
+			}
+		});
 	},
 
 	/**
@@ -117,14 +141,14 @@ StoreLocator = {
 	/**
 	 * @private
 	 */
-	_findLocations: function(lat, lng, radius, country) {
+	_findLocations: function(lat, lng, country) {
 
 		var self = this;
 		var getStoresUri = this.options.getStoresUri;
 
 		getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
 		getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
-		getStoresUri = getStoresUri.replace('_RADIUS_', radius);
+		getStoresUri = getStoresUri.replace('_RADIUS_', this.radius);
 		getStoresUri = getStoresUri.replace('_COUNTRY_', country);
 
 		$.ajax({
@@ -155,8 +179,7 @@ StoreLocator = {
 		sidebar.innerHTML = '';
 		if (locations.length > 0) {
 			if (this.options.activate.automaticellyIncreaseRadius) {
-
-				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems && !$('#location_radius option:last').is(':selected')) {
+				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems && this.radius < this.options.maxRadius) {
 					// mind. Anzahl nicht erreicht, weiter suchen
 					self._increaseRadius();
 					return;
@@ -183,7 +206,7 @@ StoreLocator = {
 
 			self.map.fitBounds(bounds);
 		} else {
-			if (this.options.activate.automaticellyIncreaseRadius && !$('#location_radius option:last').is(':selected')) {
+			if (this.options.activate.automaticellyIncreaseRadius && this.radius < this.options.maxRadius) {
 				self._increaseRadius();
 			} else {
 				self._noResultsFound(address);
@@ -227,14 +250,8 @@ StoreLocator = {
 	 * @private
 	 */
 	_increaseRadius: function() {
-		if ($('#location_radius').is('select')) {
-			var currentRadius = $('#location_radius option:selected').val();
-			var nextRadius = $('#location_radius option:selected').next().val();
-			if ($.isNumeric(nextRadius)) {
-				$('#location_radius').val(nextRadius);
-				this.searchLocations();
-			}
-		}
+		this.radius = (this.radius + parseInt(this.options.defaultRadius));
+		this.searchLocations();
 	},
 
 	/**
@@ -434,12 +451,14 @@ StoreLocator = {
 		var $body = $(document.body);
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
 			this._clearAllLocations();
+			this._initializeRadius();
 			this._startSearch(e);
 			this._clearNotification();
 		}, this));
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
 			this._clearAllLocations();
+			this._initializeRadius();
 			this._startSearch(e);
 			this._clearNotification();
 		}, this));
@@ -450,6 +469,7 @@ StoreLocator = {
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
 			this._startSearch(e);
+			this._initializeRadius();
 			this._clearNotification();
 		}, this));
 	},

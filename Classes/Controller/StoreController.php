@@ -107,7 +107,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	 *
 	 * @return string
 	 */
-	public function getStoresAction($latitude, $longitude, $radius = 50, $country = 0) {
+	public function getStoresAction($latitude, $longitude, $radius, $country = 0) {
 		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $country, $this->settings);
 		return $this->outputStoreData($stores);
 	}
