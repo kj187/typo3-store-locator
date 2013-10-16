@@ -85,6 +85,9 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			foreach ($this->settings['javascript']['load'] as $key => $value) {
 				if ($value['enable']) {
 					$src = $value['src'];
+					if ($key == 'googleMapsApi') {
+						$src .= '&language=' . ($this->settings['region']['htmlTag_langKey'] ? $this->settings['region']['htmlTag_langKey'] : $this->settings['region']['default']);
+					}
 					if ($key == 'googleMapsApi' && '' != $this->settings['general']['google']['apikey']) {
 						$src .= '&key=' . $this->settings['general']['google']['apikey'];
 					}
