@@ -2,7 +2,7 @@
 
 	<strong>{store.name}</strong><br>
 
-	Entfernung: <span id="distance_{store.uid}"></span> <span id="duration_{store.uid}"></span><br>
+	Entfernung: {store.distance -> f:format.number(decimals: 1, decimalSeparator:',', thousandsSeparator:'.')} km<br>
 
 
 	{store.street}<br>

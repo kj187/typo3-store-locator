@@ -33,6 +33,11 @@ namespace Aijko\StoreLocator\Domain\Repository;
 class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	/**
+	 *  Earthradius in km
+	 */
+	const EARTH_RADIUS = 6371;
+
+	/**
 	 * Find all main stores (for default view)
 	 *
 	 * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -49,68 +54,69 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param int $country
 	 * @param array $typoscriptSettings
 	 *
-	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 * @return array
 	 */
 	public function findStores($latitude, $longitude, $radius, $country, array $typoscriptSettings) {
 		$query = $this->createQuery();
 		$settings = $query->getQuerySettings();
 		$storagePageIds = $settings->getStoragePageIds();
 		$whereClause = array('1=1');
-		$havingDistance = '';
+		$formulaToCalculateDistance = $this->getFormulaToCalculateDistance($latitude, $longitude);
 
-		if ($radius) {
-			$havingDistance = "HAVING distance < %s";
+		if (!$typoscriptSettings['disableStoragePageId']) {
+			$whereClause[] = 'pid = ' . (int)$storagePageIds[0];
 		}
 
 		if ('' != $country) {
 			$whereClause[] = 'country = ' . (int)$country;
 		}
 
-		// Using the query statement is not an option. Unfortunately.
-		if (!$typoscriptSettings['disableStoragePageId']) {
-			$queryString = sprintf(
-				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE " . implode(' AND ', $whereClause) . " AND pid = %s " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " " . $havingDistance . "  ORDER BY distance",
-				(float)($latitude),
-				(float)($longitude),
-				(float)($latitude),
-				(int)$storagePageIds[0],
-				(int)($radius)
-			);
-			$result = $GLOBALS['TYPO3_DB']->sql_query($queryString);
-		} else {
-			$queryString = sprintf(
-				"SELECT uid, address, name, latitude, longitude, ( 3959 * acos( cos( radians('%s') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( latitude ) ) ) ) AS distance FROM tx_storelocator_domain_model_store WHERE " . implode(' AND ', $whereClause) . " AND  " .  $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . " " . $havingDistance . "  ORDER BY distance",
-				(float)($latitude),
-				(float)($longitude),
-				(float)($latitude),
-				(int)($radius)
-			);
-			$result = $GLOBALS['TYPO3_DB']->sql_query($queryString);
+		if ($radius) {
+			$whereClause[] = $formulaToCalculateDistance . ' <= ' . (int)$radius;
 		}
 
-		$uids = array();
-		while ($store = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-			$uids[] = $store['uid'];
+		$queryString = 'SELECT uid, address, name, latitude, longitude, ' . $formulaToCalculateDistance . ' AS distance FROM tx_storelocator_domain_model_store WHERE ' . implode(' AND ', $whereClause) . ' ' . $GLOBALS['TSFE']->sys_page->enableFields('tx_storelocator_domain_model_store') . ' ORDER BY distance';
+		$result = $GLOBALS['TYPO3_DB']->sql_query($queryString);
+
+		$returnValue = array();
+		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			$store = $this->findByUid($data['uid']);
+			$store->setDistance($data['distance']);
+			$returnValue[] = $store;
 		}
+		return $returnValue;
+	}
 
-		if (count($uids) > '0') {
-			$query = $this->createQuery();
-			$settings = $query->getQuerySettings();
-			if ($typoscriptSettings['disableStoragePageId']) {
-				$settings->setRespectStoragePage(FALSE);
-			}
+	/**
+	 * Create formula to calculate the beeline distance between two locations
+	 *
+	 * http://www.mamat-online.de/umkreissuche/opengeodb.php
+	 *
+	 * @param $latitude
+	 * @param $longitude
+	 *
+	 * @return string
+	 */
+	protected function getFormulaToCalculateDistance($latitude, $longitude) {
+		// convert degree measure in radian measure
+		$lambda = $longitude * pi() / 180;
+		$phi = $latitude * pi() / 180;
 
-			$stores = $query->matching($query->in('uid', $uids))->execute();
-			$returnValue = array();
-			$transformationForSorting = array_flip($uids);
-			foreach ($stores as $store) {
-				$returnValue[$transformationForSorting[$store->getUid()]] = $store;
-			}
-			ksort($returnValue);
-			return $returnValue;
-		}
+		// Convert spherical coordinates in cartesian (square) coordinate system
+		$x = self::EARTH_RADIUS * cos($phi) * cos($lambda);
+		$y = self::EARTH_RADIUS * cos($phi) * sin($lambda);
+		$z = self::EARTH_RADIUS * sin($phi);
 
-		return NULL;
+		// Calculate beeline distance
+		return (2 * self::EARTH_RADIUS) . ' *
+			ASIN(
+				SQRT(
+					POWER(' . $x .' - ' . self::EARTH_RADIUS . ' * COS(latitude * PI() / 180) * COS(longitude * PI() / 180), 2)
+					+ POWER(' . $y .' - ' . self::EARTH_RADIUS . ' * COS(latitude * PI() / 180) * SIN(longitude * PI() / 180), 2)
+					+ POWER(' . $z .' - ' . self::EARTH_RADIUS . ' * SIN(latitude * PI() / 180), 2)
+				) / ' . (2 * self::EARTH_RADIUS) . '
+			)
+		';
 	}
 }
 

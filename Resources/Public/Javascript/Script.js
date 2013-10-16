@@ -88,7 +88,7 @@ StoreLocator = {
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
 		if (address != '') {
-			if (this.userLocation) { // Performance improvement, avoid OVER_QUERY_LIMIT
+			if (this.userLocation && this.lastQueryAddress == address) { // Performance improvement, avoid OVER_QUERY_LIMIT
 				this._findLocations(this.userLocation.lat(), this.userLocation.lng(), country);
 			} else {
 				this._firstSearchWithoutUserLocationData(address, country);
@@ -108,6 +108,7 @@ StoreLocator = {
 	_firstSearchWithoutUserLocationData: function(address, country) {
 		var geocoder = new google.maps.Geocoder();
 		var self = this;
+		this.lastQueryAddress = address;
 
 		geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
@@ -174,7 +175,6 @@ StoreLocator = {
 		var sidebar = $('#sidebar').eq(0);
 		var moreButton = $('#more-button');
 		var address = $('#location').val();
-		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
 		sidebar.innerHTML = '';
 		if (locations.length > 0) {
@@ -195,11 +195,9 @@ StoreLocator = {
 			for (var i = 0; i < locations.length; i++) {
 				if (i > (this.options.maxResultItems-1)) break;
 				var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
-				this._setDistance(locations[i].uid, address, country, latlng);
-
 				var sidebarEntry = self._createSidebarItem($(sidebarItems[i]), locations[i]);
-				sidebar.append(sidebarEntry);
 
+				sidebar.append(sidebarEntry);
 				self._createLocationMarker(markerContent[i], locations[i], latlng);
 				bounds.extend(latlng);
 			}
@@ -212,36 +210,6 @@ StoreLocator = {
 				self._noResultsFound(address);
 			}
 		}
-	},
-
-	/**
-	 * @param storeUid
-	 * @param address
-	 * @param country
-	 * @param latlng
-	 * @private
-	 */
-	_setDistance: function(storeUid, address, country, latlng) {
-		var distanceMatrixCallback = function(response, status) {
-			if (status == google.maps.DistanceMatrixStatus.OK) {
-				var distance = response.rows[0].elements[0].distance.text;
-				var duration = response.rows[0].elements[0].duration.text;
-
-				$('#distance_' + this.storeUid).html(distance);
-				$('#duration_' + this.storeUid).html(duration);
-			}
-		}
-
-		var service = new google.maps.DistanceMatrixService()
-		service.storeUid = storeUid;
-		service.getDistanceMatrix({
-				origins: [address, country],
-				destinations: [latlng],
-				travelMode: google.maps.TravelMode.DRIVING,
-				avoidHighways: false,
-				avoidTolls: false
-			}, distanceMatrixCallback.bind(service)
-		);
 	},
 
 	/**
