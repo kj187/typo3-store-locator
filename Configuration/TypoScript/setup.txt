@@ -71,6 +71,15 @@ plugin.tx_storelocator {
 	}
 }
 
+page {
+	includeCSS {
+		storeLocator = EXT:store_locator/Resources/Public/Stylesheets/Style.css
+		storeLocator {
+			compress = 0
+		}
+	}
+}
+
 storeLocatorAjax = PAGE
 storeLocatorAjax {
 	typeNum = {$plugin.tx_storelocator.settings.typeNum.ajax}

@@ -9,7 +9,7 @@
 			<input type="text" id="from-zip" name="from-zip" placeholder="ZIP" class="input-text" />
 
 			<label for="from-city"><f:translate id="directionsservice.from.city" /></label>
-			<input type="text" id="from-city" name="from-city" required="required" placeholder="City" class="input-text" />
+			<input type="text" id="from-city" name="from-city" placeholder="City" class="input-text" />
 
 			<label for="from-street"><f:translate id="directionsservice.from.street" /></label>
 			<input type="text" id="from-street" name="from-street" placeholder="Street" class="input-text" />
@@ -18,7 +18,12 @@
 		</form>
 		<a data-text-open="{f:translate(id:'list.map.open')}" class="js-toggle-map"><span href="#" class="ctx-btn-icon"><f:translate id="list.map.close" /></span></a>
 
-		<div class="google-map" id="map"></div>
+		<div class="map-container">
+			<div class="progress-indicator">
+				<img src="/typo3conf/ext/store_locator/Resources/Public/Images/loader.gif" alt="" />
+			</div>
+			<div class="google-map" id="map"></div>
+		</div>
 		<div id="notification"></div>
 		<div id="directions-panel"></div>
 

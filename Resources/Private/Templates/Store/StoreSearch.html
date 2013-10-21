@@ -28,7 +28,13 @@
 
 		<a data-text-open="{f:translate(id:'list.map.open')}" class="js-toggle-map"><span href="#" class="ctx-btn-icon"><f:translate id="list.map.close" /></span></a>
 
-		<div class="google-map" id="map"></div>
+		<div class="map-container">
+			<div class="progress-indicator">
+				<img src="/typo3conf/ext/store_locator/Resources/Public/Images/loader.gif" alt="" />
+			</div>
+			<div class="google-map" id="map"></div>
+		</div>
+
 		<div id="notification"></div>
 		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
 		<button id="more-button" style="display:none;"><f:translate id="list.map.moreButton" /></button>

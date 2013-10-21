@@ -55,6 +55,11 @@ StoreLocator = {
 			this._initializeDefaultLocation();
 			this._initializeDirectionService();
 		}
+
+		var self = this;
+		setTimeout(function(){
+			self._hideIndicator();
+		}, 2000);
 	},
 
 	/**
@@ -223,6 +228,8 @@ StoreLocator = {
 				self._noResultsFound(address);
 			}
 		}
+
+		this._hideIndicator();
 	},
 
 	/**
@@ -293,8 +300,11 @@ StoreLocator = {
 				} else {
 					self._noResultsFound(originZip + ' ' + originCity + ' ' + originStreet);
 				}
+
+				self._hideIndicator();
 			});
 		}
+
 
 		e.preventDefault();
 		return false;
@@ -455,6 +465,7 @@ StoreLocator = {
 		var $body = $(document.body);
 
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
+			this._showIndicator();
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
@@ -463,6 +474,7 @@ StoreLocator = {
 
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
+			this._showIndicator();
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
@@ -470,12 +482,14 @@ StoreLocator = {
 		}, this));
 
 		$body.on('click', '.directionsService #searchButton', $.proxy(function(e) {
+			this._showIndicator();
 			this._calculateDirectionRoute(e);
 			this._clearNotification();
 		}, this));
 
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
+			this._showIndicator();
 			this._startSearch(e);
 			this._clearAllLocations();
 			this._initializeRadius();
@@ -490,7 +504,7 @@ StoreLocator = {
 	 */
 	_initializeToggleMap: function() {
 		var $el = $('#retailer_search');
-		var $mapHolder = $el.find('.google-map');
+		var $mapHolder = $el.find('.map-container');
 		var mapHeight = $mapHolder.height();
 		var $btn = $el.find('.js-toggle-map');
 		var $btnInner = $btn.find('span');
@@ -532,6 +546,14 @@ StoreLocator = {
 	 */
 	_clearNotification: function() {
 		$('#notification').html('');
+	},
+
+	_hideIndicator: function() {
+		$('.progress-indicator').hide();
+	},
+
+	_showIndicator: function() {
+		$('.progress-indicator').show();
 	}
 
 }

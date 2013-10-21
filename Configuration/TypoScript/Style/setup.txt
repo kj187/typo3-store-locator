@@ -1,6 +1,8 @@
 page.cssInline.187 = TEXT
 page.cssInline.187.value (
-	.google-map {
-		width:800px; height:400px;
+	.map-container {
+		width: 100%;
+		height: 400px;
 	}
+
 )

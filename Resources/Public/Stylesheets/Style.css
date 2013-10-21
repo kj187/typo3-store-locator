@@ -1,0 +1,36 @@
+.progress-indicator {
+	top:0;
+	right:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	text-align:center;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+	-moz-opacity:0.5;
+	-khtml-opacity:0.5;
+	opacity:0.5;
+	z-index:1000;
+	background-color: #000;
+	display: block;
+}
+
+.progress-indicator img {
+	margin: -45px auto 0 -45px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.map-container {
+	position:relative;
+
+	/*
+	width: 100%;
+	height: 400px;
+	*/
+}
+
+#map {
+	width: 100%;
+	height: 100%;
+}
