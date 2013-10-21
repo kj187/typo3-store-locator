@@ -477,6 +477,7 @@ StoreLocator = {
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
 			this._startSearch(e);
+			this._clearAllLocations();
 			this._initializeRadius();
 			this._clearNotification();
 		}, this));
