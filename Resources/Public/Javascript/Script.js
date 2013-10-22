@@ -56,10 +56,7 @@ StoreLocator = {
 			this._initializeDirectionService();
 		}
 
-		var self = this;
-		setTimeout(function(){
-			self._hideIndicator();
-		}, 2000);
+
 	},
 
 	/**
@@ -99,6 +96,7 @@ StoreLocator = {
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
 		if (address != '') {
+			this._showIndicator();
 			if (this.userLocation && this.lastQueryAddress == address) { // Performance improvement, avoid OVER_QUERY_LIMIT
 				this._loadLocations(this.userLocation.lat(), this.userLocation.lng(), country);
 			} else {
@@ -107,6 +105,8 @@ StoreLocator = {
 		} else {
 			if (this.options.activate.mainstore) {
 				this._findMainStoreLocations();
+			} else {
+				this._hideIndicator();
 			}
 		}
 	},
@@ -286,6 +286,8 @@ StoreLocator = {
 		var originCity = $('#from-city').val();
 
 		if (originStreet || originZip || originCity) {
+			$('#directions-panel').html('');
+			this._showIndicator();
 			this.infoWindow.close();
 			var request = {
 				origin: originStreet + ',' +  originZip + ', ' + originCity + ', ' + this.options.region,
@@ -323,6 +325,8 @@ StoreLocator = {
 		this.map.setCenter(latlng);
 		this.map.setZoom(15);
 		this.map.panBy(0, -50);
+
+		this._hideIndicator();
 	},
 
 	/**
@@ -465,7 +469,6 @@ StoreLocator = {
 		var $body = $(document.body);
 
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
-			this._showIndicator();
 			this._hideMoreButton();
 			this._clearAllLocations();
 			this._initializeRadius();
@@ -475,7 +478,6 @@ StoreLocator = {
 
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
-			this._showIndicator();
 			this._hideMoreButton();
 			this._clearAllLocations();
 			this._initializeRadius();
@@ -484,14 +486,12 @@ StoreLocator = {
 		}, this));
 
 		$body.on('click', '.directionsService #searchButton', $.proxy(function(e) {
-			this._showIndicator();
 			this._calculateDirectionRoute(e);
 			this._clearNotification();
 		}, this));
 
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
-			this._showIndicator();
 			this._hideMoreButton();
 			this._startSearch(e);
 			this._clearAllLocations();
