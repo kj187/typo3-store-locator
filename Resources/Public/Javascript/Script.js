@@ -506,6 +506,7 @@ StoreLocator = {
 	 * @private
 	 */
 	_initializeToggleMap: function() {
+		var self = this;
 		var $el = $('#retailer_search');
 		var $mapHolder = $el.find('.map-container');
 		var mapHeight = $mapHolder.height();
@@ -519,9 +520,12 @@ StoreLocator = {
 				if ($btn.hasClass('closed')) {
 					$mapHolder.animate({height: mapHeight}, 500);
 					$btnInner.html(textClose);
+					self._showIndicator();
 				}
 				else {
-					$mapHolder.animate({height: 0}, 500);
+					$mapHolder.animate({height: 0}, 500, function() {
+						self._hideIndicator();
+					});
 					$btnInner.html(textOpen);
 				}
 
