@@ -195,6 +195,7 @@ StoreLocator = {
 		var address = $('#location').val();
 
 		sidebar.innerHTML = '';
+		this._clearAllLocations();
 		if (locations.length > 0) {
 			if (this.options.activate.automaticellyIncreaseRadius) {
 				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems && this.radius < this.options.maxRadius) {
@@ -220,6 +221,7 @@ StoreLocator = {
 			}
 
 			self.map.fitBounds(bounds);
+			this._hideIndicator();
 		} else {
 			if (this.options.activate.automaticellyIncreaseRadius && this.radius < this.options.maxRadius) {
 				self._increaseRadius();
@@ -227,8 +229,6 @@ StoreLocator = {
 				self._noResultsFound(address);
 			}
 		}
-
-		this._hideIndicator();
 	},
 
 	/**
@@ -544,6 +544,7 @@ StoreLocator = {
 	_noResultsFound: function(address) {
 		var notificationText = this.options.labels.notificationNoDealerFound.replace('_KEYWORD_', address);
 		$('#notification').html(notificationText);
+		this._hideIndicator();
 	},
 
 	/**
