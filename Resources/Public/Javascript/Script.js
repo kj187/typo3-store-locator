@@ -323,6 +323,7 @@ StoreLocator = {
 		this._createLocationMarker(markerContent[0], locations[0], latlng, true);
 		this.map.setCenter(latlng);
 		this.map.setZoom(15);
+		this.map.panBy(0, -50);
 	},
 
 	/**
