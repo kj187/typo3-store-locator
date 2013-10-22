@@ -192,7 +192,6 @@ StoreLocator = {
 		var markerContent = data.markerContent;
 		var bounds = new google.maps.LatLngBounds();
 		var sidebar = $('#sidebar').eq(0);
-		var moreButton = $('#more-button');
 		var address = $('#location').val();
 
 		sidebar.innerHTML = '';
@@ -205,9 +204,9 @@ StoreLocator = {
 			}
 
 			if (locations.length > this.options.maxResultItems) {
-				moreButton.show();
+				self._showMoreButton();
 			} else {
-				moreButton.hide();
+				self._hideMoreButton();
 			}
 
 			for (var i = 0; i < locations.length; i++) {
@@ -467,6 +466,7 @@ StoreLocator = {
 
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
 			this._showIndicator();
+			this._hideMoreButton();
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
@@ -476,6 +476,7 @@ StoreLocator = {
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
 			this._showIndicator();
+			this._hideMoreButton();
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
@@ -491,6 +492,7 @@ StoreLocator = {
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
 			this._showIndicator();
+			this._hideMoreButton();
 			this._startSearch(e);
 			this._clearAllLocations();
 			this._initializeRadius();
@@ -549,12 +551,41 @@ StoreLocator = {
 		$('#notification').html('');
 	},
 
+	/**
+	 * Hide the indicator (spinner) icon
+	 *
+	 * @private
+	 */
 	_hideIndicator: function() {
 		$('.progress-indicator').hide();
 	},
 
+	/**
+	 * Show the indicator (spinner) icon
+	 *
+	 * @private
+	 */
 	_showIndicator: function() {
 		$('.progress-indicator').show();
+	},
+
+	/**
+	 * Hide more button to show more result items
+	 *
+	 * @private
+	 */
+	_hideMoreButton: function() {
+		$('#more-button').hide();
+	},
+
+	/**
+	 * Show more button to show more result items
+	 *
+	 * @private
+	 */
+	_showMoreButton: function() {
+		$('#more-button').show();
 	}
+
 
 }
