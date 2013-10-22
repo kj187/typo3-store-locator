@@ -1,6 +1,6 @@
 <address class="address" xmlns:f="http://www.w3.org/1999/html">
 
-	<strong>{store.name}</strong><br>
+	<strong>{store.name -> f:format.htmlentitiesDecode()}</strong><br>
 
 	Entfernung: {store.distance -> f:format.number(decimals: 1, decimalSeparator:',', thousandsSeparator:'.')} km<br>
 
