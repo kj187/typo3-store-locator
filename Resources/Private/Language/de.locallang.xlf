@@ -125,6 +125,9 @@
 			<trans-unit id="directionsservice.from.city">
 				<target>Stadt</target>
 			</trans-unit>
+			<trans-unit id="directionsservice.headline">
+				<target>Hier ist Ihre Route</target>
+			</trans-unit>
 
 			<trans-unit id="item.distance" approved="yes">
 				<target>Entfernung</target>

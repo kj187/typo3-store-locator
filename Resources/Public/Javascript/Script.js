@@ -268,9 +268,11 @@ StoreLocator = {
 		var originStreet = $('#from-street').val();
 		var originZip = $('#from-zip').val();
 		var originCity = $('#from-city').val();
+		var headline = $('#directions-headline');
 
 		if (originStreet || originZip || originCity) {
 			$('#directions-panel').html('');
+			headline.hide();
 			this._showIndicator();
 			this.infoWindow.close();
 			var request = {
@@ -281,6 +283,7 @@ StoreLocator = {
 			};
 			this.directionsService.route(request, function(response, status) {
 				if (status == google.maps.DirectionsStatus.OK) {
+					headline.show();
 					self.directionsDisplay.setDirections(response);
 				} else {
 					self._noResultsFound(originZip + ' ' + originCity + ' ' + originStreet);

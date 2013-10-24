@@ -100,6 +100,9 @@
 			<trans-unit id="directionsservice.from.city">
 				<source>City</source>
 			</trans-unit>
+			<trans-unit id="directionsservice.headline">
+				<source>This is your route</source>
+			</trans-unit>
 
 			<trans-unit id="item.distance">
 				<source>Distance</source>
