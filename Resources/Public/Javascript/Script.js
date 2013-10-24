@@ -213,9 +213,7 @@ StoreLocator = {
 			for (var i = 0; i < locations.length; i++) {
 				if (i > (this.options.maxResultItems-1)) break;
 				var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
-				var sidebarEntry = self._createSidebarItem($(sidebarItems[i]), locations[i]);
-
-				sidebar.append(sidebarEntry);
+				sidebar.append($(sidebarItems[i]));
 				self._createLocationMarker(markerContent[i], locations[i], latlng, false);
 				bounds.extend(latlng);
 			}
@@ -239,20 +237,6 @@ StoreLocator = {
 	_increaseRadius: function() {
 		this.radius = (this.radius + parseInt(this.options.defaultRadius));
 		this._searchLocations();
-	},
-
-	/**
-	 * Create sidebar items
-	 *
-	 * @param uid
-	 * @param location
-	 * @return {*}
-	 * @private
-	 */
-	_createSidebarItem: function(sidebarItem, location) {
-		var list = $('<li/>');
-		list.append(sidebarItem);
-		return list;
 	},
 
 	/**

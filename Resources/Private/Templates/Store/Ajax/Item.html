@@ -1,18 +1,20 @@
-<address class="address" xmlns:f="http://www.w3.org/1999/html">
+<li>
+	<address class="address" xmlns:f="http://www.w3.org/1999/html">
 
-	<strong>{store.name -> f:format.htmlentitiesDecode()}</strong><br>
+		<strong>{store.name -> f:format.htmlentitiesDecode()}</strong><br>
 
-	Entfernung: {store.distance -> f:format.number(decimals: 1, decimalSeparator:',', thousandsSeparator:'.')} km<br>
+		Entfernung: {store.distance -> f:format.number(decimals: 1, decimalSeparator:',', thousandsSeparator:'.')} km<br>
 
 
-	{store.street}<br>
-	{store.zipcode} {store.city}<br>
-	{store.country.shortNameLocal}<br>
-	<f:if condition="{store.phone}">Telefon {store.phone}</f:if><br>
-	<f:if condition="{store.fax}">Telefax {store.fax}</f:if>
-</address>
-<div class="address-footer">
-	<f:link.external uri="{store.url}" target="_blank">{store.url}</f:link.external><br>
-	<f:link.email email="{store.email}" />
-</div>
-<a href="#" id="storeLocatorMarker_{store.uid}">In der Karte anzeigen</a>
+		{store.street}<br>
+		{store.zipcode} {store.city}<br>
+		{store.country.shortNameLocal}<br>
+		<f:if condition="{store.phone}">Telefon {store.phone}</f:if><br>
+		<f:if condition="{store.fax}">Telefax {store.fax}</f:if>
+	</address>
+	<div class="address-footer">
+		<f:link.external uri="{store.url}" target="_blank">{store.url}</f:link.external><br>
+		<f:link.email email="{store.email}" />
+	</div>
+	<a href="#" id="storeLocatorMarker_{store.uid}">In der Karte anzeigen</a>
+</li>
