@@ -130,6 +130,8 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$templatePathAndFilename = $templateRootPath . $template;
 		$viewObject->setTemplatePathAndFilename($templatePathAndFilename);
 		$viewObject->assignMultiple($variables);
+		$extensionName = $this->request->getControllerExtensionName();
+		$viewObject->getRequest()->setControllerExtensionName($extensionName);
 		return $viewObject;
 	}
 

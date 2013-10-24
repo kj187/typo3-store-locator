@@ -125,6 +125,22 @@
 			<trans-unit id="directionsservice.from.city">
 				<target>Stadt</target>
 			</trans-unit>
+
+			<trans-unit id="item.distance" approved="yes">
+				<target>Entfernung</target>
+			</trans-unit>
+			<trans-unit id="item.distance.unit">
+				<target>km</target>
+			</trans-unit>
+			<trans-unit id="item.phone">
+				<target>Telefon</target>
+			</trans-unit>
+			<trans-unit id="item.fax">
+				<target>Fax</target>
+			</trans-unit>
+			<trans-unit id="item.map.show">
+				<target>In der Karten anzeigen</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
