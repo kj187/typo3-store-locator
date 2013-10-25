@@ -35,9 +35,15 @@
 			<div class="google-map" id="map"></div>
 		</div>
 
-		<div id="notification"></div>
-		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
-		<button id="more-button"><f:translate id="list.map.moreButton" /></button>
+		<div data-showOnResponse="1">
+			<div id="notification"></div>
+			<div data-showOnSuccess="1">
+				<ul class="inline-list distributor-search-results" id="sidebar"></ul>
+				<div data-showMoreButton="1">
+					<button id="more-button"><f:translate key="list.map.moreButton" /></button>
+				</div>
+			</div>
+		</div>
 
 		<script type="text/javascript">
 			<![CDATA[

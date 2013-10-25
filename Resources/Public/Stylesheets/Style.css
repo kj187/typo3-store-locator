@@ -35,10 +35,6 @@
 	height: 100%;
 }
 
-#more-button {
-	display: none;
-}
-
-#directions-headline {
+#directions-headline, [data-showOnSuccess], [data-showMoreButton], [data-showOnResponse] {
 	display: none;
 }

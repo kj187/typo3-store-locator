@@ -220,6 +220,7 @@ StoreLocator = {
 
 			self.map.fitBounds(bounds);
 			this._hideIndicator();
+			$('[data-showOnSuccess]').show();
 		} else {
 			if (this.options.activate.automaticellyIncreaseRadius && this.radius < this.options.maxRadius) {
 				self._increaseRadius();
@@ -227,6 +228,8 @@ StoreLocator = {
 				self._noResultsFound(address);
 			}
 		}
+
+		$('[data-showOnResponse]').show();
 	},
 
 	/**
@@ -245,7 +248,9 @@ StoreLocator = {
 	 * @private
 	 */
 	_clearAllLocations: function() {
-		$('#sidebar').html('');
+		$('[data-showOnSuccess]').hide();
+		$('[data-queryresult]').remove();
+
 		this.infoWindow.close();
 		for (var i = 0; i < this.markers.length; i++) {
 			this.markers[i].setMap(null);
@@ -457,6 +462,7 @@ StoreLocator = {
 
 		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
 			this._hideMoreButton();
+			$('[data-showOnResponse]').hide();
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
@@ -466,6 +472,7 @@ StoreLocator = {
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
 			this._hideMoreButton();
+			$('[data-showOnResponse]').hide();
 			this._clearAllLocations();
 			this._initializeRadius();
 			this._startSearch(e);
@@ -480,6 +487,7 @@ StoreLocator = {
 		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
 			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
 			this._hideMoreButton();
+			$('[data-showOnResponse]').hide();
 			this._startSearch(e);
 			this._clearAllLocations();
 			this._initializeRadius();
@@ -567,7 +575,7 @@ StoreLocator = {
 	 * @private
 	 */
 	_hideMoreButton: function() {
-		$('#more-button').hide();
+		$('[data-showMoreButton]').hide();
 	},
 
 	/**
@@ -576,7 +584,7 @@ StoreLocator = {
 	 * @private
 	 */
 	_showMoreButton: function() {
-		$('#more-button').show();
+		$('[data-showMoreButton]').show();
 	}
 
 
