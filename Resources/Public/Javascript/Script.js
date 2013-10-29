@@ -30,7 +30,7 @@ StoreLocator = {
 		'markerIcon': '',
 		'useCustomInfoBox': false,
 		'maxResultItemsOriginal': 10,
-		'maxRadius': 50000
+		'maxRadius': 2000
 	},
 
 	/**
