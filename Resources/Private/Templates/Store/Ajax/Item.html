@@ -12,7 +12,7 @@
 		<f:if condition="{store.fax}"><f:translate id="item.fax" /> {store.fax}</f:if>
 	</address>
 	<div class="address-footer">
-		<f:link.external uri="{store.url}" target="_blank">{store.url}</f:link.external><br>
+		<f:if condition="{store.url}"><f:link.external uri="{store.url}" target="_blank">{store.url}</f:link.external><br></f:if>
 		<f:link.email email="{store.email}" />
 	</div>
 	<a href="#" id="storeLocatorMarker_{store.uid}"><f:translate id="item.map.show" /></a>
