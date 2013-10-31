@@ -460,15 +460,6 @@ StoreLocator = {
 	_attachEvents: function() {
 		var $body = $(document.body);
 
-		$body.on('change', '.storeSearch #location_country', $.proxy(function(e) {
-			this._hideMoreButton();
-			$('[data-showOnResponse]').hide();
-			this._clearAllLocations();
-			this._initializeRadius();
-			this._startSearch(e);
-			this._clearNotification();
-		}, this));
-
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
 			this.options.maxResultItems = this.options.maxResultItemsOriginal;
 			this._hideMoreButton();
