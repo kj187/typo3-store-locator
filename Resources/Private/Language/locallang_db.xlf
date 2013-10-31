@@ -4,6 +4,13 @@
 		<header/>
 		<body>
 
+			<trans-unit id="tab.address">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tab.additional">
+				<source>Additional</source>
+			</trans-unit>
+
 			<trans-unit id="tx_storelocator_domain_model_store">
 				<source>Store</source>
 			</trans-unit>
@@ -14,7 +21,7 @@
 				<source>Is mainstore</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address">
-				<source>Address</source>
+				<source>Address (filled automatically)</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.city">
 				<source>City</source>

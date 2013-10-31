@@ -9,7 +9,20 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, ismainstore, address, street, city, state, zipcode, country, latitude, longitude, url, description, email, phone, fax, logo',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, ismainstore, address, latitude, longitude, street, city, state, zipcode, country, url, email, phone, fax, logo, description,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => '
+
+
+			--div--;LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tab.address,
+			name, ismainstore, street, city, state, zipcode, country,
+
+			--div--;LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tab.additional,
+			 address, latitude, longitude, url, email, phone, fax, logo, description,
+
+			--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime,
+
+			--div--;Misc, sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1,
+
+			'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -113,9 +126,10 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.address',
 			'config' => array(
+				'readOnly' => 1,
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
 			),
 		),
 		'latitude' => array(
