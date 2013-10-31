@@ -10,6 +10,12 @@
 			<trans-unit id="tab.additional">
 				<source>Additional</source>
 			</trans-unit>
+			<trans-unit id="wizard.title">
+				<source>Store Locator</source>
+			</trans-unit>
+			<trans-unit id="wizard.description">
+				<source>You can use it as store search and as direction service.</source>
+			</trans-unit>
 
 			<trans-unit id="tx_storelocator_domain_model_store">
 				<source>Store</source>
