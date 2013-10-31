@@ -9,7 +9,7 @@
 			<input type="text" id="location" class="input-text">
 
 			<f:if condition="{settings.filter.activate.country}">
-				<f:form.select id="location_country" value="{preSelectedCountry}" name="country" options="{countries}" optionLabelField="nameLocalized" sortByOptionLabel="1" prependOptionLabel="{f:translate(id:'select.country.choose')}" prependOptionValue="0" />
+				<f:form.select id="location_country" value="{preSelectedCountry}" name="country" options="{countries}" optionLabelField="nameLocalized" sortByOptionLabel="1" />
 			</f:if>
 
 			<f:if condition="{settings.filter.activate.radius}">

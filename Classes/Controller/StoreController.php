@@ -166,7 +166,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	 */
 	protected function getOnlyCountriesWhereStoresAvailable() {
 		$stores = $this->storeRepository->findAll();
-		$countries = array();
+		$countries = array('0' => $this->translate('select.country.choose'));
 		foreach ($stores as $store) {
 			$countries[$store->getCountry()->getUid()] = $store->getCountry();
 		}
