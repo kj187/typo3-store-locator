@@ -129,6 +129,7 @@ StoreLocator = {
 				self._loadLocations(self.userLocation.lat(), self.userLocation.lng(), country);
 			} else {
 				self._noResultsFound(address);
+				$('[data-showOnResponse]').show();
 			}
 		});
 	},
