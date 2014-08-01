@@ -151,6 +151,9 @@ StoreLocator = {
 			dataType: 'json',
 			success: function(data) {
 				self._initializeAndOutputLocations(data);
+			},
+			error: function(data, status, errorMessage) {
+				console.log(status, errorMessage);
 			}
 		});
 	},
@@ -176,6 +179,9 @@ StoreLocator = {
 			dataType: 'json',
 			success: function(data) {
 				self._initializeAndOutputLocations(data);
+			},
+			error: function(data, status, errorMessage) {
+				console.log(status, errorMessage);
 			}
 		});
 	},
