@@ -59,7 +59,7 @@ if (TYPO3_MODE == 'BE') {
  */
 
 $TCA['tt_content']['types']['list']['subtypes_addlist']['storelocator_storelocator']='pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('storelocator_storelocator', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Settings.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('storelocator_storelocator', 'FILE:EXT:'.$_EXTKEY.'/Configuration/Flexforms/Settings.xml');
 
 
 
