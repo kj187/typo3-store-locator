@@ -1,15 +1,9 @@
 plugin.tx_storelocator {
 
 	view {
-		templateRootPath {
-			0 = {$plugin.tx_storelocator.view.templateRootPath}
-		}
-		partialRootPath {
-			0 = {$plugin.tx_storelocator.view.partialRootPath}
-		}
-		layoutRootPath {
-			0 = {$plugin.tx_storelocator.view.layoutRootPath}
-		}
+		templateRootPath = {$plugin.tx_storelocator.view.templateRootPath}
+		partialRootPath = {$plugin.tx_storelocator.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_storelocator.view.layoutRootPath}
 	}
 
 	persistence {
