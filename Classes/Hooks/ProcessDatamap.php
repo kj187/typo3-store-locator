@@ -36,11 +36,13 @@ class tx_storelocator_datamap {
 	 * @param $pObject
 	 */
 	function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObject)  {
-		$address = array();
-		if ($incomingFieldArray['street']) $address[] = $incomingFieldArray['street'];
-		if ($incomingFieldArray['zipcode']) $address[] = $incomingFieldArray['zipcode'];
-		if ($incomingFieldArray['city']) $address[] = $incomingFieldArray['city'];
-		$incomingFieldArray['address'] = implode(', ', $address);
+		if ('tx_storelocator_domain_model_store' === $table) {
+			$address = array();
+			if ($incomingFieldArray['street']) $address[] = $incomingFieldArray['street'];
+			if ($incomingFieldArray['zipcode']) $address[] = $incomingFieldArray['zipcode'];
+			if ($incomingFieldArray['city']) $address[] = $incomingFieldArray['city'];
+			$incomingFieldArray['address'] = implode(', ', $address);
+		}
 	}
 
 }
