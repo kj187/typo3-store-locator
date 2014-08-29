@@ -16,7 +16,10 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			name, ismainstore, street, city, state, zipcode, country,
 
 			--div--;LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tab.additional,
-			 address, latitude, longitude, url, email, phone, fax, logo, description,
+			 url, email, phone, fax, logo, description,
+
+			--div--;LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tab.geo,
+			 address, latitude, longitude,
 
 			--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime,
 
@@ -136,18 +139,20 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.latitude',
 			'config' => array(
+				'readOnly' => 1,
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
 			),
 		),
 		'longitude' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.longitude',
 			'config' => array(
+				'readOnly' => 1,
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
 			),
 		),
 
