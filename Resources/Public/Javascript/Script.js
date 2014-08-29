@@ -28,129 +28,115 @@ StoreLocator = {
 	defaultOptions: {
 		'getStoresUri': '',
 		'markerIcon': '',
-		'useCustomInfoBox': false
+		'useCustomInfoBox': false,
+		'maxResultItemsOriginal': 10,
+		'maxRadius': 2000
 	},
 
-	init: function(options) {
+	/**
+	 * Run store locator
+	 *
+	 * @param options
+	 */
+	run: function(options) {
 		this._initializeOptions(options);
 		this._initializeMap();
+		this._initializeRadius();
 		this._initializeMarkers();
 		this._attachEvents();
 		this._initializeInfoWindow();
 		this._initializeToggleMap();
 
-		// default view
-		this.searchLocations();
+		if (this.options.displayMode == 'storeSearch') {
+			this._initializeMapPosition();
+			this._searchLocations();
+		}
+		if (this.options.displayMode == 'directionsService') {
+			this._initializeDefaultLocation();
+			this._initializeDirectionService();
+		}
+
+
 	},
 
 	/**
+	 * Initialize radius
+	 *
 	 * @private
 	 */
-	_initializeOptions: function(options) {
-		this.options = $.extend({}, this.defaultOptions, options);
+	_initializeRadius: function() {
+		if ($('#location_radius').is('select')) {
+			this.radius = parseInt($('#location_radius option:selected').val());
+		} else {
+			this.radius = parseInt($('#location_radius').val());
+		}
 	},
 
-	/**
-	 * @returns {*}
-	 * @private
+	/****************************************************************************************
+	 * Store Search
 	 */
-	_initializeMap: function() {
-		var geo = new google.maps.Geocoder;
-		var self = this;
-		geo.geocode({'address':this.options.region, 'region':this.options.region}, function(results, status){
-
-			var zoom = 6;
-			if (status == google.maps.GeocoderStatus.OK) {
-				var lat = results[0].geometry.location.lat();
-				var lng = results[0].geometry.location.lng();
-
-				if (self.options.region == 'europa') {
-					var zoom = 3;
-				}
-
-			} else {
-				var lat = 51;
-				var lng = 6;
-			}
-
-			var mapOptions = {
-				center: new google.maps.LatLng(lat, lng),
-				zoom: zoom,
-				maxZoom: 15,
-				panControl: true,
-				zoomControl: true,
-				scaleControl: false,
-				disableDefaultUI: false,
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				mapTypeControl: true,
-				mapTypeControlOptions: {
-					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-				}
-			}
-
-			self.map = new google.maps.Map($('#map').get(0), mapOptions);
-		});
-	},
 
 	/**
+	 * Start search
+	 *
 	 * @private
-	 */
-	_initializeMarkers: function() {
-		this.markers = [];
-	},
-
-	/**
-	 * @private
-	 */
-	_initializeInfoWindow: function() {
-		this.infoWindow = new StoreLocatorInfoWindow(this.options.useCustomInfoBox);
-	},
-
-	/**
-	 * @private
-	 */
-	_attachEvents: function() {
-		var $body = $(document.body);
-		$body.on('click', '#searchButton', $.proxy(this, '_startSearch'));
-	},
-
-	/**
-	 * @private
-	 * @return {Boolean}
+	 * @return false
 	 */
 	_startSearch: function(e) {
-		this.searchLocations();
+		this._searchLocations();
 		e.preventDefault();
 		return false;
 	},
 
 	/**
-	 * StoreLocator
+	 * @private
 	 */
-	searchLocations: function() {
-		this._clearAllLocations();
+	_searchLocations: function() {
 		var address = $('#location').val();
-		var radius = $('#location_radius').val();
+		var country = ($('#location_country').length ? $('#location_country').val() : 0);
 
-		var self = this;
 		if (address != '') {
-			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
-				if (status == google.maps.GeocoderStatus.OK) {
-					var center = results[0].geometry.location;
-					self._findLocations(center.lat(), center.lng(), radius);
-				} else {
-					alert(address + ' not found');
-				}
-			});
+			this._showIndicator();
+			if (this.userLocation && this.lastQueryAddress == address) { // Performance improvement, avoid OVER_QUERY_LIMIT
+				this._loadLocations(this.userLocation.lat(), this.userLocation.lng(), country);
+			} else {
+				this._firstSearchWithoutUserLocationData(address, country);
+			}
 		} else {
-			if (this.options.enableMainstoreFeature) {
-				self._findMainStoreLocations();
+			if (this.options.activate.mainstore) {
+				this._findMainStoreLocations();
+			} else {
+				this._hideIndicator();
 			}
 		}
 	},
 
 	/**
+	 * Find user location and store it a variable to avoid an geocode OVER_QUERY_LIMIT
+	 *
+	 * @param address
+	 * @param country
+	 * @private
+	 */
+	_firstSearchWithoutUserLocationData: function(address, country) {
+		var geocoder = new google.maps.Geocoder();
+		var self = this;
+		this.lastQueryAddress = address;
+
+		geocoder.geocode({address: address, region: this.options.region}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				self.userLocation = results[0].geometry.location;
+				self._loadLocations(self.userLocation.lat(), self.userLocation.lng(), country);
+			} else {
+				self._noResultsFound(address);
+				$('[data-showOnResponse]').show();
+			}
+		});
+	},
+
+	/**
+	 * Find main store locations (if activated, should be displayed on the first page load)
+	 *
 	 * @private
 	 */
 	_findMainStoreLocations: function() {
@@ -164,86 +150,279 @@ StoreLocator = {
 			url: getDefaultStoresUri,
 			dataType: 'json',
 			success: function(data) {
-				self._initializeLocations(data);
+				self._initializeAndOutputLocations(data);
+			},
+			error: function(data, status, errorMessage) {
+				console.log(status, errorMessage);
 			}
 		});
 	},
 
 	/**
+	 * Load locations
+	 *
 	 * @private
 	 */
-	_findLocations: function(lat, lng, radius) {
-		this._clearAllLocations();
+	_loadLocations: function(lat, lng, country) {
 
 		var self = this;
 		var getStoresUri = this.options.getStoresUri;
 
 		getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
 		getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
-		getStoresUri = getStoresUri.replace('_RADIUS_', radius);
+		getStoresUri = getStoresUri.replace('_RADIUS_', this.radius);
+		getStoresUri = getStoresUri.replace('_COUNTRY_', country);
 
 		$.ajax({
 			type: 'GET',
 			url: getStoresUri,
 			dataType: 'json',
 			success: function(data) {
-				self._initializeLocations(data);
+				self._initializeAndOutputLocations(data);
+			},
+			error: function(data, status, errorMessage) {
+				console.log(status, errorMessage);
 			}
 		});
 	},
 
 	/**
+	 * Initialize and output locations
+	 *
 	 * @param data
 	 * @private
 	 */
-	_initializeLocations: function(data) {
+	_initializeAndOutputLocations: function(data) {
 		var self = this;
 		var locations = data.locations;
 		var sidebarItems = data.sidebarItems;
 		var markerContent = data.markerContent;
 		var bounds = new google.maps.LatLngBounds();
-		var sidebar = $('#sidebar').get(0);
+		var sidebar = $('#sidebar').eq(0);
+		var address = $('#location').val();
 
 		sidebar.innerHTML = '';
+		this._clearAllLocations();
 		if (locations.length > 0) {
+			if (this.options.activate.automaticellyIncreaseRadius) {
+				if (locations.length < this.options.automaticallyIncreaseRadiusMaxResultItems && this.radius < this.options.maxRadius) {
+					self._increaseRadius();
+					return;
+				}
+			}
+
+			if (locations.length > this.options.maxResultItems) {
+				self._showMoreButton();
+			} else {
+				self._hideMoreButton();
+			}
+
 			for (var i = 0; i < locations.length; i++) {
-
-				//var distance = parseFloat(locations[i]['distance']);
+				if (i > (this.options.maxResultItems-1)) break;
 				var latlng = new google.maps.LatLng(parseFloat(locations[i]['latitude']), parseFloat(locations[i]['longitude']));
-
-				var sidebarEntry = self._createSidebarItem(sidebarItems[i], locations[i]);
-				sidebar.appendChild(sidebarEntry);
-
-				self._createLocationMarker(markerContent[i], locations[i], latlng);
+				sidebar.append($(sidebarItems[i]));
+				self._createLocationMarker(markerContent[i], locations[i], latlng, false);
 				bounds.extend(latlng);
 			}
 
 			self.map.fitBounds(bounds);
+			this._hideIndicator();
+			$('[data-showOnSuccess]').show();
 		} else {
-			sidebar.innerHTML = data.notification;
+			if (this.options.activate.automaticellyIncreaseRadius && this.radius < this.options.maxRadius) {
+				self._increaseRadius();
+			} else {
+				self._noResultsFound(address);
+			}
 		}
+
+		$('[data-showOnResponse]').show();
 	},
 
 	/**
-	 * @param uid
+	 * Increase radius automatically
+	 *
+	 * @private
+	 */
+	_increaseRadius: function() {
+		this.radius = (this.radius + parseInt(this.options.defaultRadius));
+		this._searchLocations();
+	},
+
+	/**
+	 * Clear locations
+	 *
+	 * @private
+	 */
+	_clearAllLocations: function() {
+		$('[data-showOnSuccess]').hide();
+		$('[data-queryresult]').remove();
+
+		this.infoWindow.close();
+		for (var i = 0; i < this.markers.length; i++) {
+			this.markers[i].setMap(null);
+		}
+		this.markers.length = 0;
+	},
+
+
+	/****************************************************************************************
+	 * Directions Service
+	 */
+
+	/**
+	 * Calculate direction route to a specific store
+	 *
+	 * @private
+	 */
+	_calculateDirectionRoute: function(e) {
+		var self = this;
+		var originStreet = $('#from-street').val();
+		var originZip = $('#from-zip').val();
+		var originCity = $('#from-city').val();
+		var headline = $('#directions-headline');
+
+		if (originStreet || originZip || originCity) {
+			$('#directions-panel').html('');
+			headline.hide();
+			this._showIndicator();
+			this.infoWindow.close();
+			var request = {
+				origin: originStreet + ',' +  originZip + ', ' + originCity + ', ' + this.options.region,
+				destination: this.options.defaultStore.locations[0].address,
+				travelMode: google.maps.TravelMode.DRIVING,
+				unitSystem: google.maps.UnitSystem.METRIC
+			};
+			this.directionsService.route(request, function(response, status) {
+				if (status == google.maps.DirectionsStatus.OK) {
+					headline.show();
+					self.directionsDisplay.setDirections(response);
+				} else {
+					self._noResultsFound(originZip + ' ' + originCity + ' ' + originStreet);
+				}
+
+				self._hideIndicator();
+			});
+		}
+
+
+		e.preventDefault();
+		return false;
+	},
+
+	/**
+	 * Initialize default locations
+	 *
+	 * @private
+	 */
+	_initializeDefaultLocation: function() {
+		var locations = this.options.defaultStore.locations;
+		var markerContent = this.options.defaultStore.markerContent;
+		var latlng = new google.maps.LatLng(parseFloat(locations[0]['latitude']), parseFloat(locations[0]['longitude']));
+
+		this._createLocationMarker(markerContent[0], locations[0], latlng, true);
+		this.map.setCenter(latlng);
+		this.map.setZoom(15);
+		this.map.panBy(0, -50);
+
+		this._hideIndicator();
+	},
+
+	/**
+	 * Initialize direction service
+	 *
+	 * @private
+	 */
+	_initializeDirectionService: function() {
+		this.directionsService = new google.maps.DirectionsService();
+		this.directionsDisplay = new google.maps.DirectionsRenderer();
+		this.directionsDisplay.setMap(this.map);
+		this.directionsDisplay.setPanel($('#directions-panel').get(0));
+	},
+
+	/****************************************************************************************
+	 * General
+	 */
+
+	/**
+	 * Initialize options
+	 *
+	 * @private
+	 */
+	_initializeOptions: function(options) {
+		this.options = $.extend({}, this.defaultOptions, options);
+		this.options.maxResultItemsOriginal = this.options.maxResultItems;
+	},
+
+	/**
+	 * Initialize google map
+	 *
+	 * @returns {*}
+	 * @private
+	 */
+	_initializeMap: function() {
+		var mapOptions = {
+			maxZoom: 15,
+			panControl: true,
+			zoomControl: true,
+			scaleControl: false,
+			disableDefaultUI: false,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			mapTypeControl: true,
+			mapTypeControlOptions: {
+				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+			}
+		}
+
+		this.map = new google.maps.Map($('#map').get(0), mapOptions);
+	},
+
+	/**
+	 * Initialize map position
+	 *
+	 * @private
+	 */
+	_initializeMapPosition: function() {
+		var self = this;
+		var geo = new google.maps.Geocoder;
+		var zoom = (this.options.region == 'europa' ? 3 : 6);
+
+		geo.geocode({'address': this.options.region, 'region':this.options.region}, function(results, status){
+			if (status == google.maps.GeocoderStatus.OK) {
+				self.map.setCenter(results[0].geometry.location);
+				self.map.setZoom(zoom);
+			}
+		});
+	},
+
+	/**
+	 * Initialize markers
+	 *
+	 * @private
+	 */
+	_initializeMarkers: function() {
+		this.markers = [];
+	},
+
+	/**
+	 * Initialize info window (overlay)
+	 *
+	 * @private
+	 */
+	_initializeInfoWindow: function() {
+		this.infoWindow = new StoreLocatorInfoWindow(this.options.useCustomInfoBox);
+	},
+
+	/**
+	 * Create location marker (overlay)
+	 *
+	 * @param markerContent
 	 * @param location
-	 * @return {*}
-	 * @private
-	 */
-	_createSidebarItem: function(sidebarItem, location) {
-		var list = document.createElement('li');
-		list.innerHTML = sidebarItem;
-		return list;
-	},
-
-	/**
-	 * @param uniqueName
 	 * @param latlng
-	 * @param name
-	 * @param address
+	 * @param infoWindowIsOpen
 	 * @private
 	 */
-	_createLocationMarker: function(markerContent, location, latlng) {
+	_createLocationMarker: function(markerContent, location, latlng, infoWindowIsOpen) {
 		var self = this;
 
 		if (self.options.markerIcon != '') {
@@ -254,7 +433,7 @@ StoreLocator = {
 			map: self.map,
 			position: latlng,
 			icon: icon,
-			animation: google.maps.Animation.DROP
+			animation: google.maps.Animation.DROP,
 		});
 
 		var html = markerContent;
@@ -263,6 +442,11 @@ StoreLocator = {
 			self.infoWindow.setContent(html);
 			self.infoWindow.open(self.map, marker);
 		});
+
+		if (infoWindowIsOpen) {
+			self.infoWindow.setContent(html);
+			self.infoWindow.open(self.map, marker);
+		}
 
 		// register click event to open layer from external
 		$('#storeLocatorMarker_' + location['uid']).bind('click', function() {
@@ -276,41 +460,65 @@ StoreLocator = {
 	},
 
 	/**
+	 * Attach events
+	 *
 	 * @private
 	 */
-	_clearAllLocations: function() {
-		$('#sidebar').html('');
-		this.infoWindow.close();
-		for (var i = 0; i < this.markers.length; i++) {
-			this.markers[i].setMap(null);
-		}
-		this.markers.length = 0;
+	_attachEvents: function() {
+		var $body = $(document.body);
+
+		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
+			this.options.maxResultItems = this.options.maxResultItemsOriginal;
+			this._hideMoreButton();
+			$('[data-showOnResponse]').hide();
+			this._clearAllLocations();
+			this._initializeRadius();
+			this._startSearch(e);
+			this._clearNotification();
+		}, this));
+
+		$body.on('click', '.directionsService #searchButton', $.proxy(function(e) {
+			this._calculateDirectionRoute(e);
+			this._clearNotification();
+		}, this));
+
+		$body.on('click', '.storeSearch #more-button', $.proxy(function(e) {
+			this.options.maxResultItems = (this.options.maxResultItems + this.options.maxResultItems);
+			this._hideMoreButton();
+			$('[data-showOnResponse]').hide();
+			this._startSearch(e);
+			this._clearAllLocations();
+			this._initializeRadius();
+			this._clearNotification();
+		}, this));
 	},
 
 	/**
+	 * Initialize toggle map (show/hide map)
 	 *
 	 * @private
 	 */
 	_initializeToggleMap: function() {
-
-		var $el = $('#retailer_search'),
-			$mapHolder = $el.find('.google-map'),
-			self = this,
-			mapHeight = $mapHolder.height(),
-			$btn = $el.find('.js-toggle-map'),
-			$btnInner = $btn.find('span'),
-			textClose = $btnInner.text(),
-			textOpen = $btn.attr('data-text-open');
+		var self = this;
+		var $el = $('#retailer_search');
+		var $mapHolder = $el.find('.map-container');
+		var mapHeight = $mapHolder.height();
+		var $btn = $el.find('.js-toggle-map');
+		var $btnInner = $btn.find('span');
+		var textClose = $btnInner.text();
+		var textOpen = $btn.attr('data-text-open');
 
 		$btn.bind('click', function() {
-
 			if (!$mapHolder.is(':animated')) {
 				if ($btn.hasClass('closed')) {
 					$mapHolder.animate({height: mapHeight}, 500);
 					$btnInner.html(textClose);
+					self._showIndicator();
 				}
 				else {
-					$mapHolder.animate({height: 0}, 500);
+					$mapHolder.animate({height: 0}, 500, function() {
+						self._hideIndicator();
+					});
 					$btnInner.html(textOpen);
 				}
 
@@ -319,6 +527,63 @@ StoreLocator = {
 
 			return false;
 		});
+	},
+
+	/**
+	 * Displays a notification if no results found
+	 *
+	 * @private
+	 */
+	_noResultsFound: function(address) {
+		var notificationText = this.options.labels.notificationNoDealerFound.replace('_KEYWORD_', address);
+		$('#notification').html(notificationText);
+		this._hideIndicator();
+	},
+
+	/**
+	 * Clear the notification box
+	 *
+	 * @private
+	 */
+	_clearNotification: function() {
+		$('#notification').html('');
+	},
+
+	/**
+	 * Hide the indicator (spinner) icon
+	 *
+	 * @private
+	 */
+	_hideIndicator: function() {
+		$('.progress-indicator').hide();
+	},
+
+	/**
+	 * Show the indicator (spinner) icon
+	 *
+	 * @private
+	 */
+	_showIndicator: function() {
+		$('.progress-indicator').show();
+	},
+
+	/**
+	 * Hide more button to show more result items
+	 *
+	 * @private
+	 */
+	_hideMoreButton: function() {
+		$('[data-showMoreButton]').hide();
+	},
+
+	/**
+	 * Show more button to show more result items
+	 *
+	 * @private
+	 */
+	_showMoreButton: function() {
+		$('[data-showMoreButton]').show();
 	}
+
 
 }

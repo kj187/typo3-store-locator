@@ -26,72 +26,53 @@ namespace Aijko\StoreLocator\Controller;
  ***************************************************************/
 
 /**
- *
+ * Store locator controller
  *
  * @package store_locator
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class StoreController extends \Aijko\StoreLocator\Controller\AbstractController {
 
 	/**
-	 * storeRepository
-	 *
 	 * @var \Aijko\StoreLocator\Domain\Repository\StoreRepository
 	 * @inject
 	 */
 	protected $storeRepository;
 
 	/**
-	 * @see parent::initialView
+	 * @var \SJBR\StaticInfoTables\Domain\Repository\CountryRepository
+	 * @inject
 	 */
-	protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
-		if (count($this->settings['javascript']['load']) > 0) {
-			foreach ($this->settings['javascript']['load'] as $key => $value) {
-				if ($value['enable']) {
-					$this->response->addAdditionalHeaderData($this->wrapJavascriptFile($value['src']));
-				}
-			}
-		}
-	}
+	protected $countryRepository;
 
 	/**
-	 * Wrap js files inside <script> tag
-	 *
-	 * @param string $file Path to file
-	 * @return string <script.. string ready for <head> part
-	 */
-	public function wrapJavascriptFile($file) {
-		if (substr($file, 0, 4) == 'EXT:') {
-			list($extKey, $local) = explode('/', substr($file, 4), 2);
-			if (strcmp($extKey, '') && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey) && strcmp($local, '')) {
-				$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . $local;
-			}
-		}
-
-		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::resolveBackPath($file);
-		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::createVersionNumberedFilename($file);
-		return '<script src="' . htmlspecialchars($file) . '" type="text/javascript"></script>';
-	}
-
-	/**
-	 * action list
+	 * Store search
 	 *
 	 * @return void
 	 */
-	public function listAction() {
-		if ($this->settings['region']['htmlTag_langKey']) {
-			$region = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('_', $this->settings['region']['htmlTag_langKey']);
-			$region = $region[1];
-		} else {
-			$region = $this->settings['region']['default'];
-		}
+	public function storeSearchAction() {
+		$this->view->assign('displayMode', 'storeSearch');
+		$this->settings['filter']['default']['radius'] = $this->getDefaultRadiusAsArray();
+		$this->view->assign('settings', $this->settings);
+		$this->view->assign('countries', $this->getOnlyCountriesWhereStoresAvailable());
+		$this->view->assign('preSelectedCountry', $this->countryRepository->findOneByIsoCodeA2($this->region));
+	}
 
-		$this->view->assign('region', $region);
+	/**
+	 * Direction service
+	 *
+	 * @return void
+	 */
+	public function directionsServiceAction() {
+		$this->view->assign('displayMode', 'directionsService');
+		$store = $this->storeRepository->findByUid($this->settings['directionsservice']['destination']);
+		$this->view->assign('defaultStore', $this->outputStoreData(array($store)));
 	}
 
 	/**
 	 * Get all main stores (for default view)
+	 *
 	 * @return string
 	 */
 	public function getMainStoresAction() {
@@ -100,31 +81,37 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	}
 
 	/**
+	 * Get stores (for ajax request)
+	 *
 	 * @param float $latitude
 	 * @param float $longitude
 	 * @param int $radius
+	 * @param int $country
 	 * @dontvalidate $latitude
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
+	 * @dontvalidate $country
 	 *
 	 * @return string
 	 */
-	public function getStoresAction($latitude, $longitude, $radius = 50) {
-		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius);
+	public function getStoresAction($latitude, $longitude, $radius, $country = 0) {
+		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $country, $this->settings);
 		return $this->outputStoreData($stores);
 	}
 
 	/**
-	 * @param $stores
+	 * Prepare json output for ajax request
+	 *
+	 * @param array $stores
+	 * @return string
 	 */
 	protected function outputStoreData($stores) {
 		$locations = array();
 		$sidebarItems = array();
 		$markerContent = array();
+		$data = array('locations' => array());
 
-		if (NULL !== $stores) {
-			$stores = $stores->toArray();
-
+		if (count($stores) > 0) {
 			foreach ($stores as $store) {
 				$locations[] = $store->toArray();
 				$sidebarItems[] = $this->getSidebarItems($store->toArray());
@@ -136,18 +123,14 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				'markerContent' => $markerContent,
 				'locations' => $locations
 			);
-
-		} else {
-			$data = array(
-				'locations' => array(),
-				'notification' => $this->translate('locations.empty')
-			);
 		}
 
 		return json_encode($data);
 	}
 
 	/**
+	 * Get sidebar items (the address cards below the map)
+	 *
 	 * @param array $store
 	 * @return string
 	 */
@@ -156,6 +139,8 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	}
 
 	/**
+	 * Get marker content (overlay in the map)
+	 *
 	 * @param array $store
 	 * @return string
 	 */
@@ -164,26 +149,29 @@ class StoreController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	}
 
 	/**
-	 * @param array $store
-	 * @return string
+	 * @return array
 	 */
-	protected function getStandaloneView(array $variables, $template) {
-		$viewObject = $this->objectManager->create('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-		$viewObject->setFormat('html');
-		$extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-		$templateRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($extbaseFrameworkConfiguration['view']['templateRootPath']);
-		$templatePathAndFilename = $templateRootPath . $template;
-		$viewObject->setTemplatePathAndFilename($templatePathAndFilename);
-		$viewObject->assignMultiple($variables);
-		return $viewObject;
+	protected function getDefaultRadiusAsArray() {
+		$radiusArrayTemp = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->settings['filter']['default']['radius']);
+		$radiusArray = array();
+		foreach ($radiusArrayTemp as $value) {
+			$radiusArray[$value] = $value;
+		}
+
+		return $radiusArray;
 	}
 
 	/**
-	 * @param $id
-	 * @return NULL|string
+	 * @return array
 	 */
-	protected function translate($id) {
-		return  \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $this->request->getControllerExtensionKey());
+	protected function getOnlyCountriesWhereStoresAvailable() {
+		$stores = $this->storeRepository->findAll();
+		$countries = array('0' => $this->translate('select.country.choose'));
+		foreach ($stores as $store) {
+			$countries[$store->getCountry()->getUid()] = $store->getCountry();
+		}
+
+		return $countries;
 	}
 
 }

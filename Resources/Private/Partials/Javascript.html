@@ -1,40 +1,15 @@
-<f:layout name="Default" />
+<f:section name="InitializeMin">
+	<script type="text/javascript">
+		<![CDATA[ var documentIsReady=false;if(document.readyState==="complete"){setTimeout(onDomIsLoaded)}else{if(document.addEventListener){document.addEventListener("DOMContentLoaded",onDomIsLoaded,false);window.addEventListener("load",onDomIsLoaded,false)}else{document.attachEvent("onreadystatechange",onDomIsLoaded);window.attachEvent("onload",onDomIsLoaded)}}function onDomIsLoaded(c){if(document.addEventListener||c.type==="load"||document.readyState==="complete"){detachLoadEvents();if(typeof jQuery!="undefined"){onScriptLoaded()}else{detachLoadEvents();var a=document.createElement("script");var b=document.getElementsByTagName("head")[0];a.type="text/javascript";a.src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js";b.appendChild(a);a.onreadystatechange=a.onload=function(){var d=a.readyState;if(!documentIsReady&&(!d||/loaded|complete/.test(d))){documentIsReady=true;onScriptLoaded()}}}}}function onScriptLoaded(){(function(a){StoreLocator.run(StoreLocatorOptions)})(window.jQuery)}function detachLoadEvents(){if(document.addEventListener){document.removeEventListener("DOMContentLoaded",onDomIsLoaded,false);window.removeEventListener("load",onDomIsLoaded,false)}else{document.detachEvent("onreadystatechange",onDomIsLoaded);window.detachEvent("onload",onDomIsLoaded)}}; //]]>
+	</script>
+</f:section>
 
-<f:section name="main">
 
-	<div class="content-centered">
-		<h1 class="h-special"><f:translate id="list.dealer" /></h1>
-	</div>
-	<div class="content-line skin-box-config">
-		<div class="content-centered">
-			<div class="clearfix">
-				<form class="unit form-distributor-search">
-					<label for="location"><f:translate id="list.cityZip" /></label>
-					<input type="text" id="location" class="input-text">
-					<label for="location_radius"><f:translate id="list.radius" /></label>
-					<f:form.select id="location_radius" name="location_radius" class="input-select" options="{settings.search.radius}" />
-					<span><f:translate id="list.radius.format" /></span>
-					<button type="submit" id="searchButton" class="button btn-skin-submit"><f:translate id="list.search" /></button>
-				</form><a data-text-open="{f:translate(id:'list.map.open')}" class="inv-unit button ext-btn-toggle js-toggle-map"><span href="#" class="ctx-btn-icon"><f:translate id="list.map.close" /></span></a>
-			</div>
-		</div>
-	</div>
-	<div class="google-map" id="map"></div>
-	<div class="content-centered">
-		<ul class="inline-list distributor-search-results" id="sidebar"></ul>
-	</div>
 
+
+<f:section name="Initialize">
 	<script type="text/javascript">
 		<![CDATA[
-			StoreLocatorOptions = {
-				getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, pageType: '{settings.typeNum.ajax}', additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_'}})}<![CDATA[",
-				getDefaultStoresUri: "]]>{f:uri.action(action:'getMainStores', pageType: '{settings.typeNum.ajax}', noCache:1)}<![CDATA[",
-				markerIcon: "]]>{settings.marker.icon}<![CDATA[",
-				useCustomInfoBox: ]]>{settings.infoWindow.useCustomInfoBox}<![CDATA[,
-				region: "]]>{region}<![CDATA[",
-				enableMainstoreFeature: ]]>{settings.enableMainstoreFeature}<![CDATA[,
-			};
-
 
 			<!-- Load jQuery Fallback -->
 			var documentIsReady = false;
@@ -91,7 +66,7 @@
 			function onScriptLoaded() {
 				(function($) {
 					// INIT here
-					StoreLocator.init(StoreLocatorOptions);
+					StoreLocator.run(StoreLocatorOptions);
 				})(window.jQuery);
 			}
 

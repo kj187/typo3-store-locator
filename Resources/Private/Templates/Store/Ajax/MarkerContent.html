@@ -2,17 +2,17 @@
 <f:if condition="{settings.infoWindow.useCustomInfoBox}">
 	<f:then>
 		<div class="map-tooltip-inner">
-			<strong>{store.name}</strong><br>
+			<strong>{store.name -> f:format.htmlentitiesDecode()}</strong><br>
 			{store.street}<br>
 			{store.zipcode} {store.city}<br>
-			Telefon {store.phone}<br>
+			<f:translate id="item.phone" /> {store.phone}<br>
 		</div>
 		<div class="map-tooltip-pointer"></div>
 	</f:then>
 	<f:else>
-		<strong>{store.name}</strong><br>
+		<strong>{store.name -> f:format.htmlentitiesDecode()}</strong><br>
 		{store.street}<br>
 		{store.zipcode} {store.city}<br>
-		Telefon {store.phone}<br>
+		<f:translate id="item.phone" /> {store.phone}<br>
 	</f:else>
 </f:if>

@@ -58,10 +58,13 @@
 
 
 			<trans-unit id="locations.empty">
-				<source>No dealer found.</source>
+				<source>No dealer found with keyword "_KEYWORD_".</source>
 			</trans-unit>
 			<trans-unit id="list.dealer">
 				<source>Dealer</source>
+			</trans-unit>
+			<trans-unit id="list.direction">
+				<source>Direction route</source>
 			</trans-unit>
 			<trans-unit id="list.cityZip">
 				<source>Location/Zip code</source>
@@ -81,7 +84,41 @@
 			<trans-unit id="list.map.close">
 				<source>Close the map</source>
 			</trans-unit>
-			
+			<trans-unit id="list.map.moreButton">
+				<source>Show more</source>
+			</trans-unit>
+
+			<trans-unit id="select.country.choose">
+				<source>Worldwide</source>
+			</trans-unit>
+			<trans-unit id="directionsservice.from.zip">
+				<source>ZIP</source>
+			</trans-unit>
+			<trans-unit id="directionsservice.from.street">
+				<source>Street</source>
+			</trans-unit>
+			<trans-unit id="directionsservice.from.city">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="directionsservice.headline">
+				<source>This is your route</source>
+			</trans-unit>
+
+			<trans-unit id="item.distance">
+				<source>Distance</source>
+			</trans-unit>
+			<trans-unit id="item.distance.unit">
+				<source>km</source>
+			</trans-unit>
+			<trans-unit id="item.phone">
+				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="item.fax">
+				<source>Fax</source>
+			</trans-unit>
+			<trans-unit id="item.map.show">
+				<source>Show in map</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

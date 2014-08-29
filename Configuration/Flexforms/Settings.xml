@@ -1,0 +1,194 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+		<!--<langChildren>1</langChildren>!-->
+	</meta>
+
+	<sheets>
+		<generalSheet>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:sheetTitle.general</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<switchableControllerActions>
+						<TCEforms>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:switchableControllerActions</label>
+							<onChange>reload</onChange>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="0">
+										<numIndex index="0">LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:switchableControllerActions.0</numIndex>
+										<numIndex index="1"></numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:switchableControllerActions.1</numIndex>
+										<numIndex index="1">Store->storeSearch</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:switchableControllerActions.2</numIndex>
+										<numIndex index="1">Store->directionsService</numIndex>
+									</numIndex>
+								</items>
+							</config>
+						</TCEforms>
+					</switchableControllerActions>
+					<settings.general.google.apikey>
+						<TCEforms>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.general.google.apikey</label>
+							<config>
+								<type>input</type>
+								<default></default>
+							</config>
+						</TCEforms>
+					</settings.general.google.apikey>
+
+				</el>
+			</ROOT>
+		</generalSheet>
+
+
+		<directionsserviceSheet>
+			<ROOT>
+				<TCEforms>
+					<displayCond>FIELD:generalSheet.switchableControllerActions:=:Store->directionsService</displayCond>
+					<sheetTitle>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:sheetTitle.directionsserviceSheet</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.directionsservice.destination>
+						<TCEforms>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.directionsservice.destination</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>tx_storelocator_domain_model_store</allowed>
+								<size>1</size>
+								<minitems>1</minitems>
+								<maxitems>1</maxitems>
+							</config>
+						</TCEforms>
+					</settings.directionsservice.destination>
+				</el>
+			</ROOT>
+		</directionsserviceSheet>
+
+
+		<storesearchSheet>
+			<ROOT>
+				<TCEforms>
+					<displayCond>FIELD:generalSheet.switchableControllerActions:=:Store->storeSearch</displayCond>
+					<sheetTitle>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:sheetTitle.storesearchSheet</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.storesearch.activate.increaseradius>
+						<TCEforms>
+							<onChange>reload</onChange>
+							<!--<displayCond>FIELD:filterSheet.settings.filter.activate.radius:=:1</displayCond>-->
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.storesearch.activate.increaseradius</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</settings.storesearch.activate.increaseradius>
+					<settings.storesearch.activate.increaseradiusmaxresults>
+						<TCEforms>
+							<displayCond>FIELD:settings.storesearch.activate.increaseradius:=:1</displayCond>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.storesearch.activate.increaseradiusmaxresults</label>
+							<config>
+								<type>input</type>
+								<default>3</default>
+							</config>
+						</TCEforms>
+					</settings.storesearch.activate.increaseradiusmaxresults>
+					<settings.storesearch.activate.mainstore>
+						<TCEforms>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.storesearch.activate.mainstore</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</settings.storesearch.activate.mainstore>
+					<settings.storesearch.results.maxitems>
+						<TCEforms>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.storesearch.results.maxitems</label>
+							<config>
+								<type>input</type>
+								<default>10</default>
+							</config>
+						</TCEforms>
+					</settings.storesearch.results.maxitems>
+				</el>
+			</ROOT>
+		</storesearchSheet>
+
+
+		<filterSheet>
+			<ROOT>
+				<TCEforms>
+					<displayCond>FIELD:generalSheet.switchableControllerActions:=:Store->storeSearch</displayCond>
+					<sheetTitle>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:sheetTitle.filter</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.filter.activate.country>
+						<TCEforms>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.filter.activate.country</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</settings.filter.activate.country>
+					<settings.filter.activate.radius>
+						<TCEforms>
+							<onChange>reload</onChange>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.filter.activate.radius</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</settings.filter.activate.radius>
+					<settings.filter.fallback.radius>
+						<TCEforms>
+							<displayCond>FIELD:settings.filter.activate.radius:=:0</displayCond>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.filter.fallback.radius</label>
+							<config>
+								<type>input</type>
+								<size>10</size>
+								<max>20</max>
+								<eval>trim</eval>
+								<default>300</default>
+							</config>
+						</TCEforms>
+					</settings.filter.fallback.radius>
+					<settings.filter.default.radius>
+						<TCEforms>
+							<displayCond>FIELD:settings.filter.activate.radius:=:1</displayCond>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.filter.default.radius</label>
+							<config>
+								<type>input</type>
+								<size>20</size>
+								<eval>trim</eval>
+								<default>10,20,30,40,50,100,150</default>
+							</config>
+						</TCEforms>
+					</settings.filter.default.radius>
+				</el>
+			</ROOT>
+		</filterSheet>
+	</sheets>
+
+
+</T3DataStructure>

@@ -44,11 +44,45 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 
 /*******************************************************************************************************************
+ * Add plugin to new element wizard
+ *
+ */
+
+if (TYPO3_MODE == 'BE') {
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_storelocator_wizicon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Utility/Wizicon.php';
+}
+
+
+/*******************************************************************************************************************
+ * Add flexform configuration
+ *
+ */
+
+$TCA['tt_content']['types']['list']['subtypes_addlist']['storelocator_storelocator']='pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('storelocator_storelocator', 'FILE:EXT:'.$_EXTKEY.'/Configuration/Flexforms/Settings.xml');
+
+
+
+
+/*******************************************************************************************************************
  * Add static typoscript files
  *
  */
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Store Locator');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Style', 'Store Locator - Default Style');
+
+
+
+/*******************************************************************************************************************
+ * Add static tsconf files
+ *
+ */
+
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('static_tsconf')) {
+	Aijko\StaticTsconf\Utility\StaticFileUtility::addStaticFile($_EXTKEY, 'Configuration/TSconfig/Page/default.ts', 'page - default.ts');
+	Aijko\StaticTsconf\Utility\StaticFileUtility::addStaticFileByDirectory($_EXTKEY, 'Configuration/TSconfig/Page/allowedTables/', 'allowedTables - ');
+}
 
 
 
@@ -83,7 +117,7 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 		),
 		'searchFields' => 'name,address,city,street,state,zipcode,country,latitude,longitude,url,description,email,phone,fax,logo,ismainstore',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Store.php',
-		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_storelocator_domain_model_store.gif'
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_storelocator_domain_model_store.png'
 	),
 );
 

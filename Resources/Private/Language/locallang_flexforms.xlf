@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-02-26T21:15:14Z" product-name="store_locator">
+		<header/>
+		<body>
+
+			<trans-unit id="sheetTitle.general">
+				<source>Genral settings</source>
+			</trans-unit>
+			<trans-unit id="sheetTitle.directionsserviceSheet">
+				<source>Directions service settings</source>
+			</trans-unit>
+			<trans-unit id="sheetTitle.storesearchSheet">
+				<source>Store search settings</source>
+			</trans-unit>
+			<trans-unit id="sheetTitle.filter">
+				<source>Filter settings</source>
+			</trans-unit>
+
+			<trans-unit id="switchableControllerActions">
+				<source>Display mode</source>
+			</trans-unit>
+			<trans-unit id="switchableControllerActions.0">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="switchableControllerActions.1">
+				<source>Store search</source>
+			</trans-unit>
+			<trans-unit id="switchableControllerActions.2">
+				<source>Driving route to specific store</source>
+			</trans-unit>
+
+			<trans-unit id="settings.general.google.apikey">
+				<source>Google API key</source>
+			</trans-unit>
+
+			<trans-unit id="settings.storesearch.activate.mainstore">
+				<source>Activate main store feature</source>
+			</trans-unit>
+			<trans-unit id="settings.storesearch.activate.increaseradius">
+				<source>Increase radius automatically</source>
+			</trans-unit>
+			<trans-unit id="settings.storesearch.activate.increaseradiusmaxresults">
+				<source>Increase radius until you find X results</source>
+			</trans-unit>
+			<trans-unit id="settings.storesearch.results.maxitems">
+				<source>Show max X items</source>
+			</trans-unit>
+
+			<trans-unit id="settings.filter.activate.country">
+				<source>Activate country selector</source>
+			</trans-unit>
+			<trans-unit id="settings.filter.activate.radius">
+				<source>Activate radius selector</source>
+			</trans-unit>
+			<trans-unit id="settings.filter.default.radius">
+				<source>Radius presets in km</source>
+			</trans-unit>
+			<trans-unit id="settings.filter.fallback.radius">
+				<source>Default radius (if radius selector is deactivated, also used to increase next radius)</source>
+			</trans-unit>
+
+			<trans-unit id="settings.directionsservice.destination">
+				<source>Destination</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

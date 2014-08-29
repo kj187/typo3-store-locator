@@ -24,31 +24,25 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-if (!defined('TYPO3_MODE')) die ('Access denied.');
+class tx_storelocator_wizicon {
 
+	/**
+	 * Processing the wizard items array
+	 *
+	 * @param array $wizardItems The wizard items
+	 * @return array Modified array with wizard items
+	 */
+	function proc($wizardItems)     {
+		$wizardItems['plugins_storelocator_storelocator'] = array(
+			'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('store_locator') . 'Resources/Public/Icons/Wizard.png',
+			'title' => $GLOBALS['LANG']->sL('LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:wizard.title'),
+			'description' => $GLOBALS['LANG']->sL('LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:wizard.description'),
+			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=storelocator_storelocator'
+		);
 
+		return $wizardItems;
+	}
+}
 
-
-/*******************************************************************************************************************
- * Configure plugin
- *
- */
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-	'Aijko.' . $_EXTKEY,
-	'Storelocator',
-	array(
-		'Store' => 'storeSearch, directionsService, getStores, getMainStores',
-
-	),
-	// non-cacheable actions
-	array(
-		'Store' => 'getStores, getMainStores',
-
-	)
-);
-
-
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:store_locator/Classes/Hooks/ProcessDatamap.php:tx_storelocator_datamap';
 
 ?>
