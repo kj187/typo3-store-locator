@@ -10,6 +10,9 @@
 			<trans-unit id="tab.additional">
 				<source>Additional</source>
 			</trans-unit>
+			<trans-unit id="tab.geo">
+				<source>Geo</source>
+			</trans-unit>
 			<trans-unit id="wizard.title">
 				<source>Store Locator</source>
 			</trans-unit>
@@ -45,10 +48,10 @@
 				<source>Country</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.latitude">
-				<source>Latitude</source>
+				<source>Latitude (filled automatically)</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.longitude">
-				<source>Longitude</source>
+				<source>Longitude (filled automatically)</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.url">
 				<source>Url</source>
