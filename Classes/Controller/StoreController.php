@@ -176,9 +176,13 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 
 	/**
 	 * @param array $store
-	 * @return NULL|
+	 * @return string
 	 */
 	protected function getLogo(array $store) {
+		if (!$store['logo']) {
+			return '';
+		}
+
 		// Fallback to old imagehandling without FAL
 		if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($store['logo'])) {
 			return $store['logo'];
