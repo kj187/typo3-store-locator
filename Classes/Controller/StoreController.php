@@ -135,7 +135,7 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	 * @return string
 	 */
 	protected function getSidebarItems(array $store) {
-		return $this->getStandaloneView(array('store' => $store, 'settings' => $this->settings), 'Store/Ajax/Item.html')->render();
+		return $this->getStandaloneView(array('store' => $store, 'logo' => $this->getLogo($store), 'settings' => $this->settings), 'Store/Ajax/Item.html')->render();
 	}
 
 	/**
@@ -174,6 +174,23 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		return $countries;
 	}
 
-}
+	/**
+	 * @param array $store
+	 * @return NULL|
+	 */
+	protected function getLogo(array $store) {
+		// Fallback to old imagehandling without FAL
+		if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($store['logo'])) {
+			return $store['logo'];
+		}
 
-?>
+		$fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+		$fileObjects = $fileRepository->findByRelation('tx_storelocator_domain_model_store', 'logo', $store['uid']);
+		if (is_array($fileObjects)) {
+			$fileObjects = array_shift($fileObjects);
+		}
+
+		return $fileObjects->getPublicUrl();
+	}
+
+}

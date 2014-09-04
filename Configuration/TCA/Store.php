@@ -260,16 +260,13 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 		'logo' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.logo',
-			'config' => array(
-				'type' => 'group',
-				'internal_type' => 'file_reference',
-				'uploadfolder' => 'uploads/tx_storelocator',
-				'allowed' => '*',
-				'disallowed' => 'php',
-				'size' => 5,
+			'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+				'logo',
+				array(
+					'maxitems' => 1,
+				),
+				$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
 			),
 		),
 	),
 );
-
-?>
