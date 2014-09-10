@@ -53,6 +53,9 @@
 			<trans-unit id="settings.filter.activate.radius">
 				<source>Activate radius selector</source>
 			</trans-unit>
+			<trans-unit id="settings.filter.activate.retailer">
+				<source>Activate retailer filter (local, online)</source>
+			</trans-unit>
 			<trans-unit id="settings.filter.default.radius">
 				<source>Radius presets in km</source>
 			</trans-unit>

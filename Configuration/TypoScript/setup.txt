@@ -55,7 +55,7 @@ plugin.tx_storelocator {
 
 				script {
 					enable = 1
-					src = EXT:store_locator/Resources/Public/Javascript/Script.min.js
+					src = EXT:store_locator/Resources/Public/Javascript/Script.js
 				}
 			}
 		}

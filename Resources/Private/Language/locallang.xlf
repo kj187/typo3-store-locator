@@ -69,6 +69,12 @@
 			<trans-unit id="list.cityZip">
 				<source>Location/Zip code</source>
 			</trans-unit>
+			<trans-unit id="list.retailer-online">
+				<source>Online Retailer</source>
+			</trans-unit>
+			<trans-unit id="list.retailer-local">
+				<source>Local Retailer</source>
+			</trans-unit>
 			<trans-unit id="list.radius">
 				<source>Radius</source>
 			</trans-unit>

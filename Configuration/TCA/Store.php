@@ -11,9 +11,8 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 	'types' => array(
 		'1' => array('showitem' => '
 
-
 			--div--;LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tab.address,
-			name, ismainstore, street, city, state, zipcode, country,
+			name;;1;;, street, city, state, zipcode, country,
 
 			--div--;LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tab.additional,
 			 url, email, phone, fax, logo, description,
@@ -28,7 +27,7 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'),
 	),
 	'palettes' => array(
-		'1' => array('showitem' => ''),
+		'1' => array('showitem' => 'ismainstore, online_retailer, local_retailer'),
 	),
 	'columns' => array(
 		'sys_language_uid' => array(
@@ -121,6 +120,20 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 		'ismainstore' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.ismainstore',
+			'config' => array(
+				'type' => 'check',
+			),
+		),
+		'online_retailer' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.online_retailer',
+			'config' => array(
+				'type' => 'check',
+			),
+		),
+		'local_retailer' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.local_retailer',
 			'config' => array(
 				'type' => 'check',
 			),

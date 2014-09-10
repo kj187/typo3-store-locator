@@ -158,6 +158,15 @@
 							</config>
 						</TCEforms>
 					</settings.filter.activate.radius>
+					<settings.filter.activate.retailer>
+						<TCEforms>
+							<exclude>0</exclude>
+							<label>LLL:EXT:store_locator/Resources/Private/Language/locallang_flexforms.xml:settings.filter.activate.retailer</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</settings.filter.activate.retailer>
 					<settings.filter.fallback.radius>
 						<TCEforms>
 							<displayCond>FIELD:settings.filter.activate.radius:=:0</displayCond>

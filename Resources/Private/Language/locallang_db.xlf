@@ -29,6 +29,12 @@
 			<trans-unit id="tx_storelocator_domain_model_store.ismainstore">
 				<source>Is mainstore</source>
 			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.online_retailer">
+				<source>Online retailer</source>
+			</trans-unit>
+			<trans-unit id="tx_storelocator_domain_model_store.local_retailer">
+				<source>Local retailer</source>
+			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address">
 				<source>Address (filled automatically)</source>
 			</trans-unit>

@@ -87,6 +87,9 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	 * @param float $longitude
 	 * @param int $radius
 	 * @param int $country
+	 * @param bool $retailerLocal
+	 * @param bool $retailerOnline
+	 *
 	 * @dontvalidate $latitude
 	 * @dontvalidate $longitude
 	 * @dontvalidate $radius
@@ -94,8 +97,8 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 	 *
 	 * @return string
 	 */
-	public function getStoresAction($latitude, $longitude, $radius, $country = 0) {
-		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $country, $this->settings);
+	public function getStoresAction($latitude, $longitude, $radius, $country = 0, $retailerLocal = FALSE, $retailerOnline = FALSE) {
+		$stores = $this->storeRepository->findStores($latitude, $longitude, $radius, $country, $retailerLocal, $retailerOnline,  $this->settings);
 		return $this->outputStoreData($stores);
 	}
 

@@ -167,11 +167,17 @@ StoreLocator = {
 
 		var self = this;
 		var getStoresUri = this.options.getStoresUri;
+		var retailer = {
+			online: ($('#retailer-online').is(':checked') ? 1 : 0),
+			local: ($('#retailer-local').is(':checked') ? 1 : 0)
+		};
 
 		getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
 		getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
 		getStoresUri = getStoresUri.replace('_RADIUS_', this.radius);
 		getStoresUri = getStoresUri.replace('_COUNTRY_', country);
+		getStoresUri = getStoresUri.replace('_RETAILERONLINE_', retailer.online);
+		getStoresUri = getStoresUri.replace('_RETAILERLOCAL_', retailer.local);
 
 		$.ajax({
 			type: 'GET',

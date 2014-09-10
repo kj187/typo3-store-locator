@@ -5,6 +5,13 @@
 		<h1><f:translate id="list.dealer" /></h1>
 
 		<form>
+			<f:if condition="{settings.filter.activate.retailer}">
+				<label for="retailer-online"><f:translate id="list.retailer-online" /></label>
+				<input type="checkbox" name="retailer-online" id="retailer-online">
+				<label for="retailer-local"><f:translate id="list.retailer-local" /></label>
+				<input type="checkbox" name="retailer-local" id="retailer-local">
+			</f:if>
+
 			<label for="location"><f:translate id="list.cityZip" /></label>
 			<input type="text" id="location" class="input-text">
 
@@ -50,7 +57,7 @@
 				StoreLocatorOptions = {
 					displayMode: "]]>{displayMode}<![CDATA[",
 
-					getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, pageType: '{settings.typeNum.ajax}', additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_', country: '_COUNTRY_'}})}<![CDATA[",
+					getStoresUri: "]]>{f:uri.action(action:'getStores', noCache:1, pageType: '{settings.typeNum.ajax}', additionalParams:{tx_storelocator_storelocator: {latitude:'_LATITUDE_', longitude: '_LONGITUD_', radius: '_RADIUS_', country: '_COUNTRY_', retailerOnline: '_RETAILERONLINE_', retailerLocal: '_RETAILERLOCAL_'}})}<![CDATA[",
 					getDefaultStoresUri: "]]>{f:uri.action(action:'getMainStores', pageType: '{settings.typeNum.ajax}', noCache:1)}<![CDATA[",
 					markerIcon: "]]>{settings.marker.icon}<![CDATA[",
 					useCustomInfoBox: ]]>{settings.infoWindow.useCustomInfoBox}<![CDATA[,
