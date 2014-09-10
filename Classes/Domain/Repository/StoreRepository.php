@@ -75,15 +75,15 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		}
 
 		if (TRUE === $retailerLocal && TRUE !== $retailerOnline) {
-			$whereClause[] = 'local_retailer = 1';
+			$whereClause[] = 'localretailer = 1';
 		}
 
 		if (TRUE === $retailerOnline && TRUE !== $retailerLocal) {
-			$whereClause[] = 'online_retailer = 1';
+			$whereClause[] = 'onlineretailer = 1';
 		}
 
 		if (TRUE === $retailerOnline && TRUE === $retailerLocal) {
-			$whereClause[] = '(online_retailer = 1 OR local_retailer = 1)';
+			$whereClause[] = '(onlineretailer = 1 OR localretailer = 1)';
 		}
 
 		if ($radius) {

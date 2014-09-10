@@ -128,6 +128,16 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $distance;
 
 	/**
+	 * @var bool
+	 */
+	protected $localretailer;
+
+	/**
+	 * @var bool
+	 */
+	protected $onlineretailer;
+
+	/**
 	 * Returns the name
 	 *
 	 * @return \string $name
@@ -446,6 +456,34 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param boolean $localretailer
+	 */
+	public function setLocalretailer($localretailer) {
+		$this->localretailer = $localretailer;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getLocalretailer() {
+		return $this->localretailer;
+	}
+
+	/**
+	 * @param boolean $onlineretailer
+	 */
+	public function setOnlineretailer($onlineretailer) {
+		$this->onlineretailer = $onlineretailer;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getOnlineretailer() {
+		return $this->onlineretailer;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function toArray() {
@@ -467,7 +505,9 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			'street' => $this->getStreet(),
 			'url' => $this->getUrl(),
 			'zipcode' => $this->getZipcode(),
-			'distance' => $this->getDistance()
+			'distance' => $this->getDistance(),
+			'onlineretailer' => $this->getOnlineretailer(),
+			'localretailer' => $this->getLocalretailer()
 		);
 	}
 

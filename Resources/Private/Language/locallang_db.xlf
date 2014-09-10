@@ -29,10 +29,10 @@
 			<trans-unit id="tx_storelocator_domain_model_store.ismainstore">
 				<source>Is mainstore</source>
 			</trans-unit>
-			<trans-unit id="tx_storelocator_domain_model_store.online_retailer">
+			<trans-unit id="tx_storelocator_domain_model_store.onlineretailer">
 				<source>Online retailer</source>
 			</trans-unit>
-			<trans-unit id="tx_storelocator_domain_model_store.local_retailer">
+			<trans-unit id="tx_storelocator_domain_model_store.localretailer">
 				<source>Local retailer</source>
 			</trans-unit>
 			<trans-unit id="tx_storelocator_domain_model_store.address">

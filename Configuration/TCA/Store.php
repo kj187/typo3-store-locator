@@ -27,7 +27,7 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 			'),
 	),
 	'palettes' => array(
-		'1' => array('showitem' => 'ismainstore, online_retailer, local_retailer'),
+		'1' => array('showitem' => 'ismainstore, onlineretailer, localretailer'),
 	),
 	'columns' => array(
 		'sys_language_uid' => array(
@@ -124,16 +124,16 @@ $TCA['tx_storelocator_domain_model_store'] = array(
 				'type' => 'check',
 			),
 		),
-		'online_retailer' => array(
+		'onlineretailer' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.online_retailer',
+			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.onlineretailer',
 			'config' => array(
 				'type' => 'check',
 			),
 		),
-		'local_retailer' => array(
+		'localretailer' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.local_retailer',
+			'label' => 'LLL:EXT:store_locator/Resources/Private/Language/locallang_db.xlf:tx_storelocator_domain_model_store.localretailer',
 			'config' => array(
 				'type' => 'check',
 			),
