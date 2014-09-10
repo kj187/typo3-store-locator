@@ -53,13 +53,13 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param $longitude
 	 * @param int $radius
 	 * @param int $country
-	 * @param bool $retailerLocal
-	 * @param bool $retailerOnline
+	 * @param bool $localretailer
+	 * @param bool $onlineretailer
 	 * @param array $typoscriptSettings
 	 *
 	 * @return array
 	 */
-	public function findStores($latitude, $longitude, $radius, $country, $retailerLocal, $retailerOnline, array $typoscriptSettings) {
+	public function findStores($latitude, $longitude, $radius, $country, $localretailer, $onlineretailer, array $typoscriptSettings) {
 		$query = $this->createQuery();
 		$settings = $query->getQuerySettings();
 		$storagePageIds = $settings->getStoragePageIds();
@@ -74,15 +74,15 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			$whereClause[] = 'country = ' . (int)$country;
 		}
 
-		if (TRUE === $retailerLocal && TRUE !== $retailerOnline) {
+		if (TRUE === $localretailer && TRUE !== $onlineretailer) {
 			$whereClause[] = 'localretailer = 1';
 		}
 
-		if (TRUE === $retailerOnline && TRUE !== $retailerLocal) {
+		if (TRUE === $onlineretailer && TRUE !== $localretailer) {
 			$whereClause[] = 'onlineretailer = 1';
 		}
 
-		if (TRUE === $retailerOnline && TRUE === $retailerLocal) {
+		if (TRUE === $onlineretailer && TRUE === $localretailer) {
 			$whereClause[] = '(onlineretailer = 1 OR localretailer = 1)';
 		}
 

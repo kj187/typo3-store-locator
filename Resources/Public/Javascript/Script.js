@@ -176,8 +176,8 @@ StoreLocator = {
 		getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
 		getStoresUri = getStoresUri.replace('_RADIUS_', this.radius);
 		getStoresUri = getStoresUri.replace('_COUNTRY_', country);
-		getStoresUri = getStoresUri.replace('_RETAILERONLINE_', retailer.online);
-		getStoresUri = getStoresUri.replace('_RETAILERLOCAL_', retailer.local);
+		getStoresUri = getStoresUri.replace('_ONLINERETAILER_', retailer.online);
+		getStoresUri = getStoresUri.replace('_LOCALRETAILER_', retailer.local);
 
 		$.ajax({
 			type: 'GET',
