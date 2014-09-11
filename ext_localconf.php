@@ -50,3 +50,11 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 // Register Hooks
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'Aijko\\StoreLocator\\Hooks\\AutoFillFields';
+
+// Scheduler task for store import
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Aijko\\StoreLocator\\Task\\Store\\ImportTask'] = array(
+	'extension'        => $_EXTKEY,
+	'title'            => 'CSV Store Importer',
+	'description'      => 'Import store data from CSV file',
+	'additionalFields' => 'Aijko\\StoreLocator\\Task\\Store\\ImportTaskAddFields'
+);

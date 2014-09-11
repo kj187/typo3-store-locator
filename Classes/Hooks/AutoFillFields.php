@@ -43,7 +43,7 @@ class AutoFillFields {
 			return;
 		}
 
-		$this->fillAddress($incomingFieldArray);
+		$incomingFieldArray['address'] = \Aijko\StoreLocator\Utility\GoogleUtility::getFullAddressFromUserData($incomingFieldArray);
 	}
 
 	/**
@@ -58,41 +58,9 @@ class AutoFillFields {
 			return;
 		}
 
-		$this->fillLatLong($fieldArray);
-	}
-
-	/**
-	 * @param array $incomingFieldArray
-	 */
-	protected function fillAddress(array &$incomingFieldArray) {
-		$address = array();
-		if ($incomingFieldArray['street']) {
-			$address[] = $incomingFieldArray['street'];
-		}
-
-		if ($incomingFieldArray['zipcode']) {
-			$address[] = $incomingFieldArray['zipcode'];
-		}
-
-		if ($incomingFieldArray['city']) {
-			$address[] = $incomingFieldArray['city'];
-		}
-
-		$incomingFieldArray['address'] = implode(', ', $address);
-	}
-
-	/**
-	 * @param array $fieldArray
-	 */
-	protected function fillLatLong(array &$fieldArray) {
-		$geocode = file_get_contents('http://maps.google.com/maps/api/geocode/json?address=' . urlencode($fieldArray['address']) . '&sensor=false');
-		$geoStdClass = json_decode($geocode);
-		if ('OK' !== $geoStdClass->status) {
-			return;
-		}
-
-		$fieldArray['latitude'] = $geoStdClass->results[0]->geometry->location->lat;
-		$fieldArray['longitude'] = $geoStdClass->results[0]->geometry->location->lng;
+		$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($fieldArray['address']);
+		$fieldArray['latitude'] = $data['latitude'];
+		$fieldArray['longitude'] = $data['longitude'];
 	}
 
 }
