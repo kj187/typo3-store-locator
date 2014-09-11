@@ -59,6 +59,11 @@ class ImportTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 			$this->storeRepository = $objectManager->get('Aijko\\StoreLocator\\Domain\\Repository\\StoreRepository');
 			$this->countryRepository = $objectManager->get('SJBR\\StaticInfoTables\\Domain\\Repository\\CountryRepository');
 
+			if ($this->truncate) {
+				// Remove all stores
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_storelocator_domain_model_store', 'pid = ' . $this->storagePid);
+			}
+
 			foreach ($csvData as $row) {
 				$setCountry = FALSE;
 				if (array_key_exists('country', $row)) {

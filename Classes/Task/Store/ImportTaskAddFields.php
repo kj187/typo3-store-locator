@@ -64,6 +64,16 @@ class ImportTaskAddFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProvide
 			}
 		}
 
+		if (empty($taskInfo['truncate'])) {
+			if ($schedulerModule->CMD == 'add') {
+				$taskInfo['truncate'] = array();
+			} elseif ($schedulerModule->CMD == 'edit') {
+				$taskInfo['truncate'] = $task->truncate;
+			} else {
+				$taskInfo['truncate'] = $task->truncate;
+			}
+		}
+
 		// input for storagePid
 		$fieldId = 'task_storagePid';
 		$fieldCode = '<input name="tx_scheduler[storagePid]" type="text" id="' . $fieldId . '" value="' . $task->storagePid . '" />';
@@ -78,6 +88,14 @@ class ImportTaskAddFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProvide
 		$additionalFields[$fieldId] = array(
 			'code' => $fieldCode,
 			'label' => 'Absolute CSV file path'
+		);
+
+		// Truncate
+		$fieldId = 'task_truncate';
+		$fieldCode = '<input name="tx_scheduler[truncate]" type="checkbox" id="' . $fieldId . '" ' . ($task->truncate ? 'checked="checked"' : '') . ' value="1" />';
+		$additionalFields[$fieldId] = array(
+			'code' => $fieldCode,
+			'label' => 'Delete all available stores before import'
 		);
 
 		return $additionalFields;
@@ -116,6 +134,7 @@ class ImportTaskAddFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProvide
 	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
 		$task->storagePid = intval($submittedData['storagePid']);
 		$task->csvPath = $submittedData['csvPath'];
+		$task->truncate = $submittedData['truncate'];
 	}
 
 }
