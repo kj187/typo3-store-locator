@@ -25,6 +25,8 @@
 
 StoreLocator = {
 
+	initialized: false,
+	clientData: {},
 	defaultOptions: {
 		'getStoresUri': '',
 		'markerIcon': '',
@@ -39,6 +41,11 @@ StoreLocator = {
 	 * @param options
 	 */
 	run: function(options) {
+		if (this.initialized) {
+			return;
+		}
+		this.initialized = true;
+
 		this._initializeOptions(options);
 		this._initializeMap();
 		this._initializeRadius();
@@ -106,9 +113,72 @@ StoreLocator = {
 			if (this.options.activate.mainstore) {
 				this._findMainStoreLocations();
 			} else {
-				this._hideIndicator();
+				if (this.options.activate.clientPosition) {
+					this._loadClientPositionData();
+				} else {
+					this._hideIndicator();
+				}
 			}
 		}
+	},
+
+	/**
+	 * Load the client data
+	 *
+	 * Required EXT:aijko_geoip
+	 * https://bitbucket.org/aijko/aijko_geoip
+	 *
+	 * @private
+	 */
+	_loadClientPositionData: function() {
+		if (!geoIpClientMetaDataUrlForLocator) {
+			this._hideIndicator();
+			return;
+		}
+
+		if (Object.keys(this.clientData).length !== 0) {
+			this._loadClientPosition(this.clientData);
+			return;
+		}
+
+		var self = this;
+		$.ajax({
+			type: 'GET',
+			url: geoIpClientMetaDataUrlForLocator,
+			dataType: 'json',
+			success: function(data) {
+				self._loadClientPosition(data);
+				self.clientData = data;
+			},
+			error: function(data, status, errorMessage) {
+				console.log(status, errorMessage);
+			}
+		});
+	},
+
+	/**
+	 * Load the client position
+	 *
+	 * @private
+	 */
+	_loadClientPosition: function(data) {
+		if (data.errorMessage) {
+			this._hideIndicator();
+			return;
+		}
+
+		var country = data.country.staticInfoTableUid;
+		if (!country) {
+			this._hideIndicator();
+			return;
+		}
+
+		$('#location_country').val(country).change();
+		if (data.city.name) {
+			$('#location').val(data.city.name);
+		}
+
+		this._loadLocations(data.latitude, data.longitude, country);
 	},
 
 	/**

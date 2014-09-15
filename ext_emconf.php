@@ -38,8 +38,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'conflicts' => array(
 		),
 		'suggests' => array(
+			'aijko_geoip' => '1.0.0-9.9.9',
 		),
 	),
 );
-
-?>

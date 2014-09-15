@@ -16,6 +16,10 @@ plugin.tx_storelocator {
 		storesearch.activate.increaseradiusmaxresults = 3
 		storesearch.results.maxitems = 10
 		storesearch.activate.mainstore = 0
+
+		# Required EXT:aijko_geoip
+		storesearch.activate.clientPosition = 0
+
 		storesearch.activate.increaseradius = 0
 		filter.activate.radius = 0
 		filter.activate.country = 0
@@ -29,6 +33,7 @@ plugin.tx_storelocator {
 
 		typeNum {
 			ajax = {$plugin.tx_storelocator.settings.typeNum.ajax}
+			clientData = {$plugin.tx_aijkogeoip.settings.typeNum.ajax}
 		}
 
 		javascript {
@@ -78,6 +83,10 @@ page {
 			compress = 0
 		}
 	}
+
+	# Required EXT:aijko_geoip
+	headerData.1871 < plugin.tx_aijkogeoip.clientMetaUrl
+	headerData.1871.wrap = <script>var geoIpClientMetaDataUrlForLocator = "|"</script>
 }
 
 storeLocatorAjax = PAGE
