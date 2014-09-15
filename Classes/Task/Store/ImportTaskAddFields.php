@@ -87,7 +87,7 @@ class ImportTaskAddFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProvide
 		$fieldCode = '<input style="width:600px" name="tx_scheduler[csvPath]" type="text" id="' . $fieldId . '" value="' . $task->csvPath . '" />';
 		$additionalFields[$fieldId] = array(
 			'code' => $fieldCode,
-			'label' => 'Absolute CSV file path'
+			'label' => 'Relative CSV file path'
 		);
 
 		// Truncate
@@ -118,7 +118,7 @@ class ImportTaskAddFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProvide
 
 		if (!$submittedData['csvPath']) {
 			$isValid = FALSE;
-			$schedulerModule->addMessage('You must define a absolute path to the csv file', \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR);
+			$schedulerModule->addMessage('You must define a relative path to the csv file', \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR);
 		}
 
 		return $isValid;

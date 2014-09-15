@@ -98,6 +98,7 @@ class ImportTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 * @throws \Exception
 	 */
 	protected function getCsvData($file) {
+		$file = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($file);
 		if (!file_exists($file)) {
 			throw new \Exception('File does not exist: ' . $file, 1402826996);
 		}
