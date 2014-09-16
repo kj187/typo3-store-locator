@@ -173,6 +173,11 @@ StoreLocator = {
 			return;
 		}
 
+		if ($("#location_country option[value='" + country + "']").val() === undefined) {
+			this._hideIndicator();
+			return;
+		}
+
 		$('#location_country').val(country).change();
 		if (data.city.name) {
 			$('#location').val(data.city.name);
@@ -321,7 +326,12 @@ StoreLocator = {
 	 * @private
 	 */
 	_increaseRadius: function() {
-		this.radius = (this.radius + parseInt(this.options.defaultRadius));
+		if ($('#location_radius').length) {
+			this.radius = (this.radius + this.radius);
+		} else {
+			this.radius = (this.radius + parseInt(this.options.defaultRadius));
+		}
+
 		this._searchLocations();
 	},
 
