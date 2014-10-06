@@ -68,7 +68,9 @@ class ImportTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 				$setCountry = FALSE;
 				if (array_key_exists('country', $row)) {
 					$country = $this->countryRepository->findOneByIsoCodeA2($row['country']);
-					$setCountry = TRUE;
+					if ($country) {
+						$setCountry = TRUE;
+					}
 					unset($row['country']);
 				}
 
@@ -117,7 +119,7 @@ class ImportTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 			} else {
 				$row = array();
 				foreach ($rows as $key => $value) {
-					$row[$columns[$key]] = $this->convertStringChartsetToUtf8($value);
+					$row[$columns[$key]] = trim($this->convertStringChartsetToUtf8($value));
 				}
 				$data[] = $row;
 			}
@@ -135,7 +137,7 @@ class ImportTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 */
 	protected function convertStringChartsetToUtf8($value) {
 		//$value = iconv('CP1251', 'UTF-8', $value)
-		$value = iconv('macintosh', 'UTF-8', $value);
+		#$value = iconv('macintosh', 'UTF-8', $value);
 		return $value;
 	}
 

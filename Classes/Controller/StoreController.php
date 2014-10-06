@@ -173,6 +173,9 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		$stores = $this->storeRepository->findAll();
 		$countries = array('0' => $this->translate('select.country.choose'));
 		foreach ($stores as $store) {
+			if (!$store->getCountry()) {
+				continue;
+			}
 			$countries[$store->getCountry()->getUid()] = $store->getCountry();
 		}
 
