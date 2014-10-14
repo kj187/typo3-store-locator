@@ -82,13 +82,11 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @var \string
-	 * @validate NotEmpty
 	 */
 	protected $latitude;
 
 	/**
 	 * @var \string
-	 * @validate NotEmpty
 	 */
 	protected $longitude;
 

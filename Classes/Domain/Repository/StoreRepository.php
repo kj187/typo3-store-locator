@@ -133,6 +133,26 @@ class StoreRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			)
 		';
 	}
+
+	/**
+	 * @param int $storagePid
+	 * @param int $limit
+	 */
+	public function findAllStoresWithoutLatLong($storagePid, $limit = 10) {
+		$query = $this->createQuery();
+		$query->getQuerySettings()->setRespectStoragePage(FALSE);
+		$result = $query->matching(
+			$query->logicalAnd(
+				$query->equals('pid', $storagePid),
+				$query->logicalOr(
+					$query->equals('latitude', ''),
+					$query->equals('longitude', '')
+				)
+			)
+		)->setLimit($limit)->execute()->toArray();
+
+		return $result;
+	}
 }
 
 ?>

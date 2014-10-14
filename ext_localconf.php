@@ -58,3 +58,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Aijko\\StoreLoc
 	'description'      => 'Import store data from CSV file',
 	'additionalFields' => 'Aijko\\StoreLocator\\Task\\Store\\ImportTaskAddFields'
 );
+
+// Scheduler task for store import
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Aijko\\StoreLocator\\Task\\Store\\GeoTask'] = array(
+	'extension'        => $_EXTKEY,
+	'title'            => 'Missing GEO Lat/Long',
+	'description'      => 'Get all missing Lat/Long coordinates',
+	'additionalFields' => 'Aijko\\StoreLocator\\Task\\Store\\GeoTaskAddFields'
+);

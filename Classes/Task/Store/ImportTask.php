@@ -76,9 +76,12 @@ class ImportTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 				$store = $propertyMapper->convert($row, 'Aijko\\StoreLocator\\Domain\\Model\\Store');
 				$address = \Aijko\StoreLocator\Utility\GoogleUtility::getFullAddressFromUserData($row);
-				$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($address);
-				$store->setLatitude($data['latitude']);
-				$store->setLongitude($data['longitude']);
+
+				// Import with task:GeoTask
+				#$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($address);
+				#$store->setLatitude($data['latitude']);
+				#$store->setLongitude($data['longitude']);
+
 				$store->setAddress($address);
 				$store->setPid($this->storagePid);
 
