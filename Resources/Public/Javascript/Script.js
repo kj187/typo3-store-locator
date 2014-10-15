@@ -45,6 +45,7 @@ StoreLocator = {
 			return;
 		}
 		this.initialized = true;
+		this.root = $('.storeSearch');
 
 		this._initializeOptions(options);
 		this._initializeMap();
@@ -205,6 +206,7 @@ StoreLocator = {
 			} else {
 				self._noResultsFound(address);
 				$('[data-showOnResponse]').show();
+				self.trigger('domupdate');
 			}
 		});
 	},
@@ -318,6 +320,7 @@ StoreLocator = {
 		}
 
 		$('[data-showOnResponse]').show();
+		this.root.trigger('domupdate');
 	},
 
 	/**
@@ -343,6 +346,7 @@ StoreLocator = {
 	_clearAllLocations: function() {
 		$('[data-showOnSuccess]').hide();
 		$('[data-queryresult]').remove();
+		this.root.trigger('domupdate');
 
 		this.infoWindow.close();
 		for (var i = 0; i < this.markers.length; i++) {
