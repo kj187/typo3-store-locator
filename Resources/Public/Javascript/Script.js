@@ -152,6 +152,7 @@ StoreLocator = {
 				self.clientData = data;
 			},
 			error: function(data, status, errorMessage) {
+				self._hideIndicator();
 				console.log(status, errorMessage);
 			}
 		});
@@ -240,7 +241,7 @@ StoreLocator = {
 	 *
 	 * @private
 	 */
-	_loadLocations: function(lat, lng, country) {
+	_loadLocations: function(lat, lng, country, keepBounds) {
 
 		var self = this;
 		var getStoresUri = this.options.getStoresUri;
@@ -248,6 +249,9 @@ StoreLocator = {
 			online: ($('#retailer-online').is(':checked') ? 1 : 0),
 			local: ($('#retailer-local').is(':checked') ? 1 : 0)
 		};
+
+		google.maps.event.removeListener(self.listenerDragend);
+		google.maps.event.removeListener(self.listenerZoomChanged);
 
 		getStoresUri = getStoresUri.replace('_LATITUDE_', lat);
 		getStoresUri = getStoresUri.replace('_LONGITUD_', lng);
@@ -261,7 +265,7 @@ StoreLocator = {
 			url: getStoresUri,
 			dataType: 'json',
 			success: function(data) {
-				self._initializeAndOutputLocations(data);
+				self._initializeAndOutputLocations(data, keepBounds);
 			},
 			error: function(data, status, errorMessage) {
 				console.log(status, errorMessage);
@@ -270,12 +274,32 @@ StoreLocator = {
 	},
 
 	/**
+	 * Update location pins depending on current viewport
+	 */
+	_updateByMapBounds: function() {
+		var self = this;
+		var bounds = self.map.getBounds();
+
+		self._clearNotification();
+
+		if (bounds) {
+			var country = ($('#location_country').length ? $('#location_country').val() : 0);
+			var center = self.map.getCenter();
+			var swPoint = bounds.getSouthWest();
+			var nePoint = bounds.getNorthEast();
+			this.radius = Math.round(google.maps.geometry.spherical.computeDistanceBetween(swPoint, nePoint) / 1000 / 2);
+			self._loadLocations(center.lat(), center.lng(), country, true);
+		};
+		
+	},
+
+	/**
 	 * Initialize and output locations
 	 *
 	 * @param data
 	 * @private
 	 */
-	_initializeAndOutputLocations: function(data) {
+	_initializeAndOutputLocations: function(data, keepBounds) {
 		var self = this;
 		var locations = data.locations;
 		var sidebarItems = data.sidebarItems;
@@ -283,6 +307,8 @@ StoreLocator = {
 		var bounds = new google.maps.LatLngBounds();
 		var sidebar = $('#sidebar').eq(0);
 		var address = $('#location').val();
+
+		keepBounds = !!keepBounds;
 
 		sidebar.innerHTML = '';
 		this._clearAllLocations();
@@ -308,11 +334,20 @@ StoreLocator = {
 				bounds.extend(latlng);
 			}
 
-			self.map.fitBounds(bounds);
+			!keepBounds && self.map.fitBounds(bounds);
+
+			self.listenerDragend = google.maps.event.addListener(this.map, 'dragend', function() {
+				self._updateByMapBounds();
+			});
+
+			self.listenerZoomChanged = google.maps.event.addListener(this.map, 'zoom_changed', function() {
+				self._updateByMapBounds();
+			});
+
 			this._hideIndicator();
 			$('[data-showOnSuccess]').show();
 		} else {
-			if (this.options.activate.automaticellyIncreaseRadius && this.radius < this.options.maxRadius) {
+			if (!keepBounds && this.options.activate.automaticellyIncreaseRadius && this.radius < this.options.maxRadius) {
 				self._increaseRadius();
 			} else {
 				self._noResultsFound(address);
@@ -555,6 +590,7 @@ StoreLocator = {
 	 * @private
 	 */
 	_attachEvents: function() {
+		var self = this;
 		var $body = $(document.body);
 
 		$body.on('click', '.storeSearch #searchButton', $.proxy(function(e) {
@@ -581,6 +617,15 @@ StoreLocator = {
 			this._initializeRadius();
 			this._clearNotification();
 		}, this));
+
+		self.listenerDragend = google.maps.event.addListener(this.map, 'dragend', function() {
+			self._updateByMapBounds();
+		});
+
+		self.listenerZoomChanged = google.maps.event.addListener(this.map, 'zoom_changed', function() {
+			self._updateByMapBounds();
+		});
+
 	},
 
 	/**
