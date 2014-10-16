@@ -283,7 +283,7 @@ StoreLocator = {
 		self._clearNotification();
 
 		if (bounds) {
-			var country = ($('#location_country').length ? $('#location_country').val() : 0);
+			var country = 0;
 			var center = self.map.getCenter();
 			var swPoint = bounds.getSouthWest();
 			var nePoint = bounds.getNorthEast();
