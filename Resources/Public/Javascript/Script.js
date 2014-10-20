@@ -260,6 +260,8 @@ StoreLocator = {
 		getStoresUri = getStoresUri.replace('_ONLINERETAILER_', retailer.online);
 		getStoresUri = getStoresUri.replace('_LOCALRETAILER_', retailer.local);
 
+		self._showIndicator();
+
 		$.ajax({
 			type: 'GET',
 			url: getStoresUri,
@@ -279,8 +281,6 @@ StoreLocator = {
 	_updateByMapBounds: function() {
 		var self = this;
 		var bounds = self.map.getBounds();
-
-		self._clearNotification();
 
 		if (bounds) {
 			var country = 0;
@@ -557,8 +557,7 @@ StoreLocator = {
 		var marker = new google.maps.Marker({
 			map: self.map,
 			position: latlng,
-			icon: icon,
-			animation: google.maps.Animation.DROP,
+			icon: icon
 		});
 
 		var html = markerContent;
