@@ -102,6 +102,7 @@ StoreLocator = {
 	_searchLocations: function() {
 		var address = $('#location').val();
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
+    var self = this;
 
 		if (address != '') {
 			this._showIndicator();
@@ -115,9 +116,11 @@ StoreLocator = {
 				this._findMainStoreLocations();
 			} else {
 				if (this.options.activate.clientPosition) {
-					this._loadClientPositionData();
+					this._loadClientPositionData(function(data, status, errorMessage) {
+            self._firstSearchWithoutUserLocationData(address, country);
+          });
 				} else {
-					this._hideIndicator();
+          this._firstSearchWithoutUserLocationData(address, country);
 				}
 			}
 		}
@@ -131,7 +134,7 @@ StoreLocator = {
 	 *
 	 * @private
 	 */
-	_loadClientPositionData: function() {
+	_loadClientPositionData: function(fallback) {
 		if (!geoIpClientMetaDataUrlForLocator) {
 			this._hideIndicator();
 			return;
@@ -152,8 +155,13 @@ StoreLocator = {
 				self.clientData = data;
 			},
 			error: function(data, status, errorMessage) {
-				self._hideIndicator();
-				console.log(status, errorMessage);
+        if (typeof fallback == 'function') {
+          fallback(data, status, errorMessage);
+        }
+        else {
+          self._hideIndicator();
+          console.log(status, errorMessage);
+        }
 			}
 		});
 	},
@@ -207,7 +215,7 @@ StoreLocator = {
 			} else {
 				self._noResultsFound(address);
 				$('[data-showOnResponse]').show();
-				self.trigger('domupdate');
+        self.root.trigger('domupdate');
 			}
 		});
 	},
