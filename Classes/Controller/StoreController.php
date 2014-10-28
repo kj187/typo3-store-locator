@@ -55,7 +55,14 @@ class StoreController extends \Aijko\StoreLocator\Controller\AbstractController 
 		$this->view->assign('displayMode', 'storeSearch');
 		$this->settings['filter']['default']['radius'] = $this->getDefaultRadiusAsArray();
 		$this->view->assign('settings', $this->settings);
-		$this->view->assign('countries', $this->getOnlyCountriesWhereStoresAvailable());
+
+		if ($this->settings['filter']['showAllCountries']) {
+			$countries = $this->countryRepository->findAllOrderedBy('officialNameEn');
+		} else {
+			$countries = $this->getOnlyCountriesWhereStoresAvailable();
+		}
+
+		$this->view->assign('countries', $countries);
 		$this->view->assign('preSelectedCountry', $this->countryRepository->findOneByIsoCodeA2($this->region));
 	}
 

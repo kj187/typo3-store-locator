@@ -23,6 +23,7 @@ plugin.tx_storelocator {
 		storesearch.activate.increaseradius = 0
 		filter.activate.radius = 0
 		filter.activate.country = 0
+		filter.showAllCountries = 0
 
 		disableStoragePageId = 0
 
