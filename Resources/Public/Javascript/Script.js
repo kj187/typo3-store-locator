@@ -57,7 +57,7 @@ StoreLocator = {
 
 		if (this.options.displayMode == 'storeSearch') {
 			this._initializeMapPosition();
-			this._searchLocations();
+			this._searchLocations(true);
 		}
 		if (this.options.displayMode == 'directionsService') {
 			this._initializeDefaultLocation();
@@ -99,12 +99,12 @@ StoreLocator = {
 	/**
 	 * @private
 	 */
-	_searchLocations: function() {
+	_searchLocations: function(initializingSearch) {
 		var address = $('#location').val();
 		var country = ($('#location_country').length ? $('#location_country').val() : 0);
     var self = this;
 
-		if (address != '') {
+		if (address != '' || !initializingSearch) {
 			this._showIndicator();
 			if (this.userLocation && this.lastQueryAddress == address) { // Performance improvement, avoid OVER_QUERY_LIMIT
 				this._loadLocations(this.userLocation.lat(), this.userLocation.lng(), country);
