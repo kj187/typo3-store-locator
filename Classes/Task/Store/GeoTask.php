@@ -49,10 +49,11 @@ class GeoTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		$this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 		$this->storeRepository = $objectManager->get('Aijko\\StoreLocator\\Domain\\Repository\\StoreRepository');
+		$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['store_locator']);
 
 		$stores = $this->storeRepository->findAllStoresWithoutLatLong($this->storagePid);
 		foreach ($stores as $store) {
-			$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($store->getAddress());
+			$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($store->getAddress(), $extensionConfiguration['googleApiKey']);
 			$store->setLatitude($data['latitude']);
 			$store->setLongitude($data['longitude']);
 			$this->storeRepository->update($store);

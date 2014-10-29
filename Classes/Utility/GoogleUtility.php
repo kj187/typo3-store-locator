@@ -36,10 +36,12 @@ class GoogleUtility {
 	 * @param string $address
 	 * @return array
 	 */
-	public static function getLatLongFromAddress($address) {
-		$geocode = file_get_contents('http://maps.google.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false');
+	public static function getLatLongFromAddress($address, $googleApiKey) {
+		$geocode = file_get_contents('https://maps.google.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false&key=' . $googleApiKey);
 		$geoStdClass = json_decode($geocode);
 		if ('OK' !== $geoStdClass->status) {
+			$logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+			$logger->error('GoogleUtility', array('Status' => $geoStdClass->status));
 			return array();
 		}
 

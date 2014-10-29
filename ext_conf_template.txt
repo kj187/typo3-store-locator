@@ -1,0 +1,2 @@
+# cat=basic; type=string; label=API Key: Google API Key (Currently only used for Lat/Long Importer)
+googleApiKey =
