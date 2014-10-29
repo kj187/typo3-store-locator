@@ -41,7 +41,7 @@ class GoogleUtility {
 		$geoStdClass = json_decode($geocode);
 		if ('OK' !== $geoStdClass->status) {
 			$logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
-			$logger->error('GoogleUtility', array('Status' => $geoStdClass->status));
+			$logger->error($geoStdClass->status, array('error_message' => $geoStdClass->error_message));
 			return array();
 		}
 
