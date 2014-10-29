@@ -100,11 +100,15 @@ StoreLocator = {
 	 * @private
 	 */
 	_searchLocations: function(initializingSearch) {
-		var address = $('#location').val();
-		var country = ($('#location_country').length ? $('#location_country').val() : 0);
+    var $countrySelect = $('#location_country');
+		var address = $.trim($('#location').val());
+		var country = ($countrySelect.length ? $countrySelect.val() : 0);
     var self = this;
 
-		if (address != '' || !initializingSearch) {
+    // set country name as location if no location was entered
+    address = address || !$countrySelect.length ? address : $countrySelect.find(':selected').text();
+
+		if (!initializingSearch) {
 			this._showIndicator();
 			if (this.userLocation && this.lastQueryAddress == address) { // Performance improvement, avoid OVER_QUERY_LIMIT
 				this._loadLocations(this.userLocation.lat(), this.userLocation.lng(), country);
