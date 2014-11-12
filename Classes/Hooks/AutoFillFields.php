@@ -59,8 +59,8 @@ class AutoFillFields {
 		}
 		$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['store_locator']);
 		$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($fieldArray['address'], $extensionConfiguration['googleApiKey']);
-		$fieldArray['latitude'] = $data['latitude'];
-		$fieldArray['longitude'] = $data['longitude'];
+		$fieldArray['latitude'] = (isset($data['latitude']) ? $data['latitude'] : 0);
+		$fieldArray['longitude'] = (isset($data['longitude']) ? $data['longitude'] : 0);
 	}
 
 }

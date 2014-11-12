@@ -57,7 +57,7 @@ class GoogleUtility {
 	 * @return string
 	 */
 	public static function getFullAddressFromUserData(array $userData) {
-		$address = '';
+		$address = array();
 		if ($userData['street']) {
 			$address[] = $userData['street'];
 		}
