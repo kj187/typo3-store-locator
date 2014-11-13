@@ -34,15 +34,25 @@ class GoogleUtility {
 
 	/**
 	 * @param string $address
+	 * @param string $googleApiKey
 	 * @return array
+	 * @throws \Aijko\StoreLocator\Task\Store\GoogleException
 	 */
 	public static function getLatLongFromAddress($address, $googleApiKey) {
+		$data = array();
+		$logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
 		$geocode = file_get_contents('https://maps.google.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false&key=' . $googleApiKey);
 		$geoStdClass = json_decode($geocode);
-		if ('OK' !== $geoStdClass->status) {
-			$logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
-			$logger->error($geoStdClass->status, array('error_message' => $geoStdClass->error_message, 'Address' => $address));
-			return array();
+
+		if ('ZERO_RESULTS' == $geoStdClass->status) {
+			$logger->notice($geoStdClass->status, array('error_message' => $geoStdClass->error_message, 'Address' => $address, 'API Key: ' . $googleApiKey));
+			$data['ZERO_RESULTS'] = $address;
+			return $data;
+		}
+
+		if ('OK' !== $geoStdClass->status) { # https://developers.google.com/maps/documentation/geocoding/?hl=de#StatusCodes
+			$logger->error($geoStdClass->status, array('error_message' => $geoStdClass->error_message, 'Address' => $address, 'API Key: ' . $googleApiKey));
+			throw new \Aijko\StoreLocator\Task\Store\GoogleException($geoStdClass->error_message . '(Status: ' . $geoStdClass->status . ', Requested address: ' . $address . ', API Key: ' . $googleApiKey . ')', 1415868175);
 		}
 
 		$data['latitude'] = $geoStdClass->results[0]->geometry->location->lat;

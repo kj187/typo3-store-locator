@@ -25,6 +25,8 @@ namespace Aijko\StoreLocator\Task\Store;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class GeoTask
  *
@@ -46,6 +48,7 @@ class GeoTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 * @return bool
 	 */
 	public function execute() {
+		$zeroResults = array();
 		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		$this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 		$this->storeRepository = $objectManager->get('Aijko\\StoreLocator\\Domain\\Repository\\StoreRepository');
@@ -53,15 +56,45 @@ class GeoTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 		$stores = $this->storeRepository->findAllStoresWithoutLatLong($this->storagePid);
 		foreach ($stores as $store) {
-			$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($store->getAddress(), $extensionConfiguration['googleApiKey']);
-			$store->setLatitude($data['latitude']);
-			$store->setLongitude($data['longitude']);
-			$this->storeRepository->update($store);
-			sleep(2); // Usage limits exceeded - https://developers.google.com/maps/documentation/business/articles/usage_limits
+			try {
+				$data = \Aijko\StoreLocator\Utility\GoogleUtility::getLatLongFromAddress($store->getAddress(), $extensionConfiguration['googleApiKey']);
+				if (isset($data['ZERO_RESULTS'])) {
+					$zeroResults[] = $data['ZERO_RESULTS'];
+					$store->setHidden(TRUE);
+				} else {
+					$store->setLatitude($data['latitude']);
+					$store->setLongitude($data['longitude']);
+				}
+
+				$this->storeRepository->update($store);
+				sleep(2); // Usage limits exceeded - https://developers.google.com/maps/documentation/business/articles/usage_limits
+
+			} catch (\Aijko\StoreLocator\Task\Store\GoogleException $e) {
+				$this->addMessage($e->getMessage(), \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR);
+				return FALSE;
+			}
 		}
+
+		$this->addMessage('Bei folgenden Adressen wurde der Datensatz deaktiviert da keine Lat/Long dazu vorhanden sind:<br> - ' . implode('<br> - ', $zeroResults), \TYPO3\CMS\Core\Messaging\FlashMessage::INFO);
 
 		$this->persistenceManager->persistAll();
 		return TRUE;
+	}
+
+	/**
+	 * This method is used to add a message to the internal queue
+	 *
+	 * @param string $message The message itself
+	 * @param integer $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
+	 * @return void
+	 */
+	public function addMessage($message, $severity = \TYPO3\CMS\Core\Messaging\FlashMessage::OK) {
+		$flashMessage = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $message, '', $severity);
+		/** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+		$flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+		/** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+		$defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+		$defaultFlashMessageQueue->enqueue($flashMessage);
 	}
 
 }

@@ -35,6 +35,11 @@ namespace Aijko\StoreLocator\Domain\Model;
 class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
+	 * @var bool
+	 */
+	protected $hidden;
+
+	/**
 	 * @var \string
 	 * @validate NotEmpty
 	 */
@@ -479,6 +484,20 @@ class Store extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function getOnlineretailer() {
 		return $this->onlineretailer;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isHidden() {
+		return $this->hidden;
+	}
+
+	/**
+	 * @param boolean $hidden
+	 */
+	public function setHidden($hidden) {
+		$this->hidden = $hidden;
 	}
 
 	/**
